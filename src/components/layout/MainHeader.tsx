@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useId, useState } from "react";
 
 const PRIMARY = "#c41a1a";
 
@@ -17,12 +18,30 @@ const NAV = [
 
 export default function MainHeader() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const menuId = useId();
+
+  // Close menu on route change (Vercel/Next navigation)
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  // Prevent background scroll when menu is open (mobile UX)
+  useEffect(() => {
+    if (!open) return;
+
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
 
   return (
     <header className="sticky top-0 z-50 w-full" style={{ backgroundColor: PRIMARY }}>
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
         {/* White logo */}
-        <Link href="/" className="flex items-center">
+        <Link href="/" className="flex items-center" aria-label="go to home">
           <div className="relative h-9 w-[170px] sm:h-10 sm:w-[210px]">
             <Image
               src="/logo2.svg"
@@ -30,13 +49,14 @@ export default function MainHeader() {
               fill
               priority
               className="object-contain"
+              sizes="(max-width: 640px) 170px, 210px"
             />
           </div>
         </Link>
 
         {/* Desktop nav */}
         <div className="hidden items-center gap-8 lg:flex">
-          <nav className="flex items-center gap-7">
+          <nav className="flex items-center gap-7" aria-label="main navigation">
             {NAV.map((item) => (
               <Link
                 key={item.href}
@@ -74,6 +94,7 @@ export default function MainHeader() {
             onClick={() => setOpen((v) => !v)}
             aria-label="toggle menu"
             aria-expanded={open}
+            aria-controls={menuId}
           >
             <span className="text-lg leading-none">{open ? "×" : "≡"}</span>
           </button>
@@ -82,7 +103,10 @@ export default function MainHeader() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="border-t border-white/15 bg-white/10 backdrop-blur-md lg:hidden">
+        <div
+          id={menuId}
+          className="border-t border-white/15 bg-white/10 backdrop-blur-md lg:hidden"
+        >
           <div className="mx-auto max-w-6xl px-4 py-4">
             <div className="grid gap-2">
               {NAV.map((item) => (
