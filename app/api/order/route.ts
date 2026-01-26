@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
-import { getPlanBySlug } from "@/lib/plans";
 import crypto from "crypto";
+import { getPlanBySlug } from "@/lib/plans";
+import { Resend } from "resend";
 
 type Payload = {
   appliance?: string;
@@ -19,12 +19,21 @@ function makeReference() {
   const yy = String(d.getFullYear()).slice(-2);
   const mm = String(d.getMonth() + 1).padStart(2, "0");
   const dd = String(d.getDate()).padStart(2, "0");
-  const rand = crypto.randomBytes(2).toString("hex").toUpperCase(); // 4 chars
+  const rand = crypto.randomBytes(2).toString("hex").toUpperCase();
   return `VSP-${yy}${mm}${dd}-${rand}`;
 }
 
 function isEmail(v: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+}
+
+function escapeHtml(str: string) {
+  return str
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 export async function POST(req: Request) {
@@ -49,18 +58,21 @@ export async function POST(req: Request) {
       { status: 400 }
     );
   }
+
   if (!email || !isEmail(email)) {
     return NextResponse.json(
       { ok: false, error: "valid email is required." },
       { status: 400 }
     );
   }
+
   if (!phone) {
     return NextResponse.json(
       { ok: false, error: "phone number is required." },
       { status: 400 }
     );
   }
+
   if (!Number.isFinite(months) || months < 5) {
     return NextResponse.json(
       { ok: false, error: "minimum rental period is 5 months." },
@@ -71,11 +83,12 @@ export async function POST(req: Request) {
   const reference = makeReference();
 
   const RESEND_API_KEY = process.env.RESEND_API_KEY;
-  const FROM_EMAIL = process.env.FROM_EMAIL; // e.g. "Varsity Starter Pack <no-reply@yourdomain.co.za>"
-  const ADMIN_EMAIL = process.env.ADMIN_EMAIL; // optional
+  const FROM_EMAIL = process.env.FROM_EMAIL;
+  const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
   let emailed = false;
 
+  // If email is configured, send customer confirmation + optional admin notification
   if (RESEND_API_KEY && FROM_EMAIL) {
     const resend = new Resend(RESEND_API_KEY);
 
@@ -113,7 +126,6 @@ export async function POST(req: Request) {
 
     emailed = true;
 
-    // Optional internal notification
     if (ADMIN_EMAIL) {
       await resend.emails.send({
         from: FROM_EMAIL,
@@ -148,13 +160,4 @@ export async function POST(req: Request) {
       deposit: plan.deposit,
     },
   });
-}
-
-function escapeHtml(str: string) {
-  return str
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
 }
