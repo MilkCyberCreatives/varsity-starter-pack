@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import MainHeader from "@/components/layout/MainHeader";
 import FooterSection from "@/components/layout/FooterSection";
+import BreadcrumbHero from "@/components/layout/BreadcrumbHero";
 import OrderForm from "@/components/order/OrderForm";
 import { getPlanBySlug } from "@/lib/plans";
 
@@ -20,6 +21,12 @@ export default function OrderPage({ searchParams }: Props) {
   return (
     <main className="min-h-screen bg-white">
       <MainHeader />
+
+      <BreadcrumbHero
+        title="order"
+        subtitle="request an order and receive a reference number."
+        crumbs={[{ label: "HOME", href: "/" }, { label: "ORDER" }]}
+      />
 
       <section className="mx-auto max-w-6xl px-4 py-16">
         <p className="text-xs font-semibold tracking-widest text-black/50">

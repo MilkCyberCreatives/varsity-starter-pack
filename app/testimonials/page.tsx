@@ -1,9 +1,23 @@
+import type { Metadata } from "next";
 import MainHeader from "@/components/layout/MainHeader";
+import FooterSection from "@/components/layout/FooterSection";
+import BreadcrumbHero from "@/components/layout/BreadcrumbHero";
+
+export const metadata: Metadata = {
+  title: "testimonials",
+  description: "what students say about varsity starter pack rentals.",
+};
 
 export default function TestimonialsPage() {
   return (
     <main className="min-h-screen bg-white">
       <MainHeader />
+
+      <BreadcrumbHero
+        title="testimonials"
+        subtitle="what students say about the experience."
+        crumbs={[{ label: "HOME", href: "/" }, { label: "TESTIMONIALS" }]}
+      />
 
       <section className="mx-auto max-w-6xl px-4 py-16">
         <p className="text-xs font-semibold tracking-widest text-black/50">
@@ -20,6 +34,8 @@ export default function TestimonialsPage() {
           proof images are available from the homepage cards via “view proof”.
         </div>
       </section>
+
+      <FooterSection />
     </main>
   );
 }
