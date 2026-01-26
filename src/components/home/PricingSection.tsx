@@ -2,50 +2,13 @@
 
 import Link from "next/link";
 import { motion, type Variants, easeOut, easeInOut } from "framer-motion";
+import { PLANS } from "@/lib/plans";
 
 const PRIMARY = "#c41a1a";
 const SECONDARY = "#1374b8";
 
 // Premium easing
 const premiumEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
-
-type Plan = {
-  slug: "bar-fridge" | "microwave" | "top-freezer";
-  name: string;
-  monthly: string;
-  deposit: string;
-  note: string;
-  bullets: string[];
-  featured?: boolean;
-};
-
-const PLANS: Plan[] = [
-  {
-    slug: "bar-fridge",
-    name: "BAR FRIDGE",
-    monthly: "R250 / MONTH",
-    deposit: "R400 refundable deposit",
-    note: "best for res rooms and shared apartments",
-    bullets: ["maintenance included", "student-only rentals", "minimum 5 months"],
-  },
-  {
-    slug: "microwave",
-    name: "MICROWAVE",
-    monthly: "R160 / MONTH",
-    deposit: "R300 refundable deposit",
-    note: "fast meals without the hassle",
-    bullets: ["maintenance included", "easy setup", "minimum 5 months"],
-    featured: true,
-  },
-  {
-    slug: "top-freezer",
-    name: "TOP FREEZER",
-    monthly: "R360 / MONTH",
-    deposit: "R600 refundable deposit",
-    note: "extra storage for meal prep and sharing",
-    bullets: ["maintenance included", "ideal for sharing", "minimum 5 months"],
-  },
-];
 
 const container: Variants = {
   hidden: {},
@@ -96,8 +59,8 @@ export default function PricingSection() {
             </h2>
 
             <p className="mt-3 max-w-2xl text-base text-black/65">
-              deposits are once-off and refundable (less damages). minimum rental is{" "}
-              <span className="font-semibold text-black">5 months</span>.
+              deposits are once-off and refundable (less damages). minimum rental
+              is <span className="font-semibold text-black">5 months</span>.
               discounts apply when renting more than one appliance.
             </p>
 
