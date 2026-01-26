@@ -1,7 +1,15 @@
 import type { MetadataRoute } from "next";
 
+function getBaseUrl() {
+  const vercelUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+
+  if (vercelUrl) return `https://${vercelUrl}`;
+
+  return "https://varsitystarterpack.co.za";
+}
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = "https://varsitystarterpack.co.za";
+  const base = getBaseUrl();
   const now = new Date();
 
   return [
