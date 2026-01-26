@@ -38,14 +38,8 @@ export const PLANS: Plan[] = [
   },
 ];
 
-export const VALID_APPLIANCES: ApplianceSlug[] = [
-  "bar-fridge",
-  "microwave",
-  "top-freezer",
-];
-
 export function isApplianceSlug(v: string): v is ApplianceSlug {
-  return (VALID_APPLIANCES as string[]).includes(v);
+  return v === "bar-fridge" || v === "microwave" || v === "top-freezer";
 }
 
 export function getPlanBySlug(slug?: string) {

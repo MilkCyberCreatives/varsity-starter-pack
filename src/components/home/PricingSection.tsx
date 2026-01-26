@@ -154,12 +154,12 @@ export default function PricingSection() {
 
                 {/* Note */}
                 <div className="mt-5 rounded-2xl border border-black/10 px-4 py-3">
-                  <p className="text-sm text-black/70">{p.note}</p>
+                  <p className="text-sm text-black/70">{p.note ?? ""}</p>
                 </div>
 
                 {/* Bullets */}
                 <ul className="mt-5 space-y-2 text-sm text-black/65">
-                  {p.bullets.map((b) => (
+                  {(p.bullets ?? []).map((b) => (
                     <li key={b} className="flex items-center gap-2">
                       <span
                         className="h-2 w-2 rounded-full"
