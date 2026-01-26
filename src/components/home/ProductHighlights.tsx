@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, type Variants, easeOut } from "framer-motion";
 
 const PRIMARY = "#c41a1a";
 const SECONDARY = "#1374b8";
@@ -42,16 +42,20 @@ const PRODUCTS: Product[] = [
   },
 ];
 
-const container = {
+const container: Variants = {
   hidden: {},
   show: {
     transition: { staggerChildren: 0.12 },
   },
 };
 
-const item = {
+const item: Variants = {
   hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: easeOut },
+  },
 };
 
 export default function ProductHighlights() {
@@ -63,7 +67,7 @@ export default function ProductHighlights() {
           initial={{ opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.35 }}
-          transition={{ duration: 0.55, ease: "easeOut" }}
+          transition={{ duration: 0.55, ease: easeOut }}
           className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
         >
           <div>
@@ -79,8 +83,9 @@ export default function ProductHighlights() {
             </h2>
 
             <p className="mt-3 max-w-2xl text-base text-black/65">
-              Clear pricing, student-friendly process, and rentals built for res life.
-              Minimum rental is <span className="font-semibold text-black">5 months</span>.
+              Clear pricing, student-friendly process, and rentals built for res
+              life. Minimum rental is{" "}
+              <span className="font-semibold text-black">5 months</span>.
               Discounts apply when renting more than one appliance.
             </p>
           </div>
@@ -197,11 +202,12 @@ export default function ProductHighlights() {
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+          transition={{ duration: 0.5, ease: easeOut }}
           className="mt-10 text-xs text-black/50"
         >
-          Delivery is free to res/apartment (T&Cs apply). Excluding UJ Soweto Campus (delivery + collection fee applies).
-          Deposits are refundable at the end of the rental period (less damages).
+          Delivery is free to res/apartment (T&Cs apply). Excluding UJ Soweto
+          Campus (delivery + collection fee applies). Deposits are refundable at
+          the end of the rental period (less damages).
         </motion.p>
       </div>
     </section>
