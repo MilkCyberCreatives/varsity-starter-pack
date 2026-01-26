@@ -1,8 +1,13 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+
+  // Fix: Next picked Desktop as workspace root because of an extra lockfile.
+  // This forces tracing to use THIS project folder.
+  outputFileTracingRoot: path.join(__dirname),
 
   async headers() {
     return [
@@ -17,8 +22,6 @@ const nextConfig: NextConfig = {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()",
           },
-
-          // Extra safe defaults
           { key: "X-DNS-Prefetch-Control", value: "on" },
         ],
       },
@@ -31,15 +34,21 @@ const nextConfig: NextConfig = {
         ],
       },
 
-      // Cache images served by Next image optimizer (safe default)
+      // Cache Next image optimizer responses
       {
         source: "/_next/image(.*)",
         headers: [{ key: "Cache-Control", value: "public, max-age=86400" }],
       },
 
-      // Cache common static file types in /public
+      // Cache common assets in /public (valid Next matcher syntax)
       {
-        source: "/:path*\\.(?:svg|png|jpg|jpeg|webp|gif|ico|css|js)",
+        source: "/:path*.(svg|png|jpg|jpeg|webp|gif|ico)",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=604800, immutable" },
+        ],
+      },
+      {
+        source: "/:path*.(css|js)",
         headers: [
           { key: "Cache-Control", value: "public, max-age=604800, immutable" },
         ],
