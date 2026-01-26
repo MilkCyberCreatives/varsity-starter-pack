@@ -3,6 +3,7 @@ import MainHeader from "@/components/layout/MainHeader";
 import FooterSection from "@/components/layout/FooterSection";
 import HowItWorksSection from "@/components/home/HowItWorksSection";
 import HowItWorksNumbersSection from "@/components/home/HowItWorksNumbersSection";
+import BreadcrumbHero from "@/components/layout/BreadcrumbHero";
 
 export const metadata: Metadata = {
   title: "how it works",
@@ -14,6 +15,11 @@ export default function HowItWorksPage() {
   return (
     <main className="min-h-screen bg-white">
       <MainHeader />
+      <BreadcrumbHero
+        title="how it works"
+        subtitle="simple steps, zero stress."
+        crumbs={[{ label: "HOME", href: "/" }, { label: "HOW IT WORKS" }]}
+      />
       <HowItWorksSection />
       <HowItWorksNumbersSection />
       <FooterSection />

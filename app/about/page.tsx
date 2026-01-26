@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import MainHeader from "@/components/layout/MainHeader";
 import FooterSection from "@/components/layout/FooterSection";
+import BreadcrumbHero from "@/components/layout/BreadcrumbHero";
 
 export const metadata: Metadata = {
   title: "about",
@@ -12,15 +13,20 @@ export default function AboutPage() {
   return (
     <main className="min-h-screen bg-white">
       <MainHeader />
+      <BreadcrumbHero
+        title="about"
+        subtitle="student-only appliance rentals designed for res life."
+        crumbs={[{ label: "HOME", href: "/" }, { label: "ABOUT" }]}
+      />
 
       <section className="mx-auto max-w-6xl px-4 py-16">
         <p className="text-xs font-semibold tracking-widest text-black/50">
           ABOUT
         </p>
 
-        <h1 className="mt-3 text-4xl font-medium tracking-tight text-black">
+        <h2 className="mt-3 text-4xl font-medium tracking-tight text-black">
           varsity starter pack
-        </h1>
+        </h2>
 
         <p className="mt-4 max-w-3xl text-base text-black/65">
           varsity starter pack provides student-only appliance rentals designed
