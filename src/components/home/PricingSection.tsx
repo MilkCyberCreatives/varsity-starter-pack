@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, type Variants, easeOut, easeInOut } from "framer-motion";
 
 const PRIMARY = "#c41a1a";
 const SECONDARY = "#1374b8";
@@ -47,14 +47,18 @@ const PLANS: Plan[] = [
   },
 ];
 
-const container = {
+const container: Variants = {
   hidden: {},
   show: { transition: { staggerChildren: 0.12 } },
 };
 
-const item = {
+const item: Variants = {
   hidden: { opacity: 0, y: 14 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: "easeOut" } },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.55, ease: easeOut },
+  },
 };
 
 export default function PricingSection() {
@@ -76,7 +80,7 @@ export default function PricingSection() {
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.35 }}
-          transition={{ duration: 0.55, ease: "easeOut" }}
+          transition={{ duration: 0.55, ease: easeOut }}
           className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
         >
           <div>
@@ -93,8 +97,8 @@ export default function PricingSection() {
 
             <p className="mt-3 max-w-2xl text-base text-black/65">
               deposits are once-off and refundable (less damages). minimum rental is{" "}
-              <span className="font-semibold text-black">5 months</span>. discounts apply when
-              renting more than one appliance.
+              <span className="font-semibold text-black">5 months</span>.
+              discounts apply when renting more than one appliance.
             </p>
 
             {/* Accent line */}
@@ -144,7 +148,7 @@ export default function PricingSection() {
                   className="pointer-events-none absolute -top-28 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full"
                   style={{ backgroundColor: "rgba(196,26,26,0.10)" }}
                   animate={{ opacity: [0.5, 0.8, 0.5] }}
-                  transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                  transition={{ duration: 6, repeat: Infinity, ease: easeInOut }}
                 />
               )}
 
@@ -235,7 +239,8 @@ export default function PricingSection() {
 
         {/* Footer note */}
         <p className="mt-12 text-xs text-black/50">
-          delivery is free to res/apartment (t&cs apply). excluding uj soweto campus (fee applies).
+          delivery is free to res/apartment (t&cs apply). excluding uj soweto
+          campus (fee applies).
         </p>
       </div>
     </section>
