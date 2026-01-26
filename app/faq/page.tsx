@@ -5,6 +5,8 @@ import FAQSection from "@/components/home/FAQSection";
 
 export const metadata: Metadata = {
   title: "faq",
+  description:
+    "answers to common questions about varsity starter pack student-only appliance rentals, delivery, deposits, and rental periods.",
 };
 
 export default function FAQPage() {

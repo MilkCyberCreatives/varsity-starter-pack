@@ -4,6 +4,8 @@ import FooterSection from "@/components/layout/FooterSection";
 
 export const metadata: Metadata = {
   title: "about",
+  description:
+    "learn more about varsity starter pack and our student-only appliance rentals designed for res life.",
 };
 
 export default function AboutPage() {
