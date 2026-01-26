@@ -1,7 +1,14 @@
 "use client";
 
-import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import {
+  motion,
+  type Variants,
+  easeOut,
+  useInView,
+  useMotionValue,
+  useSpring,
+} from "framer-motion";
 
 const PRIMARY = "#c41a1a";
 const SECONDARY = "#1374b8";
@@ -45,14 +52,18 @@ function CountUp({
   return <span ref={ref}>0{suffix ?? ""}</span>;
 }
 
-const container = {
+const container: Variants = {
   hidden: {},
   show: { transition: { staggerChildren: 0.1 } },
 };
 
-const item = {
+const item: Variants = {
   hidden: { opacity: 0, y: 10 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: easeOut },
+  },
 };
 
 // Premium easing curve (Apple/Stripe style)
@@ -88,7 +99,7 @@ export default function HowItWorksNumbersSection() {
           initial={{ opacity: 0, y: 8 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.6 }}
-          transition={{ duration: 0.45, ease: "easeOut" }}
+          transition={{ duration: 0.45, ease: easeOut }}
           className="mb-6 flex flex-wrap items-center justify-center gap-2"
         >
           {["student-only", "maintenance included", "free delivery* (t&cs)"].map(
@@ -258,8 +269,8 @@ export default function HowItWorksNumbersSection() {
                 </h3>
 
                 <p className="mt-3 text-sm leading-relaxed text-white/80">
-                  choose an appliance, submit your details, receive your reference
-                  number, then we schedule delivery.
+                  choose an appliance, submit your details, receive your
+                  reference number, then we schedule delivery.
                 </p>
               </div>
             </motion.div>
