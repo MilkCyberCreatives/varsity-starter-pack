@@ -1,18 +1,61 @@
 "use client";
 
-import { motion, type Variants, easeOut } from "framer-motion";
-import Link from "next/link";
-import { useMemo } from "react";
+import { useEffect, useRef, useState } from "react";
+import {
+  motion,
+  type Variants,
+  easeOut,
+  easeInOut,
+  useInView,
+  useMotionValue,
+  useSpring,
+} from "framer-motion";
 
 const PRIMARY = "#c41a1a";
 const SECONDARY = "#1374b8";
 
-// Premium easing curve (Apple/Stripe style)
-const premiumEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
+function CountUp({
+  to,
+  suffix,
+  duration = 850,
+}: {
+  to: number;
+  suffix?: string;
+  duration?: number;
+}) {
+  const ref = useRef<HTMLSpanElement | null>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.6 });
+
+  const mv = useMotionValue(0);
+  const spring = useSpring(mv, { stiffness: 120, damping: 20 });
+
+  useEffect(() => {
+    if (!isInView) return;
+
+    const start = performance.now();
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - start) / duration);
+      mv.set(to * p);
+      if (p < 1) requestAnimationFrame(tick);
+    };
+
+    requestAnimationFrame(tick);
+  }, [isInView, mv, to, duration]);
+
+  useEffect(() => {
+    const unsub = spring.on("change", (v) => {
+      if (!ref.current) return;
+      ref.current.textContent = `${Math.round(v)}${suffix ?? ""}`;
+    });
+    return () => unsub();
+  }, [spring, suffix]);
+
+  return <span ref={ref}>0{suffix ?? ""}</span>;
+}
 
 const container: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.08 } },
+  show: { transition: { staggerChildren: 0.1 } },
 };
 
 const item: Variants = {
@@ -24,134 +67,215 @@ const item: Variants = {
   },
 };
 
-export default function HowItWorksSection() {
-  const steps = useMemo(
-    () => [
-      {
-        n: "01",
-        title: "choose your appliance",
-        desc: "pick what you need for res life — simple options, student-friendly pricing.",
-      },
-      {
-        n: "02",
-        title: "submit your details",
-        desc: "send your info and student proof. we’ll confirm availability quickly.",
-      },
-      {
-        n: "03",
-        title: "get your reference",
-        desc: "every order gets a unique reference number for tracking and payment.",
-      },
-      {
-        n: "04",
-        title: "delivery + setup",
-        desc: "we schedule delivery and make sure everything is running properly.",
-      },
-    ],
-    []
-  );
+// Premium easing curve (Apple/Stripe style)
+const premiumEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
+export default function HowItWorksNumbersSection() {
+  const [active, setActive] = useState<number | null>(null);
+
+  // Smoother, more premium expansion ratios
+  const grow = (i: number) => {
+    if (active === null) return 1;
+    return active === i ? 1.35 : 0.96;
+  };
+
+  // Lift hovered panel above the rest
+  const z = (i: number) => (active === i ? 50 : 10 + i);
+
+  // Shared hover feel
+  const panelMotion = (i: number) => ({
+    flexGrow: grow(i),
+    y: active === i ? -6 : 0,
+    boxShadow:
+      active === i
+        ? "0 30px 60px rgba(0,0,0,0.12)"
+        : "0 10px 30px rgba(0,0,0,0.06)",
+  });
 
   return (
     <section className="bg-white">
-      <div className="mx-auto max-w-6xl px-4 py-14">
-        {/* Header */}
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="text-xs font-semibold tracking-widest text-black/55">
-            HOW IT WORKS
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-black sm:text-4xl">
-            a clean, quick rental process built for students
-          </h2>
-          <p className="mt-4 text-base leading-relaxed text-black/60">
-            choose an appliance, submit your details, receive your reference
-            number, then we schedule delivery.
-          </p>
-        </div>
+      <div className="mx-auto max-w-6xl px-4 py-12">
+        {/* Chips */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.6 }}
+          transition={{ duration: 0.45, ease: easeOut }}
+          className="mb-6 flex flex-wrap items-center justify-center gap-2"
+        >
+          {["student-only", "maintenance included", "free delivery* (t&cs)"].map(
+            (x) => (
+              <span
+                key={x}
+                className="rounded-full border border-black/10 bg-white px-4 py-2 text-xs font-semibold tracking-widest text-black/60"
+              >
+                {x}
+              </span>
+            )
+          )}
+        </motion.div>
 
-        {/* Cards */}
+        {/* Overlapping strip */}
         <motion.div
           variants={container}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.25 }}
-          className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+          className="overflow-visible"
         >
-          {steps.map((s) => (
+          {/* Mobile: stacked. Desktop: overlap */}
+          <div className="flex flex-col gap-4 lg:flex-row lg:gap-0">
+            {/* PANEL 1 — BLUE */}
             <motion.div
-              key={s.n}
+              layout
               variants={item}
-              whileHover={{
-                y: -6,
-                boxShadow: "0 30px 60px rgba(0,0,0,0.10)",
-              }}
-              transition={{ duration: 0.35, ease: premiumEase }}
-              className="group relative overflow-hidden rounded-[22px] border border-black/10 bg-white p-6"
+              onMouseEnter={() => setActive(0)}
+              onMouseLeave={() => setActive(null)}
+              animate={panelMotion(0)}
+              transition={{ duration: 0.55, ease: premiumEase }}
+              style={{ zIndex: z(0) }}
+              className="relative cursor-pointer overflow-hidden rounded-[28px] border border-black/10 bg-white lg:min-w-[260px] lg:-mr-10"
+              whileHover={{ scale: 1.01 }}
             >
-              {/* subtle top accent line */}
               <div
-                className="absolute left-0 top-0 h-[3px] w-full"
-                style={{
-                  background:
-                    "linear-gradient(90deg, rgba(19,116,184,0.75), rgba(196,26,26,0.75))",
-                }}
+                className="absolute inset-0"
+                style={{ backgroundColor: "rgba(19,116,184,0.10)" }}
               />
-
-              {/* soft glow blobs */}
-              <div
+              <motion.div
                 aria-hidden="true"
-                className="pointer-events-none absolute -right-14 -top-14 h-40 w-40 rounded-full opacity-40 blur-2xl"
-                style={{ backgroundColor: "rgba(19,116,184,0.16)" }}
+                className="pointer-events-none absolute -left-16 -top-16 h-44 w-44 rounded-full"
+                style={{ backgroundColor: "rgba(19,116,184,0.18)" }}
+                animate={{ x: [0, 10, 0], y: [0, 6, 0] }}
+                transition={{ duration: 14, repeat: Infinity, ease: easeInOut }}
               />
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute -left-16 -bottom-16 h-48 w-48 rounded-full opacity-30 blur-2xl"
-                style={{ backgroundColor: "rgba(196,26,26,0.14)" }}
-              />
-
-              <div className="relative">
-                <div className="flex items-center justify-between">
-                  <p className="text-xs font-semibold tracking-widest text-black/55">
-                    STEP
-                  </p>
-                  <p className="text-sm font-semibold text-black/55">{s.n}</p>
-                </div>
-
-                <h3 className="mt-4 text-lg font-semibold tracking-tight text-black">
-                  {s.title}
-                </h3>
-
-                <p className="mt-3 text-sm leading-relaxed text-black/60">
-                  {s.desc}
+              <div className="relative p-7">
+                <p className="text-xs font-semibold tracking-widest text-black/55">
+                  HOW IT WORKS
                 </p>
 
-                {/* micro CTA (optional) */}
-                <div className="mt-5 h-px w-full bg-black/10" />
-                <p className="mt-4 text-xs font-semibold tracking-widest text-black/50">
-                  varsity starter pack
+                <p className="mt-4 text-5xl font-semibold tracking-tight text-black">
+                  <CountUp to={3} />
+                </p>
+
+                <p className="mt-2 text-sm font-medium text-black/70">
+                  appliances available
+                </p>
+
+                <p className="mt-4 text-sm leading-relaxed text-black/60">
+                  bar fridge • microwave • top freezer
                 </p>
               </div>
             </motion.div>
-          ))}
-        </motion.div>
 
-        {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.45, ease: easeOut }}
-          className="mt-10 flex flex-col items-center justify-center gap-3 text-center"
-        >
-          <Link
-            href="/rent"
-            className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-white"
-            style={{ backgroundColor: PRIMARY }}
-          >
-            start rental
-          </Link>
-          <p className="text-xs text-black/55">
-            questions? whatsapp us anytime.
-          </p>
+            {/* PANEL 2 — WHITE (5+) */}
+            <motion.div
+              layout
+              variants={item}
+              onMouseEnter={() => setActive(1)}
+              onMouseLeave={() => setActive(null)}
+              animate={panelMotion(1)}
+              transition={{ duration: 0.55, ease: premiumEase }}
+              style={{ zIndex: z(1) }}
+              className="relative cursor-pointer overflow-hidden rounded-[28px] border border-black/10 bg-white lg:min-w-[320px] lg:-mr-10"
+              whileHover={{ scale: 1.01 }}
+            >
+              <motion.div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  background:
+                    "radial-gradient(700px circle at 30% 40%, rgba(19,116,184,0.08), transparent 55%), radial-gradient(700px circle at 70% 40%, rgba(196,26,26,0.06), transparent 55%)",
+                }}
+                animate={{ opacity: [0.9, 1, 0.9] }}
+                transition={{ duration: 12, repeat: Infinity, ease: easeInOut }}
+              />
+              <div className="relative p-7">
+                <p className="text-4xl font-semibold tracking-tight text-black">
+                  <CountUp to={5} suffix="+" />
+                </p>
+                <p className="mt-2 text-sm font-medium text-black/70">
+                  months minimum rental
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-black/60">
+                  keeps pricing stable and the process simple for students.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* PANEL 3 — WHITE (1) */}
+            <motion.div
+              layout
+              variants={item}
+              onMouseEnter={() => setActive(2)}
+              onMouseLeave={() => setActive(null)}
+              animate={panelMotion(2)}
+              transition={{ duration: 0.55, ease: premiumEase }}
+              style={{ zIndex: z(2) }}
+              className="relative cursor-pointer overflow-hidden rounded-[28px] border border-black/10 bg-white lg:min-w-[320px] lg:-mr-10"
+              whileHover={{ scale: 1.01 }}
+            >
+              <motion.div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  background:
+                    "radial-gradient(700px circle at 30% 40%, rgba(19,116,184,0.06), transparent 55%), radial-gradient(700px circle at 70% 40%, rgba(196,26,26,0.05), transparent 55%)",
+                }}
+                animate={{ opacity: [0.9, 1, 0.9] }}
+                transition={{ duration: 12, repeat: Infinity, ease: easeInOut }}
+              />
+              <div className="relative p-7">
+                <p className="text-4xl font-semibold tracking-tight text-black">
+                  <CountUp to={1} />
+                </p>
+                <p className="mt-2 text-sm font-medium text-black/70">
+                  reference number
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-black/60">
+                  every order gets a unique reference for tracking and payment.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* PANEL 4 — RED (summary) */}
+            <motion.div
+              layout
+              variants={item}
+              onMouseEnter={() => setActive(3)}
+              onMouseLeave={() => setActive(null)}
+              animate={panelMotion(3)}
+              transition={{ duration: 0.55, ease: premiumEase }}
+              style={{ zIndex: z(3) }}
+              className="relative cursor-pointer overflow-hidden rounded-[28px] border border-black/10 lg:min-w-[300px]"
+              whileHover={{ scale: 1.01 }}
+            >
+              <div
+                className="absolute inset-0"
+                style={{ backgroundColor: "rgba(196,26,26,0.95)" }}
+              />
+              <motion.div
+                aria-hidden="true"
+                className="pointer-events-none absolute -right-24 -bottom-24 h-64 w-64 rounded-full bg-white/10"
+                animate={{ scale: [1, 1.04, 1] }}
+                transition={{ duration: 14, repeat: Infinity, ease: easeInOut }}
+              />
+
+              <div className="relative p-7 text-white">
+                <p className="text-xs font-semibold tracking-widest text-white/80">
+                  QUICK SUMMARY
+                </p>
+
+                <h3 className="mt-4 text-xl font-semibold tracking-tight">
+                  fast, student-friendly process
+                </h3>
+
+                <p className="mt-3 text-sm leading-relaxed text-white/80">
+                  choose an appliance, submit your details, receive your
+                  reference number, then we schedule delivery.
+                </p>
+              </div>
+            </motion.div>
+          </div>
         </motion.div>
       </div>
     </section>
