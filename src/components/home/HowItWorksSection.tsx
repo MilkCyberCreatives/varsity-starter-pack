@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, type Variants, easeOut } from "framer-motion";
 
 const PRIMARY = "#c41a1a";
 const SECONDARY = "#1374b8";
@@ -33,14 +33,18 @@ const STEPS = [
 // Premium easing (Apple/Stripe-like)
 const premiumEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
-const container = {
+const container: Variants = {
   hidden: {},
   show: { transition: { staggerChildren: 0.11 } },
 };
 
-const item = {
+const item: Variants = {
   hidden: { opacity: 0, y: 12 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: "easeOut" } },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.55, ease: easeOut },
+  },
 };
 
 export default function HowItWorksSection() {
@@ -193,7 +197,8 @@ export default function HowItWorksSection() {
 
             {/* Bottom note */}
             <p className="mt-8 text-xs text-black/55">
-              minimum rental is 5 months • delivery is free to res/apartment (t&cs apply) • excluding uj soweto campus (fee applies)
+              minimum rental is 5 months • delivery is free to res/apartment
+              (t&cs apply) • excluding uj soweto campus (fee applies)
             </p>
           </motion.div>
         </div>
