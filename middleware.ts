@@ -1,9 +1,11 @@
-import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 export const config = {
   matcher: ["/admin/:path*"],
 };
+
+const COOKIE_NAME = "vsp_admin";
 
 export function middleware(req: NextRequest) {
   const password = process.env.ADMIN_PASSWORD;
@@ -14,14 +16,30 @@ export function middleware(req: NextRequest) {
   }
 
   const url = req.nextUrl.clone();
-  const provided = url.searchParams.get("key");
 
-  // If key matches, allow
-  if (password && provided === password) {
+  // ✅ 1) If already logged in via cookie → allow
+  const cookie = req.cookies.get(COOKIE_NAME)?.value;
+  if (cookie === "1") {
     return NextResponse.next();
   }
 
-  // Otherwise show a simple auth page (basic prompt style)
+  // ✅ 2) If key matches → set cookie + redirect to clean URL (remove key)
+  const provided = url.searchParams.get("key");
+  if (password && provided === password) {
+    url.searchParams.delete("key");
+
+    const res = NextResponse.redirect(url);
+    res.cookies.set(COOKIE_NAME, "1", {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    });
+    return res;
+  }
+
+  // ✅ 3) Otherwise show a simple login page
   const html = `<!doctype html>
 <html>
 <head>
@@ -45,10 +63,10 @@ export function middleware(req: NextRequest) {
       <h1>admin access</h1>
       <p>enter your admin key to continue.</p>
       <form method="get" action="${url.pathname}">
-        <input name="key" type="password" placeholder="admin key" />
+        <input name="key" type="password" placeholder="admin key" autofocus />
         <button type="submit">continue</button>
       </form>
-      <div class="hint">tip: bookmark the final URL after login.</div>
+      <div class="hint">you will stay logged in for 7 days on this device.</div>
     </div>
   </div>
 </body>
