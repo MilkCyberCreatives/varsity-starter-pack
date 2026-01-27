@@ -17,10 +17,6 @@ type SearchParams = {
   to?: string; // YYYY-MM-DD
 };
 
-type PageProps = {
-  searchParams?: SearchParams; // ✅ Next 16 expects object, NOT Promise
-};
-
 async function toggleEmailed(formData: FormData) {
   "use server";
   const id = String(formData.get("id") ?? "");
@@ -127,8 +123,13 @@ function parseDateEnd(value?: string) {
   return d;
 }
 
-export default async function AdminOrdersPage({ searchParams }: PageProps) {
-  const sp = searchParams ?? {};
+export default async function AdminOrdersPage({
+  searchParams,
+}: {
+  // ✅ Next 16 generated types expect Promise here
+  searchParams?: Promise<SearchParams>;
+}) {
+  const sp = (await searchParams) ?? {};
 
   const q = (sp.q ?? "").trim();
   const appliance = (sp.appliance ?? "").trim();
@@ -166,10 +167,7 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
       prisma.order.findMany({ where, orderBy: { createdAt: "desc" }, take: 200 }),
       prisma.order.count(),
       prisma.order.count({ where: { emailed: true } }),
-      prisma.order.groupBy({
-        by: ["appliance"],
-        _count: { appliance: true },
-      }),
+      prisma.order.groupBy({ by: ["appliance"], _count: { appliance: true } }),
       prisma.order.count({ where }),
     ]);
 
@@ -190,7 +188,6 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
       />
 
       <section className="mx-auto max-w-6xl px-4 py-16">
-        {/* Stats + actions */}
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <StatCard label="total orders" value={String(total)} />
@@ -222,7 +219,6 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
           </div>
         </div>
 
-        {/* Filters */}
         <div className="mb-6 rounded-3xl border border-black/10 bg-white p-6">
           <form method="get" action="/admin/orders" className="grid gap-4 md:grid-cols-12">
             <div className="md:col-span-4">
@@ -307,7 +303,6 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
           </form>
         </div>
 
-        {/* Table */}
         <div className="overflow-hidden rounded-3xl border border-black/10 bg-white">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
