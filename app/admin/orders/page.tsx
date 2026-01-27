@@ -70,7 +70,7 @@ export default async function AdminOrdersPage() {
         </div>
 
         <p className="mt-6 text-xs text-black/50">
-          tip: bookmark this page for quick admin viewing.
+          open this page after submissions to view incoming requests.
         </p>
       </section>
 

@@ -4,7 +4,6 @@ import { getPlanBySlug } from "@/lib/plans";
 import { Resend } from "resend";
 import { prisma } from "@/lib/prisma";
 
-// ✅ Force Node runtime (needed for crypto + prisma)
 export const runtime = "nodejs";
 
 type Payload = {
@@ -45,15 +44,8 @@ function clamp(s: string, max = 220) {
   return x.length > max ? x.slice(0, max) : x;
 }
 
-/**
- * C) Basic anti-spam rate limit (in-memory)
- * - Works well for local + most single-instance deployments
- * - On serverless it’s “best effort” but still useful
- */
-const RATE = {
-  windowMs: 60_000, // 1 minute
-  max: 6, // 6 requests/minute per IP
-};
+/** Basic rate-limit (best-effort for serverless) */
+const RATE = { windowMs: 60_000, max: 6 };
 const rateMap = new Map<string, { count: number; resetAt: number }>();
 
 function getClientIp(req: Request) {
@@ -135,7 +127,7 @@ export async function POST(req: Request) {
 
     const reference = makeReference();
 
-    // ✅ Save order first (always)
+    // ✅ Save order first
     await prisma.order.create({
       data: {
         reference,
@@ -157,7 +149,6 @@ export async function POST(req: Request) {
 
     let emailed = false;
 
-    // Email should NEVER block the order
     if (RESEND_API_KEY && FROM_EMAIL) {
       try {
         const resend = new Resend(RESEND_API_KEY);
@@ -181,18 +172,10 @@ export async function POST(req: Request) {
             <p style="margin: 14px 0 0;">
               Next steps: reply to this email or WhatsApp us with your reference number and we’ll assist.
             </p>
-            <p style="margin: 10px 0 0; font-size: 12px; color: #666;">
-              Minimum rental is 5 months • Deposits are refundable (less damages)
-            </p>
           </div>
         `;
 
-        await resend.emails.send({
-          from: FROM_EMAIL,
-          to: email,
-          subject,
-          html,
-        });
+        await resend.emails.send({ from: FROM_EMAIL, to: email, subject, html });
 
         emailed = true;
 
