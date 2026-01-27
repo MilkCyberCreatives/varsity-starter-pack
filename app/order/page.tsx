@@ -11,12 +11,18 @@ export const metadata: Metadata = {
     "request an order for student-only appliance rentals. get a reference number and next steps via email.",
 };
 
-type Props = {
-  searchParams?: { appliance?: string };
+type SearchParams = {
+  appliance?: string;
 };
 
-export default function OrderPage({ searchParams }: Props) {
-  const selectedPlan = getPlanBySlug(searchParams?.appliance);
+export default async function OrderPage({
+  searchParams,
+}: {
+  // ✅ Next 16 generated types expect Promise here
+  searchParams?: Promise<SearchParams>;
+}) {
+  const sp = (await searchParams) ?? {};
+  const selectedPlan = getPlanBySlug(sp.appliance);
 
   return (
     <main className="min-h-screen bg-white">
