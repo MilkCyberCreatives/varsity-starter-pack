@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { getPlanBySlug } from "@/lib/plans";
 import { Resend } from "resend";
+import { prisma } from "@/lib/prisma";
 
-// ✅ Force Node.js runtime (fixes crypto/randomBytes issues)
+// ✅ Force Node runtime (needed for crypto + prisma)
 export const runtime = "nodejs";
 
 type Payload = {
@@ -44,8 +45,50 @@ function clamp(s: string, max = 220) {
   return x.length > max ? x.slice(0, max) : x;
 }
 
+/**
+ * C) Basic anti-spam rate limit (in-memory)
+ * - Works well for local + most single-instance deployments
+ * - On serverless it’s “best effort” but still useful
+ */
+const RATE = {
+  windowMs: 60_000, // 1 minute
+  max: 6, // 6 requests/minute per IP
+};
+const rateMap = new Map<string, { count: number; resetAt: number }>();
+
+function getClientIp(req: Request) {
+  const xff = req.headers.get("x-forwarded-for");
+  if (xff) return xff.split(",")[0].trim();
+  const real = req.headers.get("x-real-ip");
+  if (real) return real.trim();
+  return "unknown";
+}
+
+function isRateLimited(ip: string) {
+  const now = Date.now();
+  const hit = rateMap.get(ip);
+
+  if (!hit || hit.resetAt <= now) {
+    rateMap.set(ip, { count: 1, resetAt: now + RATE.windowMs });
+    return false;
+  }
+
+  hit.count += 1;
+  rateMap.set(ip, hit);
+
+  return hit.count > RATE.max;
+}
+
 export async function POST(req: Request) {
   try {
+    const ip = getClientIp(req);
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { ok: false, error: "too many requests. please try again shortly." },
+        { status: 429 }
+      );
+    }
+
     const body = (await req.json()) as Payload;
 
     const plan = getPlanBySlug(body.appliance);
@@ -71,21 +114,18 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-
     if (!email || !isEmail(email)) {
       return NextResponse.json(
         { ok: false, error: "valid email is required." },
         { status: 400 }
       );
     }
-
     if (!phone) {
       return NextResponse.json(
         { ok: false, error: "phone number is required." },
         { status: 400 }
       );
     }
-
     if (!Number.isFinite(months) || months < 5) {
       return NextResponse.json(
         { ok: false, error: "minimum rental period is 5 months." },
@@ -95,13 +135,29 @@ export async function POST(req: Request) {
 
     const reference = makeReference();
 
+    // ✅ Save order first (always)
+    await prisma.order.create({
+      data: {
+        reference,
+        appliance: plan.slug,
+        fullName,
+        email,
+        phone,
+        university: university || null,
+        residence: residence || null,
+        months,
+        notes: notes || null,
+        emailed: false,
+      },
+    });
+
     const RESEND_API_KEY = process.env.RESEND_API_KEY;
     const FROM_EMAIL = process.env.FROM_EMAIL;
     const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
     let emailed = false;
 
-    // ✅ Email should never block the reference being generated
+    // Email should NEVER block the order
     if (RESEND_API_KEY && FROM_EMAIL) {
       try {
         const resend = new Resend(RESEND_API_KEY);
@@ -161,6 +217,11 @@ export async function POST(req: Request) {
             `,
           });
         }
+
+        await prisma.order.update({
+          where: { reference },
+          data: { emailed: true },
+        });
       } catch {
         emailed = false;
       }

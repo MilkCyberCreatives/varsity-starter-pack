@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export default async function AdminOrdersPage() {
   const orders = await prisma.order.findMany({
     orderBy: { createdAt: "desc" },
-    take: 100,
+    take: 200,
   });
 
   return (
@@ -36,6 +36,7 @@ export default async function AdminOrdersPage() {
                   <th className="px-4 py-3">EMAILED</th>
                 </tr>
               </thead>
+
               <tbody>
                 {orders.map((o) => (
                   <tr key={o.id} className="border-t border-black/5">
@@ -55,9 +56,10 @@ export default async function AdminOrdersPage() {
                     </td>
                   </tr>
                 ))}
+
                 {orders.length === 0 && (
                   <tr>
-                    <td className="px-4 py-6 text-black/60" colSpan={8}>
+                    <td className="px-4 py-8 text-black/60" colSpan={8}>
                       no orders yet.
                     </td>
                   </tr>
@@ -66,6 +68,10 @@ export default async function AdminOrdersPage() {
             </table>
           </div>
         </div>
+
+        <p className="mt-6 text-xs text-black/50">
+          tip: bookmark this page for quick admin viewing.
+        </p>
       </section>
 
       <FooterSection />
