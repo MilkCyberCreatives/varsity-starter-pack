@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { PLANS, type ApplianceSlug } from "@/lib/plans";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const PRIMARY = "#c41a1a";
 
@@ -25,6 +26,9 @@ type ApiOk = {
 type ApiErr = { ok: false; error: string };
 
 export default function OrderForm({ selectedSlug }: Props) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [appliance, setAppliance] = useState<ApplianceSlug | "">(
     selectedSlug ?? ""
   );
@@ -46,12 +50,19 @@ export default function OrderForm({ selectedSlug }: Props) {
     return PLANS.find((p) => p.slug === appliance) ?? null;
   }, [appliance]);
 
+  function setApplianceAndSyncUrl(slug: ApplianceSlug) {
+    setAppliance(slug);
+
+    // ✅ keep the page header in sync by updating ?appliance=
+    const params = new URLSearchParams(searchParams?.toString());
+    params.set("appliance", slug);
+    router.replace(`/order?${params.toString()}`, { scroll: false });
+  }
+
   async function submit() {
-    if (loading) return; // prevent double submit
+    if (loading) return;
 
     setError(null);
-    // keep result visible until successful new submission; don’t clear instantly
-    // setResult(null);
 
     if (!appliance) return setError("please select an appliance.");
     if (!fullName.trim()) return setError("please enter your full name.");
@@ -77,7 +88,6 @@ export default function OrderForm({ selectedSlug }: Props) {
         }),
       });
 
-      // Handle non-JSON responses safely
       let data: ApiOk | ApiErr;
       try {
         data = (await res.json()) as ApiOk | ApiErr;
@@ -114,7 +124,7 @@ export default function OrderForm({ selectedSlug }: Props) {
             <button
               key={p.slug}
               type="button"
-              onClick={() => setAppliance(p.slug)}
+              onClick={() => setApplianceAndSyncUrl(p.slug)}
               className="rounded-2xl border px-4 py-3 text-left text-xs font-semibold tracking-widest transition"
               style={{
                 borderColor: active ? "rgba(0,0,0,0.18)" : "rgba(0,0,0,0.10)",
@@ -247,7 +257,6 @@ export default function OrderForm({ selectedSlug }: Props) {
         </button>
       </div>
 
-      {/* tiny confirmation */}
       {selectedPlan && (
         <p className="mt-3 text-[11px] text-black/45">
           selected: {selectedPlan.name} • {selectedPlan.monthly} •{" "}
