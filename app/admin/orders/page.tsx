@@ -111,7 +111,6 @@ function parseDateStart(value?: string) {
   if (!value) return undefined;
   const d = new Date(value);
   if (Number.isNaN(d.getTime())) return undefined;
-  // start of day
   d.setHours(0, 0, 0, 0);
   return d;
 }
@@ -120,7 +119,6 @@ function parseDateEnd(value?: string) {
   if (!value) return undefined;
   const d = new Date(value);
   if (Number.isNaN(d.getTime())) return undefined;
-  // end of day
   d.setHours(23, 59, 59, 999);
   return d;
 }
@@ -128,20 +126,22 @@ function parseDateEnd(value?: string) {
 export default async function AdminOrdersPage({
   searchParams,
 }: {
-  searchParams?: SearchParams;
+  // ✅ Next 16 typing: accept Promise and await
+  searchParams?: Promise<SearchParams>;
 }) {
-  const q = (searchParams?.q ?? "").trim();
-  const appliance = (searchParams?.appliance ?? "").trim();
-  const emailed = (searchParams?.emailed ?? "").trim();
-  const from = (searchParams?.from ?? "").trim();
-  const to = (searchParams?.to ?? "").trim();
+  const sp = (await searchParams) ?? {};
+
+  const q = (sp.q ?? "").trim();
+  const appliance = (sp.appliance ?? "").trim();
+  const emailed = (sp.emailed ?? "").trim();
+  const from = (sp.from ?? "").trim();
+  const to = (sp.to ?? "").trim();
 
   const fromDate = parseDateStart(from);
   const toDate = parseDateEnd(to);
 
   const where: any = {};
 
-  // Search across name/email/phone/reference (case-insensitive)
   if (q) {
     where.OR = [
       { reference: { contains: q, mode: "insensitive" } },
@@ -151,9 +151,7 @@ export default async function AdminOrdersPage({
     ];
   }
 
-  if (appliance) {
-    where.appliance = appliance;
-  }
+  if (appliance) where.appliance = appliance;
 
   if (emailed === "yes") where.emailed = true;
   if (emailed === "no") where.emailed = false;
@@ -225,13 +223,9 @@ export default async function AdminOrdersPage({
           </div>
         </div>
 
-        {/* Filters (server via querystring) */}
+        {/* Filters */}
         <div className="mb-6 rounded-3xl border border-black/10 bg-white p-6">
-          <form
-            method="get"
-            action="/admin/orders"
-            className="grid gap-4 md:grid-cols-12"
-          >
+          <form method="get" action="/admin/orders" className="grid gap-4 md:grid-cols-12">
             <div className="md:col-span-4">
               <Label>search</Label>
               <input
