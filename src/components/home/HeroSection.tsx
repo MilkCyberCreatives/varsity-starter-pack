@@ -27,7 +27,7 @@ export default function HeroSection() {
         {/* Content */}
         <div className="relative z-10 mx-auto max-w-6xl px-4 pt-24 pb-20">
           <div className="grid items-center gap-12 lg:grid-cols-2">
-            {/* LEFT: text (UNCHANGED) */}
+            {/* LEFT: text */}
             <motion.div
               initial="hidden"
               animate="show"
@@ -69,7 +69,7 @@ export default function HeroSection() {
                 Minimum 5 months.
               </motion.p>
 
-              {/* Buttons (UNCHANGED + stays directly under paragraph) */}
+              {/* Buttons */}
               <motion.div
                 variants={{
                   hidden: { opacity: 0, y: 14 },
@@ -113,7 +113,7 @@ export default function HeroSection() {
                 Campus (fee applies).
               </motion.p>
 
-              {/* ✅ MOBILE IMAGE (ADDED) — placed AFTER everything so layout stays like your attachment */}
+              {/* ✅ MOBILE IMAGE (ONLY on mobile, tightened spacing) */}
               <motion.div
                 variants={{
                   hidden: { opacity: 0, y: 14 },
@@ -123,12 +123,16 @@ export default function HeroSection() {
                     transition: { duration: 0.6, ease: "easeOut" },
                   },
                 }}
-                className="mt-10 flex justify-center lg:hidden"
+                className="mt-8 block justify-center lg:hidden"
               >
                 <motion.div
                   animate={{ y: [0, -8, 0] }}
-                  transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                  className="relative"
+                  transition={{
+                    duration: 6,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="relative mx-auto w-fit"
                 >
                   {/* glow */}
                   <div
@@ -150,21 +154,21 @@ export default function HeroSection() {
                     }}
                   />
 
-                  <div className="relative h-[320px] w-[320px]">
+                  <div className="relative h-[280px] w-[280px]">
                     <Image
                       src="/hero/hero.png"
                       alt="fridge and microwave rental"
                       fill
                       priority
                       className="object-contain"
-                      sizes="320px"
+                      sizes="280px"
                     />
                   </div>
                 </motion.div>
               </motion.div>
             </motion.div>
 
-            {/* RIGHT: desktop image (float + glow + shadow) */}
+            {/* RIGHT: desktop image */}
             <div className="relative z-20 hidden lg:flex items-center justify-center">
               <motion.div
                 animate={{ y: [0, -10, 0] }}

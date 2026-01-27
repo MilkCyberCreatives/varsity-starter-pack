@@ -67,3 +67,5 @@ coverage/
 # Misc
 # ===============================
 *.pem
+
+/generated/prisma

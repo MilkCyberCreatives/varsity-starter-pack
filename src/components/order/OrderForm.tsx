@@ -47,8 +47,11 @@ export default function OrderForm({ selectedSlug }: Props) {
   }, [appliance]);
 
   async function submit() {
+    if (loading) return; // prevent double submit
+
     setError(null);
-    setResult(null);
+    // keep result visible until successful new submission; don’t clear instantly
+    // setResult(null);
 
     if (!appliance) return setError("please select an appliance.");
     if (!fullName.trim()) return setError("please enter your full name.");
@@ -74,7 +77,14 @@ export default function OrderForm({ selectedSlug }: Props) {
         }),
       });
 
-      const data = (await res.json()) as ApiOk | ApiErr;
+      // Handle non-JSON responses safely
+      let data: ApiOk | ApiErr;
+      try {
+        data = (await res.json()) as ApiOk | ApiErr;
+      } catch {
+        setError("something went wrong. please try again.");
+        return;
+      }
 
       if (!res.ok || !data.ok) {
         setError(!data.ok ? data.error : "something went wrong.");
