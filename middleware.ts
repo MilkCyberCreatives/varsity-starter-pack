@@ -7,25 +7,33 @@ export const config = {
 
 const COOKIE_NAME = "vsp_admin";
 
-export function middleware(req: NextRequest) {
-  const password = process.env.ADMIN_PASSWORD;
+function getPasswordList() {
+  const list =
+    process.env.ADMIN_PASSWORDS ||
+    process.env.ADMIN_PASSWORD ||
+    "";
+  return list
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
 
-  // If no password is set, block access in production (safer)
-  if (!password && process.env.NODE_ENV === "production") {
+export function middleware(req: NextRequest) {
+  const passwords = getPasswordList();
+
+  if (passwords.length === 0 && process.env.NODE_ENV === "production") {
     return new NextResponse("Admin is not configured.", { status: 503 });
   }
 
   const url = req.nextUrl.clone();
 
-  // ✅ 1) If already logged in via cookie → allow
+  // Already logged in
   const cookie = req.cookies.get(COOKIE_NAME)?.value;
-  if (cookie === "1") {
-    return NextResponse.next();
-  }
+  if (cookie === "1") return NextResponse.next();
 
-  // ✅ 2) If key matches → set cookie + redirect to clean URL (remove key)
+  // If key matches any password -> set cookie + redirect clean URL
   const provided = url.searchParams.get("key");
-  if (password && provided === password) {
+  if (provided && passwords.includes(provided)) {
     url.searchParams.delete("key");
 
     const res = NextResponse.redirect(url);
@@ -34,12 +42,11 @@ export function middleware(req: NextRequest) {
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 60 * 60 * 24 * 7,
     });
     return res;
   }
 
-  // ✅ 3) Otherwise show a simple login page
   const html = `<!doctype html>
 <html>
 <head>
