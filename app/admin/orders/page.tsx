@@ -9,6 +9,14 @@ import { Resend } from "resend";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
+type SearchParams = {
+  q?: string;
+  appliance?: string; // bar-fridge | microwave | top-freezer
+  emailed?: string; // yes | no
+  from?: string; // YYYY-MM-DD
+  to?: string; // YYYY-MM-DD
+};
+
 async function toggleEmailed(formData: FormData) {
   "use server";
   const id = String(formData.get("id") ?? "");
@@ -37,7 +45,6 @@ async function resendEmail(formData: FormData) {
   const FROM_EMAIL = process.env.FROM_EMAIL;
   const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
-  // If not configured, just revalidate
   if (!RESEND_API_KEY || !FROM_EMAIL) {
     revalidatePath("/admin/orders");
     return;
@@ -85,7 +92,7 @@ async function resendEmail(formData: FormData) {
       data: { emailed: true },
     });
   } catch {
-    // swallow failures
+    // swallow
   }
 
   revalidatePath("/admin/orders");
@@ -100,16 +107,74 @@ function escapeHtml(str: string) {
     .replaceAll("'", "&#039;");
 }
 
-export default async function AdminOrdersPage() {
-  const [orders, total, emailedCount, byAppliance] = await Promise.all([
-    prisma.order.findMany({ orderBy: { createdAt: "desc" }, take: 200 }),
-    prisma.order.count(),
-    prisma.order.count({ where: { emailed: true } }),
-    prisma.order.groupBy({
-      by: ["appliance"],
-      _count: { appliance: true },
-    }),
-  ]);
+function parseDateStart(value?: string) {
+  if (!value) return undefined;
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return undefined;
+  // start of day
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+function parseDateEnd(value?: string) {
+  if (!value) return undefined;
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return undefined;
+  // end of day
+  d.setHours(23, 59, 59, 999);
+  return d;
+}
+
+export default async function AdminOrdersPage({
+  searchParams,
+}: {
+  searchParams?: SearchParams;
+}) {
+  const q = (searchParams?.q ?? "").trim();
+  const appliance = (searchParams?.appliance ?? "").trim();
+  const emailed = (searchParams?.emailed ?? "").trim();
+  const from = (searchParams?.from ?? "").trim();
+  const to = (searchParams?.to ?? "").trim();
+
+  const fromDate = parseDateStart(from);
+  const toDate = parseDateEnd(to);
+
+  const where: any = {};
+
+  // Search across name/email/phone/reference (case-insensitive)
+  if (q) {
+    where.OR = [
+      { reference: { contains: q, mode: "insensitive" } },
+      { fullName: { contains: q, mode: "insensitive" } },
+      { email: { contains: q, mode: "insensitive" } },
+      { phone: { contains: q, mode: "insensitive" } },
+    ];
+  }
+
+  if (appliance) {
+    where.appliance = appliance;
+  }
+
+  if (emailed === "yes") where.emailed = true;
+  if (emailed === "no") where.emailed = false;
+
+  if (fromDate || toDate) {
+    where.createdAt = {};
+    if (fromDate) where.createdAt.gte = fromDate;
+    if (toDate) where.createdAt.lte = toDate;
+  }
+
+  const [orders, total, emailedCount, byAppliance, filteredCount] =
+    await Promise.all([
+      prisma.order.findMany({ where, orderBy: { createdAt: "desc" }, take: 200 }),
+      prisma.order.count(),
+      prisma.order.count({ where: { emailed: true } }),
+      prisma.order.groupBy({
+        by: ["appliance"],
+        _count: { appliance: true },
+      }),
+      prisma.order.count({ where }),
+    ]);
 
   const emailedPct = total ? Math.round((emailedCount / total) * 100) : 0;
 
@@ -128,7 +193,7 @@ export default async function AdminOrdersPage() {
       />
 
       <section className="mx-auto max-w-6xl px-4 py-16">
-        {/* Top actions */}
+        {/* Stats + actions */}
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <StatCard label="total orders" value={String(total)} />
@@ -158,6 +223,95 @@ export default async function AdminOrdersPage() {
               LOG OUT
             </a>
           </div>
+        </div>
+
+        {/* Filters (server via querystring) */}
+        <div className="mb-6 rounded-3xl border border-black/10 bg-white p-6">
+          <form
+            method="get"
+            action="/admin/orders"
+            className="grid gap-4 md:grid-cols-12"
+          >
+            <div className="md:col-span-4">
+              <Label>search</Label>
+              <input
+                name="q"
+                defaultValue={q}
+                placeholder="name, email, phone, reference"
+                className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm outline-none"
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <Label>appliance</Label>
+              <select
+                name="appliance"
+                defaultValue={appliance}
+                className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm outline-none"
+              >
+                <option value="">all</option>
+                <option value="bar-fridge">bar-fridge</option>
+                <option value="microwave">microwave</option>
+                <option value="top-freezer">top-freezer</option>
+              </select>
+            </div>
+
+            <div className="md:col-span-2">
+              <Label>emailed</Label>
+              <select
+                name="emailed"
+                defaultValue={emailed}
+                className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm outline-none"
+              >
+                <option value="">all</option>
+                <option value="yes">yes</option>
+                <option value="no">no</option>
+              </select>
+            </div>
+
+            <div className="md:col-span-2">
+              <Label>from</Label>
+              <input
+                name="from"
+                type="date"
+                defaultValue={from}
+                className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm outline-none"
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <Label>to</Label>
+              <input
+                name="to"
+                type="date"
+                defaultValue={to}
+                className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm outline-none"
+              />
+            </div>
+
+            <div className="md:col-span-12 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-xs text-black/50">
+                showing <span className="font-semibold text-black">{filteredCount}</span>{" "}
+                matching orders (latest 200 displayed).
+              </p>
+
+              <div className="flex gap-2">
+                <button
+                  type="submit"
+                  className="rounded-xl bg-black px-4 py-2 text-xs font-semibold tracking-widest text-white transition hover:bg-black/90"
+                >
+                  APPLY
+                </button>
+
+                <a
+                  href="/admin/orders"
+                  className="rounded-xl border border-black/15 bg-white px-4 py-2 text-xs font-semibold tracking-widest text-black/70 transition hover:bg-black hover:text-white"
+                >
+                  RESET
+                </a>
+              </div>
+            </div>
+          </form>
         </div>
 
         {/* Table */}
@@ -234,7 +388,7 @@ export default async function AdminOrdersPage() {
                 {orders.length === 0 && (
                   <tr>
                     <td className="px-4 py-8 text-black/60" colSpan={9}>
-                      no orders yet.
+                      no orders match these filters.
                     </td>
                   </tr>
                 )}
@@ -244,7 +398,7 @@ export default async function AdminOrdersPage() {
         </div>
 
         <p className="mt-6 text-xs text-black/50">
-          tip: use “export csv” to download orders. “resend email” needs resend
+          tip: use filters to find orders quickly. “resend email” needs resend
           env vars configured.
         </p>
       </section>
@@ -262,5 +416,13 @@ function StatCard({ label, value }: { label: string; value: string }) {
       </p>
       <p className="mt-1 text-sm font-semibold text-black">{value}</p>
     </div>
+  );
+}
+
+function Label({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="text-xs font-semibold tracking-widest text-black/50">
+      {children}
+    </p>
   );
 }
