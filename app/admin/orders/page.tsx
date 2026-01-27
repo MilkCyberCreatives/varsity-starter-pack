@@ -17,6 +17,10 @@ type SearchParams = {
   to?: string; // YYYY-MM-DD
 };
 
+type PageProps = {
+  searchParams?: SearchParams; // ✅ Next 16 expects object, NOT Promise
+};
+
 async function toggleEmailed(formData: FormData) {
   "use server";
   const id = String(formData.get("id") ?? "");
@@ -123,13 +127,8 @@ function parseDateEnd(value?: string) {
   return d;
 }
 
-export default async function AdminOrdersPage({
-  searchParams,
-}: {
-  // ✅ Next 16 typing: accept Promise and await
-  searchParams?: Promise<SearchParams>;
-}) {
-  const sp = (await searchParams) ?? {};
+export default async function AdminOrdersPage({ searchParams }: PageProps) {
+  const sp = searchParams ?? {};
 
   const q = (sp.q ?? "").trim();
   const appliance = (sp.appliance ?? "").trim();
