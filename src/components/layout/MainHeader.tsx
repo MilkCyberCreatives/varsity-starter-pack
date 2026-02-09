@@ -84,7 +84,10 @@ export default function MainHeader() {
       { label: "Home", href: "/" },
       { label: "About", href: "/about" },
       { label: "Rental Rates", href: "/pricing" },
-      { label: "Deliveries", href: "/how-it-works#deliveries" },
+
+      // ✅ UPDATED: deliveries now goes to the new gallery page
+      { label: "Deliveries", href: "/deliveries" },
+
       { label: "FAQ", href: "/faq" },
       { label: "Contact", href: "/contact" },
       { label: "Booking Steps", href: "/how-it-works" },
@@ -126,7 +129,10 @@ export default function MainHeader() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full" style={{ backgroundColor: PRIMARY }}>
+    <header
+      className="sticky top-0 z-50 w-full"
+      style={{ backgroundColor: PRIMARY }}
+    >
       <CursorFX />
 
       <div
@@ -139,7 +145,12 @@ export default function MainHeader() {
         <div className="absolute bottom-0 left-0 right-0 h-px bg-white/15" />
       </div>
 
-      <div className={["relative mx-auto max-w-6xl px-4", scrolled ? "py-3" : "py-4"].join(" ")}>
+      <div
+        className={[
+          "relative mx-auto max-w-6xl px-4",
+          scrolled ? "py-3" : "py-4",
+        ].join(" ")}
+      >
         <div className="grid grid-cols-[auto_1fr_auto] items-center gap-6">
           {/* LEFT */}
           <Link
@@ -161,7 +172,10 @@ export default function MainHeader() {
           </Link>
 
           {/* CENTER */}
-          <nav className="hidden lg:flex items-center justify-center gap-4 xl:gap-6" aria-label="main navigation">
+          <nav
+            className="hidden lg:flex items-center justify-center gap-4 xl:gap-6"
+            aria-label="main navigation"
+          >
             {NAV.map((item) => {
               const active = isActive(item.href);
               return (
@@ -185,7 +199,9 @@ export default function MainHeader() {
                     aria-hidden="true"
                     className={[
                       "absolute inset-0 rounded-full transition-all duration-200",
-                      active ? "bg-white/12 ring-1 ring-white/20" : "bg-transparent",
+                      active
+                        ? "bg-white/12 ring-1 ring-white/20"
+                        : "bg-transparent",
                     ].join(" ")}
                   />
                 </Link>
