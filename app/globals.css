@@ -24,6 +24,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: clip;
+
+  /* ✅ FIX: keep pointer visible by default */
+  cursor: auto;
 }
 
 ::selection {
@@ -87,7 +90,7 @@ body {
   transform: translateY(-6px);
 }
 
-/* Focus ring (NO SHADOW — uses outline-style ring look) */
+/* Focus ring (NO SHADOW — uses ring look) */
 .vsp-focus:focus-visible {
   outline: none;
   box-shadow: 0 0 0 3px rgba(196, 26, 26, 0.22);
@@ -99,10 +102,11 @@ body {
 }
 
 /* =========================================================
-   Premium Cursor (NO SHADOWS)
+   ✅ Premium Cursor (NO SHADOWS) — FIXED
+   Goal: cursor always visible. FX is optional and won’t “erase” cursor.
    ========================================================= */
 
-/* Hide on touch devices */
+/* Hide custom cursor on touch devices */
 @media (hover: none) and (pointer: coarse) {
   .vsp-cursor-dot,
   .vsp-cursor-ring {
@@ -110,9 +114,17 @@ body {
   }
 }
 
-/* Optional: remove system cursor on desktop for premium effect */
+/* Desktop fine pointer */
 @media (hover: hover) and (pointer: fine) {
+  /* ✅ FIX: DO NOT hide system cursor globally */
   body {
+    cursor: auto;
+  }
+
+  /* If you want to hide system cursor only when you add a class:
+     document.body.classList.add("vsp-hide-cursor")
+  */
+  body.vsp-hide-cursor {
     cursor: none;
   }
 
@@ -123,21 +135,27 @@ body {
     top: 0;
     z-index: 9999;
     pointer-events: none;
+
+    /* ✅ FIX: ensure always visible and smooth */
+    opacity: 1;
+    transform: translate3d(-9999px, -9999px, 0) translate(-50%, -50%);
+    transition: opacity 120ms ease;
   }
 
+  /* ✅ subtle but visible dot on any background (no shadow) */
   .vsp-cursor-dot {
-    width: 8px;
-    height: 8px;
+    width: 9px;
+    height: 9px;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.95);
-    /* ❌ removed box-shadow to respect "no shadows" */
+    border: 1px solid rgba(0, 0, 0, 0.22); /* helps visibility on white */
   }
 
   .vsp-cursor-ring {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.65);
     background: rgba(255, 255, 255, 0.06);
     backdrop-filter: blur(8px);
     transition:
@@ -150,15 +168,16 @@ body {
 
   /* interactive hover */
   .vsp-cursor-ring[data-active="1"] {
-    width: 44px;
-    height: 44px;
-    border-color: rgba(255, 255, 255, 0.8);
+    width: 46px;
+    height: 46px;
+    border-color: rgba(255, 255, 255, 0.9);
     background: rgba(255, 255, 255, 0.10);
   }
 
   /* click */
   .vsp-cursor-ring[data-down="1"] {
-    transform: scale(0.92);
+    transform: translate3d(var(--cx, -9999px), var(--cy, -9999px), 0)
+      translate(-50%, -50%) scale(0.92);
   }
 }
 
