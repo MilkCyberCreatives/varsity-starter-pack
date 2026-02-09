@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import MainHeader from "@/components/layout/MainHeader";
 import FooterSection from "@/components/layout/FooterSection";
 import HowItWorksSection from "@/components/home/HowItWorksSection";
-import HowItWorksNumbersSection from "@/components/home/HowItWorksNumbersSection";
 import BreadcrumbHero from "@/components/layout/BreadcrumbHero";
 
 export const metadata: Metadata = {
@@ -21,7 +20,6 @@ export default function HowItWorksPage() {
         crumbs={[{ label: "HOME", href: "/" }, { label: "HOW IT WORKS" }]}
       />
       <HowItWorksSection />
-      <HowItWorksNumbersSection />
       <FooterSection />
     </main>
   );

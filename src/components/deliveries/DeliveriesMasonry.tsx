@@ -9,7 +9,6 @@ const PRIMARY = "#c41a1a";
 const SHOW_COUNT = 12;
 
 function randomSeed() {
-  // crypto-safe if available, fallback otherwise
   if (typeof crypto !== "undefined" && "getRandomValues" in crypto) {
     const a = new Uint32Array(1);
     crypto.getRandomValues(a);
@@ -19,16 +18,14 @@ function randomSeed() {
 }
 
 function shuffleWithSeed<T>(arr: T[], seedStr: string) {
-  // small deterministic PRNG from seed string
   let seed = 0;
   for (let i = 0; i < seedStr.length; i++) seed = (seed * 31 + seedStr.charCodeAt(i)) >>> 0;
 
   const rand = () => {
-    // xorshift32
     seed ^= seed << 13;
     seed ^= seed >>> 17;
     seed ^= seed << 5;
-    return seed >>> 0 ? (seed >>> 0) / 4294967296 : 0;
+    return (seed >>> 0) / 4294967296;
   };
 
   const copy = [...arr];
@@ -43,7 +40,7 @@ export default function DeliveriesMasonry() {
   const [mounted, setMounted] = useState(false);
   const [items, setItems] = useState<DeliveryImage[]>([]);
 
-  // Lightbox state
+  // Lightbox
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -52,17 +49,35 @@ export default function DeliveriesMasonry() {
 
   const all = useMemo(() => DELIVERY_IMAGES, []);
 
-  useEffect(() => {
-    setMounted(true);
-
-    /**
-     * ✅ IMPORTANT CHANGE:
-     * Reshuffle EVERY TIME this page loads (no sessionStorage lock).
-     * So you see different pictures whenever you open/login to this page.
-     */
+  const reshuffle = () => {
     const seed = randomSeed();
     const shuffled = shuffleWithSeed(all, seed);
     setItems(shuffled.slice(0, Math.min(SHOW_COUNT, shuffled.length)));
+    setActiveIndex(0);
+  };
+
+  useEffect(() => {
+    setMounted(true);
+
+    // ✅ reshuffle on first mount
+    reshuffle();
+
+    // ✅ reshuffle when user returns to tab
+    const onVis = () => {
+      if (document.visibilityState === "visible") reshuffle();
+    };
+
+    // ✅ reshuffle when navigating back/forward (bfcache)
+    const onPageShow = () => reshuffle();
+
+    document.addEventListener("visibilitychange", onVis);
+    window.addEventListener("pageshow", onPageShow);
+
+    return () => {
+      document.removeEventListener("visibilitychange", onVis);
+      window.removeEventListener("pageshow", onPageShow);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [all]);
 
   const totalShowing = Math.min(SHOW_COUNT, DELIVERY_IMAGES.length);
@@ -77,7 +92,6 @@ export default function DeliveriesMasonry() {
   const next = () => setActiveIndex((v) => (v + 1) % items.length);
   const prev = () => setActiveIndex((v) => (v - 1 + items.length) % items.length);
 
-  // Lock scroll + keyboard controls when lightbox open
   useEffect(() => {
     if (!open) return;
 
@@ -98,16 +112,13 @@ export default function DeliveriesMasonry() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, items.length]);
 
-  // Swipe support
   const onTouchStart = (e: React.TouchEvent) => {
     touchEndX.current = null;
     touchStartX.current = e.targetTouches[0]?.clientX ?? null;
   };
-
   const onTouchMove = (e: React.TouchEvent) => {
     touchEndX.current = e.targetTouches[0]?.clientX ?? null;
   };
-
   const onTouchEnd = () => {
     const start = touchStartX.current;
     const end = touchEndX.current;
@@ -128,21 +139,26 @@ export default function DeliveriesMasonry() {
         {/* Heading */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs font-semibold tracking-widest text-black/50">
-              DELIVERIES
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-black sm:text-4xl">
-              Recent Deliveries
-            </h2>
+            <p className="text-xs font-semibold tracking-widest text-black/50">DELIVERIES</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-black sm:text-4xl">Recent Deliveries</h2>
             <p className="mt-3 max-w-2xl text-base text-black/65">
-              A quick look at deliveries to res and apartments. This gallery reshuffles every time you open this page.
+              A quick look at deliveries to res and apartments. This gallery reshuffles every time you open/return to this page.
             </p>
-
             <div className="mt-5 h-[3px] w-16 rounded-full" style={{ backgroundColor: PRIMARY }} />
           </div>
 
-          <div className="text-xs font-semibold tracking-widest text-black/50">
-            Showing {totalShowing} of {DELIVERY_IMAGES.length}
+          <div className="flex items-center gap-3">
+            <div className="text-xs font-semibold tracking-widest text-black/50">
+              Showing {totalShowing} of {DELIVERY_IMAGES.length}
+            </div>
+
+            <button
+              type="button"
+              onClick={reshuffle}
+              className="water-hover vsp-focus rounded-full border border-black/10 bg-white px-4 py-2 text-[11px] font-semibold tracking-widest text-black transition hover:bg-black/5"
+            >
+              RESHUFFLE
+            </button>
           </div>
         </div>
 
@@ -169,41 +185,27 @@ export default function DeliveriesMasonry() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                   className={[
-                    "mb-4 break-inside-avoid",
-                    "w-full text-left",
-                    "rounded-3xl border border-black/10 bg-white",
-                    "overflow-hidden",
+                    "mb-4 break-inside-avoid w-full text-left",
+                    "rounded-3xl border border-black/10 bg-white overflow-hidden",
                     "water-hover vsp-sheen water-lift vsp-focus",
                   ].join(" ")}
                   aria-label="open image preview"
                 >
-                  <div className="relative w-full">
-                    <div className="relative w-full" style={{ height: 220 + (i % 5) * 38 }}>
-                      <Image
-                        src={img.src}
-                        alt={img.alt}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                        priority={i < 4}
-                      />
-                      <div
-                        aria-hidden="true"
-                        className="absolute inset-0"
-                        style={{
-                          background:
-                            "radial-gradient(700px circle at 20% 15%, rgba(255,255,255,0.10), transparent 55%)",
-                        }}
-                      />
-                    </div>
+                  <div className="relative w-full" style={{ height: 220 + (i % 5) * 38 }}>
+                    <Image
+                      src={img.src}
+                      alt={img.alt}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                      priority={i < 4}
+                    />
                   </div>
                 </motion.button>
               ))}
             </div>
           )}
         </div>
-
-        {/* ✅ Tip line removed (as you requested) */}
       </div>
 
       {/* Lightbox */}
@@ -217,13 +219,7 @@ export default function DeliveriesMasonry() {
             role="dialog"
             aria-modal="true"
           >
-            {/* backdrop */}
-            <button
-              type="button"
-              aria-label="close preview"
-              onClick={close}
-              className="absolute inset-0 bg-black/70"
-            />
+            <button type="button" aria-label="close preview" onClick={close} className="absolute inset-0 bg-black/70" />
 
             <motion.div
               initial={{ opacity: 0, scale: 0.985, y: 10 }}
@@ -235,12 +231,10 @@ export default function DeliveriesMasonry() {
               onTouchMove={onTouchMove}
               onTouchEnd={onTouchEnd}
             >
-              {/* top bar */}
               <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
                 <div className="text-xs font-semibold tracking-widest text-white/70">
                   DELIVERY GALLERY • {activeIndex + 1}/{items.length}
                 </div>
-
                 <button
                   type="button"
                   onClick={close}
@@ -250,19 +244,10 @@ export default function DeliveriesMasonry() {
                 </button>
               </div>
 
-              {/* image */}
               <div className="relative h-[64vh] w-full">
-                <Image
-                  src={active.src}
-                  alt={active.alt}
-                  fill
-                  className="object-contain"
-                  sizes="92vw"
-                  priority
-                />
+                <Image src={active.src} alt={active.alt} fill className="object-contain" sizes="92vw" priority />
               </div>
 
-              {/* controls */}
               <div className="flex items-center justify-between gap-3 border-t border-white/10 px-4 py-3">
                 <button
                   type="button"
@@ -272,9 +257,7 @@ export default function DeliveriesMasonry() {
                   PREV
                 </button>
 
-                <div className="text-[11px] text-white/55">
-                  Swipe on mobile • Use keyboard: ← → • Esc to close
-                </div>
+                <div className="text-[11px] text-white/55">Swipe • ← → • Esc</div>
 
                 <button
                   type="button"
@@ -285,7 +268,6 @@ export default function DeliveriesMasonry() {
                 </button>
               </div>
 
-              {/* ✅ Thumbnail strip (suggestion implemented) */}
               <div className="border-t border-white/10 px-4 py-4">
                 <div className="flex gap-2 overflow-x-auto pb-1">
                   {items.map((img, i) => {
@@ -301,23 +283,7 @@ export default function DeliveriesMasonry() {
                         ].join(" ")}
                         aria-label={`view image ${i + 1}`}
                       >
-                        <Image
-                          src={img.src}
-                          alt={img.alt}
-                          fill
-                          className="object-cover"
-                          sizes="64px"
-                        />
-                        {selected ? (
-                          <div
-                            className="absolute inset-0"
-                            style={{
-                              background:
-                                "radial-gradient(240px circle at 50% 40%, rgba(255,255,255,0.16), transparent 60%)",
-                            }}
-                            aria-hidden="true"
-                          />
-                        ) : null}
+                        <Image src={img.src} alt={img.alt} fill className="object-cover" sizes="64px" />
                       </button>
                     );
                   })}
