@@ -63,10 +63,10 @@ export default function TestimonialsSection() {
             TESTIMONIALS
           </p>
           <h2 className="mt-3 text-3xl font-medium tracking-tight text-black sm:text-4xl">
-            what students are saying
+            What Other Students Are Saying
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-base text-black/65">
-            trusted by students across gauteng for reliable appliance rentals.
+            Trusted by students across gauteng for reliable appliance rentals.
           </p>
 
           <motion.div

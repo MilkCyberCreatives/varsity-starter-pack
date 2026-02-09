@@ -1,6 +1,5 @@
 import MainHeader from "@/components/layout/MainHeader";
 import HeroSection from "@/components/home/HeroSection";
-import HowItWorksNumbersSection from "@/components/home/HowItWorksNumbersSection";
 import PricingSection from "@/components/home/PricingSection";
 import ProductGallerySection from "@/components/home/ProductGallerySection";
 import HowItWorksSection from "@/components/home/HowItWorksSection";
@@ -13,7 +12,6 @@ export default function HomePage() {
     <main className="min-h-screen bg-white">
       <MainHeader />
       <HeroSection />
-      <HowItWorksNumbersSection />
 
       {/* ✅ pricing section now follows */}
       <PricingSection />

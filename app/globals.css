@@ -3,11 +3,10 @@
 @tailwind utilities;
 
 :root {
-  --vsp-primary: 196 26 26;    /* #c41a1a */
-  --vsp-secondary: 19 116 184; /* #1374b8 */
-
+  --vsp-primary: 196 26 26; /* #c41a1a */
   --bg: 255 255 255;
   --surface: 255 255 255;
+
   --text: 12 12 14;
   --muted: 110 110 120;
   --line: 230 230 235;
@@ -18,13 +17,219 @@ body {
   height: 100%;
 }
 
+/* ✅ prevent horizontal scroll caused by absolute elements */
 body {
   background: rgb(var(--bg));
   color: rgb(var(--text));
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
 }
 
 ::selection {
   background: rgba(196, 26, 26, 0.18);
+}
+
+/* =========================================================
+   Premium "water" hover effect (white/black only + red brand)
+   ========================================================= */
+.water-hover {
+  position: relative;
+  overflow: hidden;
+}
+
+.water-hover::before {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.20), transparent 45%),
+    radial-gradient(circle at 70% 60%, rgba(255, 255, 255, 0.14), transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(0, 0, 0, 0.08), transparent 55%);
+  transform: translate3d(-8%, -6%, 0) scale(1);
+  opacity: 0;
+  filter: blur(10px);
+  transition: opacity 280ms ease, transform 600ms ease;
+  pointer-events: none;
+}
+
+.water-hover:hover::before {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1.06);
+}
+
+.water-hover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    520px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.18),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 220ms ease;
+  pointer-events: none;
+}
+
+.water-hover:hover::after {
+  opacity: 1;
+}
+
+/* =========================================================
+   Lift effect (NO SHADOWS)
+   ========================================================= */
+.water-lift {
+  transition: transform 260ms ease, border-color 260ms ease, background-color 260ms ease;
+}
+
+.water-lift:hover {
+  transform: translateY(-6px);
+}
+
+/* Focus ring (NO SHADOW — uses outline-style ring look) */
+.vsp-focus:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(196, 26, 26, 0.22);
+  border-color: rgba(196, 26, 26, 0.35);
+}
+
+.reveal {
+  will-change: transform, opacity;
+}
+
+/* =========================================================
+   Premium Cursor (NO SHADOWS)
+   ========================================================= */
+
+/* Hide on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .vsp-cursor-dot,
+  .vsp-cursor-ring {
+    display: none !important;
+  }
+}
+
+/* Optional: remove system cursor on desktop for premium effect */
+@media (hover: hover) and (pointer: fine) {
+  body {
+    cursor: none;
+  }
+
+  .vsp-cursor-dot,
+  .vsp-cursor-ring {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+    pointer-events: none;
+  }
+
+  .vsp-cursor-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.95);
+    /* ❌ removed box-shadow to respect "no shadows" */
+  }
+
+  .vsp-cursor-ring {
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(8px);
+    transition:
+      width 160ms ease,
+      height 160ms ease,
+      border-color 160ms ease,
+      background 160ms ease,
+      transform 120ms ease;
+  }
+
+  /* interactive hover */
+  .vsp-cursor-ring[data-active="1"] {
+    width: 44px;
+    height: 44px;
+    border-color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.10);
+  }
+
+  /* click */
+  .vsp-cursor-ring[data-down="1"] {
+    transform: scale(0.92);
+  }
+}
+
+/* =========================================================
+   Premium border flow + glass sheen (NO SHADOWS)
+   (used by order cards + can be reused across site)
+   ========================================================= */
+.vsp-borderflow {
+  position: relative;
+  overflow: hidden;
+}
+
+.vsp-borderflow::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 180deg at 50% 50%,
+    rgba(196, 26, 26, 0.00),
+    rgba(196, 26, 26, 0.25),
+    rgba(255, 255, 255, 0.25),
+    rgba(196, 26, 26, 0.00)
+  );
+  opacity: 0;
+  transform: rotate(0deg);
+  transition: opacity 220ms ease;
+  pointer-events: none;
+}
+
+.vsp-borderflow::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  background: white;
+  pointer-events: none;
+}
+
+.vsp-borderflow:hover::before,
+.vsp-borderflow[data-selected="1"]::before {
+  opacity: 1;
+  animation: vspSpin 1.8s linear infinite;
+}
+
+@keyframes vspSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.vsp-sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.vsp-sheen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    680px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.28),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 220ms ease;
+  pointer-events: none;
+}
+
+.vsp-sheen:hover::before,
+.vsp-sheen[data-selected="1"]::before {
+  opacity: 1;
 }

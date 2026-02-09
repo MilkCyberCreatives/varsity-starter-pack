@@ -2,19 +2,19 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 const PRIMARY = "#c41a1a";
 
 export default function HeroSection() {
+  const reduceMotion = useReducedMotion();
+
   return (
-    <section className="bg-white">
-      {/* Unified red hero block with bottom-only rounding */}
+    <section className="bg-white" aria-label="varsity starter pack hero">
       <div
         className="relative overflow-hidden rounded-b-[36px]"
         style={{ backgroundColor: PRIMARY }}
       >
-        {/* Subtle premium gradients */}
         <div
           className="pointer-events-none absolute inset-0 z-0"
           style={{
@@ -24,66 +24,42 @@ export default function HeroSection() {
           aria-hidden="true"
         />
 
-        {/* Content */}
-        <div className="relative z-10 mx-auto max-w-6xl px-4 pt-24 pb-20">
-          <div className="grid items-center gap-12 lg:grid-cols-2">
-            {/* LEFT: text */}
+        <div className="relative z-10 mx-auto max-w-6xl px-4 pt-14 pb-14 sm:pt-16 sm:pb-16">
+          <div className="grid items-center gap-10 lg:grid-cols-2">
+            {/* LEFT */}
             <motion.div
-              initial="hidden"
-              animate="show"
-              variants={{
-                hidden: {},
-                show: { transition: { staggerChildren: 0.12 } },
-              }}
+              initial={reduceMotion ? false : "hidden"}
+              whileInView={reduceMotion ? undefined : "show"}
+              viewport={{ once: true, margin: "-120px" }}
+              variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12 } } }}
               className="max-w-2xl"
             >
               <motion.h1
                 variants={{
-                  hidden: { opacity: 0, y: 14 },
-                  show: {
-                    opacity: 1,
-                    y: 0,
-                    transition: { duration: 0.6, ease: "easeOut" },
-                  },
+                  hidden: reduceMotion ? {} : { opacity: 0, y: 16 },
+                  show: reduceMotion
+                    ? {}
+                    : { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
                 }}
-                className="text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-5xl"
+                className="text-3xl font-semibold leading-[1.05] tracking-tight text-white sm:text-4xl lg:text-5xl"
               >
-                FRIDGE AND MICROWAVE HIRE
-                <span className="block text-white/80">
-                  DELIVERED TO YOUR RES
+                <span className="block uppercase tracking-wide">
+                  FRIDGE AND MICROWAVE HIRE FOR STUDENTS
                 </span>
               </motion.h1>
 
-              <motion.p
-                variants={{
-                  hidden: { opacity: 0, y: 14 },
-                  show: {
-                    opacity: 1,
-                    y: 0,
-                    transition: { duration: 0.6, ease: "easeOut" },
-                  },
-                }}
-                className="mt-4 max-w-xl text-base leading-relaxed text-white/80"
-              >
-                Student-only monthly rentals in Gauteng. Maintenance included.
-                Minimum 5 months.
-              </motion.p>
-
-              {/* Buttons */}
               <motion.div
                 variants={{
-                  hidden: { opacity: 0, y: 14 },
-                  show: {
-                    opacity: 1,
-                    y: 0,
-                    transition: { duration: 0.6, ease: "easeOut" },
-                  },
+                  hidden: reduceMotion ? {} : { opacity: 0, y: 14 },
+                  show: reduceMotion
+                    ? {}
+                    : { opacity: 1, y: 0, transition: { duration: 0.65, ease: "easeOut" } },
                 }}
                 className="mt-7 flex flex-col gap-3 sm:flex-row"
               >
                 <Link
                   href="/order"
-                  className="inline-flex items-center justify-center rounded-xl bg-white px-6 py-3 text-xs font-semibold tracking-widest text-black transition hover:bg-white/90"
+                  className="water-hover water-lift vsp-focus inline-flex items-center justify-center rounded-xl bg-white px-7 py-3 text-xs font-semibold tracking-widest text-black transition hover:bg-white/90"
                 >
                   REQUEST ORDER
                 </Link>
@@ -92,127 +68,98 @@ export default function HeroSection() {
                   href="https://wa.me/27734921669"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center justify-center rounded-xl border border-white/25 bg-white/5 px-6 py-3 text-xs font-semibold tracking-widest text-white transition hover:bg-white/10"
+                  className="water-hover vsp-focus inline-flex items-center justify-center rounded-xl border border-white/25 bg-white/5 px-7 py-3 text-xs font-semibold tracking-widest text-white transition hover:bg-white/10"
                 >
                   WHATSAPP
                 </a>
               </motion.div>
-
-              <motion.p
-                variants={{
-                  hidden: { opacity: 0, y: 14 },
-                  show: {
-                    opacity: 1,
-                    y: 0,
-                    transition: { duration: 0.6, ease: "easeOut" },
-                  },
-                }}
-                className="mt-10 text-xs text-white/70"
-              >
-                *Free delivery to res/apartment (T&Cs apply). Excluding UJ Soweto
-                Campus (fee applies).
-              </motion.p>
-
-              {/* ✅ MOBILE IMAGE (ONLY on mobile, tightened spacing) */}
-              <motion.div
-                variants={{
-                  hidden: { opacity: 0, y: 14 },
-                  show: {
-                    opacity: 1,
-                    y: 0,
-                    transition: { duration: 0.6, ease: "easeOut" },
-                  },
-                }}
-                className="mt-8 block justify-center lg:hidden"
-              >
-                <motion.div
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{
-                    duration: 6,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="relative mx-auto w-fit"
-                >
-                  {/* glow */}
-                  <div
-                    aria-hidden
-                    className="pointer-events-none absolute -inset-10 rounded-full"
-                    style={{
-                      background:
-                        "radial-gradient(circle, rgba(255,255,255,0.25), transparent 60%)",
-                      filter: "blur(12px)",
-                    }}
-                  />
-
-                  {/* shadow */}
-                  <div
-                    aria-hidden
-                    className="pointer-events-none absolute inset-0"
-                    style={{
-                      filter: "drop-shadow(0 26px 34px rgba(0,0,0,0.18))",
-                    }}
-                  />
-
-                  <div className="relative h-[280px] w-[280px]">
-                    <Image
-                      src="/hero/hero.png"
-                      alt="fridge and microwave rental"
-                      fill
-                      priority
-                      className="object-contain"
-                      sizes="280px"
-                    />
-                  </div>
-                </motion.div>
-              </motion.div>
             </motion.div>
 
-            {/* RIGHT: desktop image */}
-            <div className="relative z-20 hidden lg:flex items-center justify-center">
+            {/* RIGHT */}
+            <div className="relative z-20 flex items-center justify-center">
               <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{
-                  duration: 7,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
+                animate={reduceMotion ? undefined : { y: [0, -10, 0] }}
+                transition={
+                  reduceMotion ? undefined : { duration: 7, repeat: Infinity, ease: "easeInOut" }
+                }
                 className="relative"
               >
-                {/* glow */}
                 <div
                   aria-hidden
                   className="pointer-events-none absolute -inset-12 rounded-full"
                   style={{
-                    background:
-                      "radial-gradient(circle, rgba(255,255,255,0.25), transparent 60%)",
+                    background: "radial-gradient(circle, rgba(255,255,255,0.25), transparent 60%)",
                     filter: "blur(14px)",
                   }}
                 />
-
-                {/* soft shadow */}
                 <div
                   aria-hidden
                   className="pointer-events-none absolute inset-0"
-                  style={{
-                    filter: "drop-shadow(0 30px 40px rgba(0,0,0,0.18))",
-                  }}
+                  style={{ filter: "drop-shadow(0 30px 40px rgba(0,0,0,0.18))" }}
                 />
 
-                <div className="relative h-[520px] w-[520px]">
+                {/* shift image slightly left on desktop */}
+                <div className="relative h-[320px] w-[320px] sm:h-[420px] sm:w-[420px] lg:h-[520px] lg:w-[520px] lg:-translate-x-6">
                   <Image
                     src="/hero/hero.png"
-                    alt="fridge and microwave rental"
+                    alt="Fridge and microwave rental package"
                     fill
                     priority
                     className="object-contain"
-                    sizes="520px"
+                    sizes="(max-width: 640px) 320px, (max-width: 1024px) 420px, 520px"
                   />
+                </div>
+
+                {/* ✅ balloons INSIDE hero, far right, no overflow */}
+                <div className="pointer-events-none absolute right-0 top-12 z-30 hidden sm:block">
+                  <motion.div
+                    initial={reduceMotion ? false : { opacity: 0, y: -8, scale: 0.98 }}
+                    whileInView={reduceMotion ? undefined : { opacity: 1, y: 0, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.55, ease: "easeOut" }}
+                    animate={reduceMotion ? undefined : { y: [0, -6, 0] }}
+                    className="translate-x-6"
+                  >
+                    <div className="relative">
+                      <div className="rounded-2xl bg-white px-4 py-2 text-[12px] font-extrabold tracking-wide text-black shadow-[0_18px_40px_rgba(0,0,0,0.18)] ring-1 ring-black/5 sm:text-[13px]">
+                        DELIVERED FOR FREE
+                      </div>
+                      <div className="absolute left-4 -bottom-2 h-4 w-4 rotate-45 rounded-[4px] bg-white shadow-[0_12px_24px_rgba(0,0,0,0.12)] ring-1 ring-black/5" />
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    initial={reduceMotion ? false : { opacity: 0, y: -6, scale: 0.98 }}
+                    whileInView={reduceMotion ? undefined : { opacity: 1, y: 0, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.55, ease: "easeOut", delay: 0.05 }}
+                    className="mt-3 translate-x-6"
+                  >
+                    <div className="relative max-w-[260px]">
+                      <div className="rounded-2xl bg-white/95 px-4 py-3 text-[11px] font-semibold leading-snug text-black shadow-[0_18px_40px_rgba(0,0,0,0.16)] ring-1 ring-black/5">
+                        Free delivery to res/apartment (T&amp;Cs apply). Excluding UJ Soweto Campus (fee applies).
+                      </div>
+                      <div className="absolute left-4 -bottom-2 h-4 w-4 rotate-45 rounded-[4px] bg-white/95 shadow-[0_12px_24px_rgba(0,0,0,0.10)] ring-1 ring-black/5" />
+                    </div>
+                  </motion.div>
+                </div>
+
+                {/* Mobile fallback */}
+                <div className="absolute right-3 top-6 z-30 sm:hidden">
+                  <div className="rounded-2xl bg-white px-3 py-2 text-[11px] font-extrabold tracking-wide text-black shadow-[0_18px_40px_rgba(0,0,0,0.18)] ring-1 ring-black/5">
+                    DELIVERED FOR FREE
+                  </div>
                 </div>
               </motion.div>
             </div>
           </div>
         </div>
+
+        <div
+          className="pointer-events-none absolute bottom-0 left-0 right-0 h-10"
+          style={{ background: "linear-gradient(to bottom, rgba(196,26,26,0), rgba(255,255,255,0.10))" }}
+          aria-hidden="true"
+        />
       </div>
     </section>
   );

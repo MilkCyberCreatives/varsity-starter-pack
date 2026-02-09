@@ -3,8 +3,15 @@ export type ApplianceSlug = "bar-fridge" | "microwave" | "top-freezer";
 export type Plan = {
   slug: ApplianceSlug;
   name: string;
+
+  // display strings
   monthly: string;
   deposit: string;
+
+  // ✅ numeric values for calculations
+  monthlyAmount: number;
+  depositAmount: number;
+
   note: string;
   bullets: string[];
   featured?: boolean;
@@ -13,28 +20,34 @@ export type Plan = {
 export const PLANS: Plan[] = [
   {
     slug: "bar-fridge",
-    name: "BAR FRIDGE",
-    monthly: "R250 / MONTH",
+    name: "Bar Fridge",
+    monthly: "R250 / Month",
     deposit: "R400 refundable deposit",
-    note: "best for res rooms and shared apartments",
-    bullets: ["maintenance included", "student-only rentals", "minimum 5 months"],
+    monthlyAmount: 250,
+    depositAmount: 400,
+    note: "Best for res rooms and shared apartments",
+    bullets: ["Maintenance included", "Student-only rentals", "Minimum 5 months"],
   },
   {
     slug: "microwave",
-    name: "MICROWAVE",
-    monthly: "R160 / MONTH",
+    name: "Microwave",
+    monthly: "R160 / Month",
     deposit: "R300 refundable deposit",
-    note: "fast meals without the hassle",
-    bullets: ["maintenance included", "easy setup", "minimum 5 months"],
+    monthlyAmount: 160,
+    depositAmount: 300,
+    note: "Fast meals without the hassle",
+    bullets: ["Maintenance included", "Easy setup", "Minimum 5 months"],
     featured: true,
   },
   {
     slug: "top-freezer",
-    name: "TOP FREEZER",
-    monthly: "R360 / MONTH",
+    name: "Top Freezer",
+    monthly: "R360 / Month",
     deposit: "R600 refundable deposit",
-    note: "extra storage for meal prep and sharing",
-    bullets: ["maintenance included", "ideal for sharing", "minimum 5 months"],
+    monthlyAmount: 360,
+    depositAmount: 600,
+    note: "Extra storage for meal prep and sharing",
+    bullets: ["Maintenance included", "Ideal for sharing", "Minimum 5 months"],
   },
 ];
 
@@ -47,4 +60,10 @@ export function getPlanBySlug(slug?: string) {
   const s = slug.trim().toLowerCase();
   if (!isApplianceSlug(s)) return null;
   return PLANS.find((p) => p.slug === s) ?? null;
+}
+
+export function getPlansBySlugs(slugs: string[]) {
+  const clean = slugs.map((s) => s.trim().toLowerCase()).filter(Boolean);
+  const valid = clean.filter((s): s is ApplianceSlug => isApplianceSlug(s));
+  return valid.map((s) => PLANS.find((p) => p.slug === s)!).filter(Boolean);
 }
