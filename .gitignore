@@ -69,3 +69,5 @@ coverage/
 *.pem
 
 /generated/prisma
+
+.vercel
