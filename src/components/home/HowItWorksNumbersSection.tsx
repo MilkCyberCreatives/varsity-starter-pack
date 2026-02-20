@@ -11,9 +11,6 @@ import {
   useSpring,
 } from "framer-motion";
 
-const PRIMARY = "#c41a1a";
-const SECONDARY = "#1374b8";
-
 function CountUp({
   to,
   suffix,
@@ -86,10 +83,7 @@ export default function HowItWorksNumbersSection() {
   const panelMotion = (i: number) => ({
     flexGrow: grow(i),
     y: active === i ? -6 : 0,
-    boxShadow:
-      active === i
-        ? "0 30px 60px rgba(0,0,0,0.12)"
-        : "0 10px 30px rgba(0,0,0,0.06)",
+    borderColor: active === i ? "rgba(0,0,0,0.18)" : "rgba(0,0,0,0.10)",
   });
 
   return (
