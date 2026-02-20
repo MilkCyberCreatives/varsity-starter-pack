@@ -11,13 +11,22 @@ function hasCookieDecision() {
   return value === "accepted" || value === "declined";
 }
 
+function getScrollTop() {
+  if (typeof window === "undefined") return 0;
+  return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+}
+
 export default function ScrollToTopButton() {
   const [visible, setVisible] = useState(false);
   const [cookieSet, setCookieSet] = useState(true);
 
   useEffect(() => {
     const onScroll = () => {
-      setVisible(window.scrollY > 0);
+      setVisible(getScrollTop() > 0);
+    };
+
+    const onScrollIntent = () => {
+      setVisible(true);
     };
 
     const updateCookieState = () => {
@@ -28,11 +37,15 @@ export default function ScrollToTopButton() {
     updateCookieState();
 
     window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("wheel", onScrollIntent, { passive: true });
+    window.addEventListener("touchmove", onScrollIntent, { passive: true });
     window.addEventListener("storage", updateCookieState);
     window.addEventListener("vsp-consent-change", updateCookieState);
 
     return () => {
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("wheel", onScrollIntent);
+      window.removeEventListener("touchmove", onScrollIntent);
       window.removeEventListener("storage", updateCookieState);
       window.removeEventListener("vsp-consent-change", updateCookieState);
     };
