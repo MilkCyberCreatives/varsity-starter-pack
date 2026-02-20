@@ -1,10 +1,27 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 export default function GlobalFloatingItems() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setVisible(window.scrollY > 4);
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-x-0 top-0 z-[3] h-[1200px] overflow-hidden md:h-[1400px]"
+      className={[
+        "pointer-events-none absolute inset-x-0 top-0 z-[3] h-[1200px] overflow-hidden transition-opacity duration-500 md:h-[1400px]",
+        visible ? "opacity-100" : "opacity-0",
+      ].join(" ")}
     >
       <span
         className="vsp-floating-shape vsp-floating-shape--pill vsp-float-a absolute left-[-120px] top-[4%] h-[280px] w-[280px]"
