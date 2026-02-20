@@ -20,11 +20,11 @@ export default function GlobalFloatingItems() {
         style={{ opacity: 0.28 }}
       />
       <span
-        className="vsp-floating-shape vsp-floating-shape--pill vsp-float-a absolute left-[22%] bottom-[8%] hidden h-[190px] w-[190px] md:block"
+        className="vsp-floating-shape vsp-floating-shape--pill vsp-float-a absolute left-[22%] top-[68%] hidden h-[190px] w-[190px] md:block"
         style={{ opacity: 0.3 }}
       />
       <span
-        className="vsp-floating-shape vsp-floating-shape--ring vsp-float-b absolute right-[16%] bottom-[10%] h-[200px] w-[200px]"
+        className="vsp-floating-shape vsp-floating-shape--ring vsp-float-b absolute right-[16%] top-[70%] h-[200px] w-[200px]"
         style={{ opacity: 0.34 }}
       />
       <span
@@ -36,11 +36,11 @@ export default function GlobalFloatingItems() {
         style={{ opacity: 0.3 }}
       />
       <span
-        className="vsp-floating-shape vsp-floating-shape--pill vsp-float-c absolute right-[-88px] bottom-[-56px] h-[220px] w-[220px]"
+        className="vsp-floating-shape vsp-floating-shape--pill vsp-float-c absolute right-[-88px] top-[78%] h-[220px] w-[220px]"
         style={{ opacity: 0.34 }}
       />
       <span
-        className="vsp-floating-shape vsp-floating-shape--soft vsp-float-b absolute left-[-100px] bottom-[16%] h-[180px] w-[260px]"
+        className="vsp-floating-shape vsp-floating-shape--soft vsp-float-b absolute left-[-100px] top-[74%] h-[180px] w-[260px]"
         style={{ opacity: 0.26 }}
       />
     </div>
