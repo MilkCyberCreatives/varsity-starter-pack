@@ -129,7 +129,7 @@ export default function FooterSection() {
           </div>
         </div>
 
-        <div className="grid items-center gap-2 pb-0 pt-2 text-xs leading-none text-white/74 md:grid-cols-3">
+        <div className="grid items-center gap-2 py-3 text-xs leading-none text-white/74 md:grid-cols-3">
           <p className="md:justify-self-start">(c) {year} Varsity Starter Pack. All rights reserved.</p>
           <a
             href="https://milkcybercreatives.co.za/"
