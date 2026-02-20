@@ -52,6 +52,8 @@ export default function ScrollToTopButton() {
   }, []);
 
   if (!visible) return null;
+  const rightInset = "max(24px, env(safe-area-inset-right))";
+  const bottomInset = cookieSet ? "16px" : "112px";
 
   return (
     <button
@@ -61,15 +63,15 @@ export default function ScrollToTopButton() {
         trackEvent("scroll_to_top", { source: "floating_button" });
         window.scrollTo({ top: 0, behavior: "smooth" });
       }}
-      className={[
-        "water-hover water-lift vsp-focus fixed !left-auto !right-6 z-[140] inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/28 bg-white/16 text-white backdrop-blur-md sm:!right-8",
-        cookieSet ? "bottom-4 sm:bottom-5" : "bottom-28 sm:bottom-32",
-      ].join(" ")}
+      className="water-hover water-lift vsp-focus z-[140] inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/28 bg-white/16 text-white backdrop-blur-md"
       style={{
-        left: "auto",
-        right: "max(24px, env(safe-area-inset-right))",
-        insetInlineStart: "auto",
-        insetInlineEnd: "max(24px, env(safe-area-inset-right))",
+        position: "fixed",
+        right: rightInset,
+        left: "unset",
+        bottom: bottomInset,
+        insetInlineStart: "unset",
+        insetInlineEnd: rightInset,
+        transform: "none",
       }}
     >
       <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5 fill-current">
