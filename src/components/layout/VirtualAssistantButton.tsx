@@ -91,7 +91,9 @@ export default function VirtualAssistantButton() {
 
   useEffect(() => {
     const onScroll = () => {
-      setVisible(getScrollTop() > 0);
+      const nextVisible = getScrollTop() > 0;
+      setVisible(nextVisible);
+      if (!nextVisible) setOpen(false);
     };
 
     const onScrollIntent = () => {
@@ -151,7 +153,7 @@ export default function VirtualAssistantButton() {
     trackEvent("open_virtual_assistant", { action: "ask_question" });
   };
 
-  if (!visible && !open) return null;
+  if (!visible) return null;
 
   return (
     <>
