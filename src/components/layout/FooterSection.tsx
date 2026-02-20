@@ -141,10 +141,10 @@ export default function FooterSection() {
           </a>
           <div className="flex gap-4 md:justify-self-end">
             <Link href="/privacy" className="hover:text-white">
-              privacy
+              Privacy
             </Link>
             <Link href="/terms" className="hover:text-white">
-              terms
+              Terms
             </Link>
           </div>
         </div>
