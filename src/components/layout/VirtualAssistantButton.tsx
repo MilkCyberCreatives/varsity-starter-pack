@@ -158,10 +158,15 @@ export default function VirtualAssistantButton() {
       {open ? (
         <aside
           className={[
-            "fixed left-10 right-auto z-[96] w-[min(92vw,360px)] overflow-hidden rounded-2xl border border-white/28 bg-[rgb(132,10,10)]/62 backdrop-blur-md sm:left-8",
+            "fixed !left-6 !right-auto z-[96] w-[min(92vw,360px)] overflow-hidden rounded-2xl border border-white/28 bg-[rgb(132,10,10)]/62 backdrop-blur-md sm:!left-8",
             cookieSet ? "bottom-20 sm:bottom-24" : "bottom-32 sm:bottom-36",
           ].join(" ")}
-          style={{ right: "auto" }}
+          style={{
+            right: "auto",
+            left: "max(24px, env(safe-area-inset-left))",
+            insetInlineStart: "max(24px, env(safe-area-inset-left))",
+            insetInlineEnd: "auto",
+          }}
           aria-label="Virtual assistant"
         >
           <div className="flex items-center justify-between border-b border-white/20 px-4 py-3">
@@ -246,10 +251,15 @@ export default function VirtualAssistantButton() {
         }}
         aria-label="Open virtual assistant"
         className={[
-          "water-hover water-lift vsp-focus fixed left-10 right-auto z-[95] inline-flex h-12 min-w-[124px] items-center justify-center gap-2 rounded-full border border-white/28 bg-white/16 px-4 text-xs font-semibold tracking-widest text-white backdrop-blur-md sm:left-8",
+          "water-hover water-lift vsp-focus fixed !left-6 !right-auto z-[95] inline-flex h-12 min-w-[124px] items-center justify-center gap-2 rounded-full border border-white/28 bg-white/16 px-4 text-xs font-semibold tracking-widest text-white backdrop-blur-md sm:!left-8",
           cookieSet ? "bottom-20 sm:bottom-24" : "bottom-32 sm:bottom-36",
         ].join(" ")}
-        style={{ right: "auto" }}
+        style={{
+          right: "auto",
+          left: "max(24px, env(safe-area-inset-left))",
+          insetInlineStart: "max(24px, env(safe-area-inset-left))",
+          insetInlineEnd: "auto",
+        }}
       >
         <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 fill-current">
           <path d="M4 4h16v11H7.8L4 18.4V4zm2 2v7.6l1.2-1.2H18V6H6zm2.5 2h7v2h-7V8z" />
