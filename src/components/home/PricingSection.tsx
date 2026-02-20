@@ -42,6 +42,26 @@ function shouldRemoveBullet(bullet: string) {
   return text.includes("minimum") && text.includes("5");
 }
 
+function cardTag(slug: string, featured?: boolean) {
+  if (featured) return "Best Value";
+  if (slug === "bar-fridge") return "Student Pick";
+  if (slug === "microwave") return "Best Seller";
+  return "Popular";
+}
+
+function HeartIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-4 w-4 fill-current"
+      focusable="false"
+    >
+      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54z" />
+    </svg>
+  );
+}
+
 export default function PricingSection() {
   const planImages = useMemo(
     () => ({
@@ -127,11 +147,12 @@ export default function PricingSection() {
           viewport={{ once: true, amount: 0.2 }}
           className="mt-12 grid gap-6 lg:grid-cols-3"
         >
-          {PLANS.map((plan) => {
+          {PLANS.map((plan, planIndex) => {
             const image = pickImage(plan.slug, plan.name);
             const bullets = plan.bullets
               .filter((bullet) => !shouldRemoveBullet(bullet))
               .map((bullet) => capFirstWord(bullet));
+            const tag = cardTag(plan.slug, plan.featured);
 
             return (
               <motion.article
@@ -139,63 +160,79 @@ export default function PricingSection() {
                 variants={card}
                 whileHover={{ y: -4 }}
                 transition={{ duration: 0.28, ease: premiumEase }}
-                className="group vsp-sheen flex h-full flex-col overflow-hidden rounded-3xl border border-white/22"
+                className="group vsp-sheen flex h-full flex-col overflow-hidden rounded-[36px] border border-white/50 bg-[#f1f1f1]"
                 style={{
                   background:
-                    "linear-gradient(160deg, rgba(255,255,255,0.15), rgba(255,255,255,0.06) 58%, rgba(122,10,10,0.22))",
-                  backdropFilter: "blur(10px)",
+                    "linear-gradient(180deg, rgba(245,245,245,0.98), rgba(236,236,236,0.96))",
                 }}
               >
-                <div className="relative h-44 w-full overflow-hidden bg-white/8">
-                  <Image
-                    src={image.src}
-                    alt={image.alt}
-                    fill
-                    className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-                    sizes="(max-width: 1024px) 100vw, 33vw"
-                    priority={plan.featured}
-                  />
-                  <div
-                    aria-hidden="true"
-                    className="absolute inset-0"
-                    style={{
-                      background:
-                        "linear-gradient(to bottom, rgba(255,255,255,0.06), transparent 54%, rgba(255,255,255,0.16))",
-                    }}
-                  />
+                <div className="p-4">
+                  <div className="relative overflow-hidden rounded-[30px] border border-black/10 bg-[#e4e4e4] p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="rounded-full border border-black/12 bg-[#f4f4f4] px-3 py-1 text-[12px] font-medium tracking-wide text-black/70">
+                        {tag}
+                      </span>
+                      <span
+                        aria-hidden="true"
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/12 bg-[#f4f4f4] text-[rgb(var(--vsp-red))]"
+                      >
+                        <HeartIcon />
+                      </span>
+                    </div>
+
+                    <div className="relative mt-4 h-48 w-full overflow-hidden rounded-[24px] bg-white/20 sm:h-52">
+                      <Image
+                        src={image.src}
+                        alt={image.alt}
+                        fill
+                        className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                        sizes="(max-width: 1024px) 100vw, 33vw"
+                        priority={plan.featured}
+                      />
+                    </div>
+
+                    <div className="mt-5 flex items-center justify-center gap-2">
+                      {Array.from({ length: 3 }).map((_, dotIndex) => {
+                        const active = dotIndex === planIndex % 3;
+                        return (
+                          <span
+                            key={`${plan.slug}-dot-${dotIndex}`}
+                            className="h-2.5 w-2.5 rounded-full border border-black/8 transition"
+                            style={{
+                              backgroundColor: active
+                                ? "rgb(var(--vsp-red))"
+                                : "rgba(255,255,255,0.78)",
+                            }}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
 
-                <div className="flex flex-1 flex-col px-6 pb-6 pt-6">
-                  <p className="text-xs font-semibold tracking-widest text-white/76">APPLIANCE</p>
+                <div className="flex flex-1 flex-col px-6 pb-4 text-black">
+                  <p className="text-[15px] font-medium text-[rgb(var(--vsp-red))]">Appliance</p>
 
-                  <h3 className="mt-2 text-4xl font-semibold tracking-tight text-white sm:text-[54px] sm:leading-[0.92]">
+                  <h3 className="mt-1 text-[clamp(2rem,3.1vw,3rem)] font-semibold leading-[0.95] tracking-tight">
                     {plan.name}
                   </h3>
 
-                  {plan.featured ? (
-                    <span className="mt-4 inline-flex w-fit rounded-full border border-white/38 bg-white/14 px-3 py-1 text-[10px] font-semibold tracking-widest text-white">
-                      BEST VALUE
-                    </span>
-                  ) : null}
-
-                  <div className="mt-5">
-                    <p className="text-[52px] font-semibold leading-none tracking-tight text-white">
-                      {plan.monthly}
-                    </p>
-                    <p className="mt-2 text-base text-white/78">{plan.deposit}</p>
-                  </div>
+                  <p className="mt-4 text-[clamp(2.35rem,3.8vw,3.35rem)] font-semibold leading-none tracking-tight">
+                    {plan.monthly}
+                  </p>
+                  <p className="mt-2 text-lg text-black/72">{plan.deposit}</p>
 
                   {plan.note ? (
-                    <div className="mt-5 rounded-2xl border border-white/22 bg-white/10 px-4 py-3">
-                      <p className="text-sm text-white/84">{plan.note}</p>
+                    <div className="mt-5 rounded-2xl border border-black/10 bg-white/72 px-4 py-3">
+                      <p className="text-sm text-black/72">{plan.note}</p>
                     </div>
                   ) : null}
 
                   {bullets.length ? (
-                    <ul className="mt-5 space-y-2 text-sm text-white/84">
+                    <ul className="mt-5 space-y-2 text-sm text-black/74">
                       {bullets.map((bullet) => (
                         <li key={bullet} className="flex items-start gap-2">
-                          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-white/86" />
+                          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[rgb(var(--vsp-red))]" />
                           <span>{bullet}</span>
                         </li>
                       ))}
@@ -203,16 +240,7 @@ export default function PricingSection() {
                   ) : null}
                 </div>
 
-                <div className="px-6">
-                  <div className="vsp-fade-line h-[1px] w-full opacity-80" />
-                </div>
-
-                <div
-                  className="mt-auto grid gap-3 rounded-b-3xl px-6 pb-6 pt-5"
-                  style={{
-                    background: "linear-gradient(180deg, rgba(255,255,255,0.06), rgba(112,10,10,0.18))",
-                  }}
-                >
+                <div className="mt-3 grid gap-2 px-6 pb-6">
                   <Link
                     href={`/order?appliance=${encodeURIComponent(plan.slug)}`}
                     prefetch={false}
@@ -223,7 +251,7 @@ export default function PricingSection() {
                       })
                     }
                     onMouseMove={setHoverVars}
-                    className="water-hover vsp-sheen water-lift vsp-focus inline-flex h-12 w-full items-center justify-center rounded-xl border border-white/28 bg-white px-5 text-xs font-semibold tracking-widest text-[rgb(var(--vsp-red))]"
+                    className="water-hover vsp-focus inline-flex h-14 w-full items-center justify-center rounded-full border border-black/80 bg-black px-5 text-sm font-semibold tracking-wide text-white"
                   >
                     SELECT AND REQUEST
                   </Link>
@@ -241,12 +269,12 @@ export default function PricingSection() {
                       })
                     }
                     onMouseMove={setHoverVars}
-                    className="water-hover vsp-sheen vsp-focus inline-flex h-12 w-full items-center justify-center rounded-xl border border-white/30 bg-white/12 px-5 text-xs font-semibold tracking-widest text-white hover:bg-white/18"
+                    className="water-hover vsp-focus inline-flex h-11 w-full items-center justify-center rounded-full border border-black/16 bg-white px-5 text-xs font-semibold tracking-widest text-black/80"
                   >
                     WHATSAPP
                   </a>
 
-                  <p className="text-[11px] text-white/70">
+                  <p className="text-center text-[11px] text-black/55">
                     Receive a unique reference number after requesting.
                   </p>
                 </div>
