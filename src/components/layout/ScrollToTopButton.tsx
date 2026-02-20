@@ -63,7 +63,7 @@ export default function ScrollToTopButton() {
       }}
       className={[
         "water-hover water-lift vsp-focus fixed !left-auto !right-6 z-[140] inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/28 bg-white/16 text-white backdrop-blur-md sm:!right-8",
-        cookieSet ? "bottom-20 sm:bottom-24" : "bottom-32 sm:bottom-36",
+        cookieSet ? "bottom-4 sm:bottom-5" : "bottom-28 sm:bottom-32",
       ].join(" ")}
       style={{
         left: "auto",

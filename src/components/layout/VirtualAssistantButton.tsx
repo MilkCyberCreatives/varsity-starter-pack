@@ -159,7 +159,7 @@ export default function VirtualAssistantButton() {
         <aside
           className={[
             "fixed !left-6 !right-auto z-[96] w-[min(92vw,360px)] overflow-hidden rounded-2xl border border-white/28 bg-[rgb(132,10,10)]/62 backdrop-blur-md sm:!left-8",
-            cookieSet ? "bottom-20 sm:bottom-24" : "bottom-32 sm:bottom-36",
+            cookieSet ? "bottom-4 sm:bottom-5" : "bottom-28 sm:bottom-32",
           ].join(" ")}
           style={{
             right: "auto",
@@ -252,7 +252,7 @@ export default function VirtualAssistantButton() {
         aria-label="Open virtual assistant"
         className={[
           "water-hover water-lift vsp-focus fixed !left-6 !right-auto z-[95] inline-flex h-12 min-w-[124px] items-center justify-center gap-2 rounded-full border border-white/28 bg-white/16 px-4 text-xs font-semibold tracking-widest text-white backdrop-blur-md sm:!left-8",
-          cookieSet ? "bottom-20 sm:bottom-24" : "bottom-32 sm:bottom-36",
+          cookieSet ? "bottom-4 sm:bottom-5" : "bottom-28 sm:bottom-32",
         ].join(" ")}
         style={{
           right: "auto",
