@@ -88,7 +88,7 @@ export default function PricingSection() {
   };
 
   return (
-    <section className="vsp-sync-fade-top relative overflow-hidden bg-transparent py-16" aria-label="rental rates and pricing">
+    <section className="vsp-sync-fade-top relative overflow-hidden bg-transparent py-14" aria-label="rental rates and pricing">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
@@ -145,7 +145,7 @@ export default function PricingSection() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
-          className="mt-10 grid gap-5 lg:grid-cols-3"
+          className="mt-9 grid gap-4 lg:grid-cols-3"
         >
           {PLANS.map((plan, planIndex) => {
             const image = pickImage(plan.slug, plan.name);
@@ -166,21 +166,21 @@ export default function PricingSection() {
                     "linear-gradient(180deg, rgba(245,245,245,0.98), rgba(236,236,236,0.96))",
                 }}
               >
-                <div className="p-3">
-                  <div className="relative overflow-hidden rounded-[28px] border border-black/10 bg-[#e4e4e4] p-3">
+                <div className="p-2.5">
+                  <div className="relative overflow-hidden rounded-[26px] border border-black/10 bg-[#e4e4e4] p-2.5">
                     <div className="flex items-center justify-between gap-3">
-                      <span className="rounded-full border border-black/12 bg-[#f4f4f4] px-3 py-1 text-[12px] font-medium tracking-wide text-black/70">
+                      <span className="rounded-full border border-black/12 bg-[#f4f4f4] px-2.5 py-0.5 text-[11px] font-medium tracking-wide text-black/70">
                         {tag}
                       </span>
                       <span
                         aria-hidden="true"
-                        className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-black/12 bg-[#f4f4f4] text-[rgb(var(--vsp-red))]"
+                        className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-black/12 bg-[#f4f4f4] text-[rgb(var(--vsp-red))]"
                       >
                         <HeartIcon />
                       </span>
                     </div>
 
-                    <div className="relative mt-3 h-44 w-full overflow-hidden rounded-[22px] bg-white/20 sm:h-48">
+                    <div className="relative mt-2.5 h-40 w-full overflow-hidden rounded-[20px] bg-white/20 sm:h-44">
                       <Image
                         src={image.src}
                         alt={image.alt}
@@ -191,13 +191,13 @@ export default function PricingSection() {
                       />
                     </div>
 
-                    <div className="mt-4 flex items-center justify-center gap-2">
+                    <div className="mt-3.5 flex items-center justify-center gap-1.5">
                       {Array.from({ length: 3 }).map((_, dotIndex) => {
                         const active = dotIndex === planIndex % 3;
                         return (
                           <span
                             key={`${plan.slug}-dot-${dotIndex}`}
-                            className="h-2.5 w-2.5 rounded-full border border-black/8 transition"
+                            className="h-2 w-2 rounded-full border border-black/8 transition"
                             style={{
                               backgroundColor: active
                                 ? "rgb(var(--vsp-red))"
@@ -210,26 +210,26 @@ export default function PricingSection() {
                   </div>
                 </div>
 
-                <div className="flex flex-1 flex-col px-5 pb-3 text-black">
-                  <p className="text-[15px] font-medium text-[rgb(var(--vsp-red))]">Appliance</p>
+                <div className="flex flex-1 flex-col px-4 pb-2.5 text-black">
+                  <p className="text-[14px] font-medium text-[rgb(var(--vsp-red))]">Appliance</p>
 
-                  <h3 className="mt-1 text-[clamp(1.75rem,2.8vw,2.5rem)] font-semibold leading-[0.98] tracking-tight">
+                  <h3 className="mt-1 text-[clamp(1.6rem,2.4vw,2.2rem)] font-semibold leading-[1] tracking-tight">
                     {plan.name}
                   </h3>
 
-                  <p className="mt-3 text-[clamp(2rem,3.1vw,2.75rem)] font-semibold leading-none tracking-tight">
+                  <p className="mt-2.5 text-[clamp(1.75rem,2.7vw,2.35rem)] font-semibold leading-none tracking-tight">
                     {plan.monthly}
                   </p>
-                  <p className="mt-1.5 text-base text-black/72">{plan.deposit}</p>
+                  <p className="mt-1 text-[15px] text-black/72">{plan.deposit}</p>
 
                   {plan.note ? (
-                    <div className="mt-4 rounded-2xl border border-black/10 bg-white/72 px-3 py-2">
-                      <p className="text-sm text-black/72">{plan.note}</p>
+                    <div className="mt-3 rounded-xl border border-black/10 bg-white/72 px-3 py-2">
+                      <p className="text-[13px] text-black/72">{plan.note}</p>
                     </div>
                   ) : null}
 
                   {bullets.length ? (
-                    <ul className="mt-4 space-y-1.5 text-sm text-black/74">
+                    <ul className="mt-3 space-y-1 text-[13px] text-black/74">
                       {bullets.map((bullet) => (
                         <li key={bullet} className="flex items-start gap-2">
                           <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[rgb(var(--vsp-red))]" />
@@ -240,7 +240,7 @@ export default function PricingSection() {
                   ) : null}
                 </div>
 
-                <div className="mt-2 grid gap-2 px-5 pb-5">
+                <div className="mt-2 grid gap-1.5 px-4 pb-4">
                   <Link
                     href={`/order?appliance=${encodeURIComponent(plan.slug)}`}
                     prefetch={false}
@@ -251,7 +251,7 @@ export default function PricingSection() {
                       })
                     }
                     onMouseMove={setHoverVars}
-                    className="water-hover vsp-focus inline-flex h-12 w-full items-center justify-center rounded-full border border-black/80 bg-black px-5 text-sm font-semibold tracking-wide text-white"
+                    className="water-hover vsp-focus inline-flex h-11 w-full items-center justify-center rounded-full border border-black/80 bg-black px-5 text-xs font-semibold tracking-wide text-white"
                   >
                     SELECT AND REQUEST
                   </Link>
@@ -269,12 +269,12 @@ export default function PricingSection() {
                       })
                     }
                     onMouseMove={setHoverVars}
-                    className="water-hover vsp-focus inline-flex h-10 w-full items-center justify-center rounded-full border border-black/16 bg-white px-5 text-xs font-semibold tracking-widest text-black/80"
+                    className="water-hover vsp-focus inline-flex h-9 w-full items-center justify-center rounded-full border border-black/16 bg-white px-5 text-[11px] font-semibold tracking-widest text-black/80"
                   >
                     WHATSAPP
                   </a>
 
-                  <p className="text-center text-[11px] text-black/55">
+                  <p className="text-center text-[10px] text-black/55">
                     Receive a unique reference number after requesting.
                   </p>
                 </div>
