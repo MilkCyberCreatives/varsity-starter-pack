@@ -5,13 +5,13 @@ import Link from "next/link";
 import { motion, type Variants, easeOut } from "framer-motion";
 import { useMemo } from "react";
 import { PLANS } from "@/lib/plans";
+import { trackEvent } from "@/lib/analytics";
 
-const PRIMARY = "#c41a1a";
 const premiumEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 const container: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.12 } },
+  show: { transition: { staggerChildren: 0.1 } },
 };
 
 const card: Variants = {
@@ -19,217 +19,234 @@ const card: Variants = {
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: easeOut },
+    transition: { duration: 0.55, ease: easeOut },
   },
 };
 
-function capFirstWord(s: string) {
-  const t = (s ?? "").trim();
-  if (!t) return t;
-  return t.charAt(0).toUpperCase() + t.slice(1);
+function setHoverVars(e: React.MouseEvent<HTMLElement>) {
+  const el = e.currentTarget;
+  const rect = el.getBoundingClientRect();
+  const mx = ((e.clientX - rect.left) / rect.width) * 100;
+  const my = ((e.clientY - rect.top) / rect.height) * 100;
+  el.style.setProperty("--mx", `${mx}%`);
+  el.style.setProperty("--my", `${my}%`);
 }
 
-function shouldRemoveBullet(b: string) {
-  const t = (b ?? "").toLowerCase();
-  return t.includes("minimum") && t.includes("5");
+function capFirstWord(value: string) {
+  if (!value.trim()) return value;
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function shouldRemoveBullet(bullet: string) {
+  const text = bullet.toLowerCase();
+  return text.includes("minimum") && text.includes("5");
 }
 
 export default function PricingSection() {
-  /**
-   * NEW images (not reusing hero / bar-fridge)
-   * Put these files in: /public/images/pricing/
-   */
-  const planImages = useMemo(() => {
-    return {
+  const planImages = useMemo(
+    () => ({
       fridge: { src: "/images/pricing/fridge.jpg", alt: "Student fridge rental" },
-      microwave: { src: "/images/pricing/microwave.jpg", alt: "Student microwave rental" },
-      combo: { src: "/images/pricing/combo.jpg", alt: "Fridge and microwave combo rental" },
-    };
-  }, []);
+      microwave: {
+        src: "/images/pricing/microwave.jpg",
+        alt: "Student microwave rental",
+      },
+      combo: {
+        src: "/images/pricing/combo.jpg",
+        alt: "Fridge and microwave combo rental",
+      },
+    }),
+    []
+  );
 
   const pickImage = (slug: string, name: string) => {
-    const s = (slug || "").toLowerCase();
-    const n = (name || "").toLowerCase();
+    const s = slug.toLowerCase();
+    const n = name.toLowerCase();
 
-    // try by slug first
-    if (s.includes("microwave")) return planImages.microwave;
-    if (s.includes("fridge")) return planImages.fridge;
-    if (s.includes("combo") || s.includes("bundle") || s.includes("set")) return planImages.combo;
-
-    // fallback by name keywords
-    if (n.includes("microwave")) return planImages.microwave;
-    if (n.includes("fridge")) return planImages.fridge;
+    if (s.includes("microwave") || n.includes("microwave")) return planImages.microwave;
+    if (s.includes("fridge") || n.includes("fridge")) return planImages.fridge;
     return planImages.combo;
   };
 
   return (
-    <section className="relative bg-white py-20" aria-label="rental rates and pricing">
-      {/* Clean, premium background */}
+    <section className="vsp-sync-fade-top relative overflow-hidden bg-transparent py-20" aria-label="rental rates and pricing">
       <div
+        aria-hidden="true"
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(900px circle at 18% 10%, rgba(196,26,26,0.06), transparent 55%), radial-gradient(900px circle at 82% 0%, rgba(0,0,0,0.04), transparent 55%)",
+            "radial-gradient(980px circle at 18% 10%, rgba(255,255,255,0.12), transparent 56%), radial-gradient(980px circle at 82% 0%, rgba(255,255,255,0.11), transparent 56%)",
         }}
-        aria-hidden="true"
       />
 
       <div className="relative mx-auto max-w-6xl px-4">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.35 }}
+          viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.55, ease: premiumEase }}
           className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between"
         >
           <div>
-            <p className="text-xs font-semibold tracking-widest text-black/50">PRICING</p>
+            <p className="text-xs font-semibold tracking-widest text-white/75">PRICING</p>
 
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-black sm:text-4xl">
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
               2026 Rental Rates
             </h2>
 
-            {/* The 3 lines you requested (clean + readable) */}
             <div className="mt-4 grid max-w-2xl gap-2">
-              <p className="text-sm text-black/70">
+              <p className="text-sm text-white/84">
                 Deposits are once off and refundable. If the appliance is not damaged, will get full refund.
               </p>
-              <p className="text-sm text-black/70">
+              <p className="text-sm text-white/84">
                 Minimum of 5 months. Can only lease for more than 5 months.
               </p>
-              <p className="text-sm text-black/70">
+              <p className="text-sm text-white/84">
                 Monthly rental discount when leasing more than one appliance
               </p>
             </div>
 
-            <div className="mt-6 h-[3px] w-[84px] rounded-full" style={{ backgroundColor: PRIMARY }} />
+            <div className="vsp-fade-line mt-6 h-[3px] w-[96px]" />
           </div>
 
           <a
             href="https://wa.me/27734921669"
             target="_blank"
             rel="noreferrer"
-            className="water-hover water-lift vsp-focus inline-flex items-center justify-center rounded-xl border border-black/10 bg-white px-6 py-3 text-xs font-semibold tracking-widest text-black transition hover:bg-black/5"
+            onClick={() => trackEvent("click_whatsapp", { source: "pricing_section" })}
+            onMouseMove={setHoverVars}
+            className="water-hover water-lift vsp-focus inline-flex items-center justify-center rounded-xl border border-white/30 bg-white/12 px-6 py-3 text-xs font-semibold tracking-widest text-white hover:bg-white/18"
           >
             WHATSAPP TO CONFIRM
           </a>
         </motion.div>
 
-        {/* Cards */}
         <motion.div
           variants={container}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true, amount: 0.22 }}
+          viewport={{ once: true, amount: 0.2 }}
           className="mt-12 grid gap-6 lg:grid-cols-3"
         >
-          {PLANS.map((p) => {
-            const img = pickImage(p.slug, p.name);
-            const bullets = (p.bullets ?? [])
-              .filter((b) => !shouldRemoveBullet(b))
-              .map((b) => capFirstWord(b));
+          {PLANS.map((plan) => {
+            const image = pickImage(plan.slug, plan.name);
+            const bullets = plan.bullets
+              .filter((bullet) => !shouldRemoveBullet(bullet))
+              .map((bullet) => capFirstWord(bullet));
 
             return (
               <motion.article
-                key={p.slug}
+                key={plan.slug}
                 variants={card}
-                whileHover={{ y: -6 }}
-                transition={{ duration: 0.35, ease: premiumEase }}
-                className="group flex h-full flex-col overflow-hidden rounded-3xl border border-black/10 bg-white shadow-[0_10px_30px_rgba(0,0,0,0.06)]"
+                whileHover={{ y: -4 }}
+                transition={{ duration: 0.28, ease: premiumEase }}
+                className="group vsp-sheen flex h-full flex-col overflow-hidden rounded-3xl border border-white/22"
+                style={{
+                  background:
+                    "linear-gradient(160deg, rgba(255,255,255,0.15), rgba(255,255,255,0.06) 58%, rgba(122,10,10,0.22))",
+                  backdropFilter: "blur(10px)",
+                }}
               >
-                {/* Image */}
-                <div className="relative h-44 w-full overflow-hidden bg-black/5">
+                <div className="relative h-44 w-full overflow-hidden bg-white/8">
                   <Image
-                    src={img.src}
-                    alt={img.alt}
+                    src={image.src}
+                    alt={image.alt}
                     fill
-                    className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+                    className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                     sizes="(max-width: 1024px) 100vw, 33vw"
-                    priority={p.featured}
+                    priority={plan.featured}
                   />
                   <div
+                    aria-hidden="true"
                     className="absolute inset-0"
                     style={{
                       background:
-                        "linear-gradient(to bottom, rgba(0,0,0,0.04), transparent 55%, rgba(255,255,255,0.08))",
+                        "linear-gradient(to bottom, rgba(255,255,255,0.06), transparent 54%, rgba(255,255,255,0.16))",
                     }}
-                    aria-hidden="true"
                   />
                 </div>
 
-                {/* Body */}
-                <div className="p-6">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="text-xs font-semibold tracking-widest text-black/50">Appliance</p>
-                      <h3 className="mt-2 text-lg font-semibold tracking-tight text-black">{p.name}</h3>
-                    </div>
+                <div className="flex flex-1 flex-col px-6 pb-6 pt-6">
+                  <p className="text-xs font-semibold tracking-widest text-white/76">APPLIANCE</p>
 
-                    {p.featured ? (
-                      <span
-                        className="rounded-full border px-3 py-1 text-[11px] font-semibold tracking-widest"
-                        style={{
-                          borderColor: "rgba(0,0,0,0.10)",
-                          backgroundColor: "rgba(196,26,26,0.06)",
-                          color: PRIMARY,
-                        }}
-                      >
-                        Best Value
-                      </span>
-                    ) : (
-                      <span className="mt-2 h-2.5 w-2.5 rounded-full bg-black/30" />
-                    )}
-                  </div>
+                  <h3 className="mt-2 text-4xl font-semibold tracking-tight text-white sm:text-[54px] sm:leading-[0.92]">
+                    {plan.name}
+                  </h3>
 
-                  {/* Price */}
+                  {plan.featured ? (
+                    <span className="mt-4 inline-flex w-fit rounded-full border border-white/38 bg-white/14 px-3 py-1 text-[10px] font-semibold tracking-widest text-white">
+                      BEST VALUE
+                    </span>
+                  ) : null}
+
                   <div className="mt-5">
-                    <p className="text-2xl font-semibold text-black">{p.monthly}</p>
-                    <p className="mt-1 text-sm text-black/55">{p.deposit}</p>
+                    <p className="text-[52px] font-semibold leading-none tracking-tight text-white">
+                      {plan.monthly}
+                    </p>
+                    <p className="mt-2 text-base text-white/78">{plan.deposit}</p>
                   </div>
 
-                  {/* Note */}
-                  {!!p.note && (
-                    <div className="mt-5 rounded-2xl border border-black/10 bg-white px-4 py-3">
-                      <p className="text-sm text-black/70">{p.note}</p>
+                  {plan.note ? (
+                    <div className="mt-5 rounded-2xl border border-white/22 bg-white/10 px-4 py-3">
+                      <p className="text-sm text-white/84">{plan.note}</p>
                     </div>
-                  )}
+                  ) : null}
 
-                  {/* Bullets */}
-                  {bullets.length > 0 && (
-                    <ul className="mt-5 space-y-2 text-sm text-black/65">
-                      {bullets.map((b) => (
-                        <li key={b} className="flex items-start gap-2">
-                          <span className="mt-2 h-2 w-2 rounded-full" style={{ backgroundColor: PRIMARY }} />
-                          <span>{b}</span>
+                  {bullets.length ? (
+                    <ul className="mt-5 space-y-2 text-sm text-white/84">
+                      {bullets.map((bullet) => (
+                        <li key={bullet} className="flex items-start gap-2">
+                          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-white/86" />
+                          <span>{bullet}</span>
                         </li>
                       ))}
                     </ul>
-                  )}
+                  ) : null}
                 </div>
 
-                {/* Actions */}
-                <div className="mt-auto grid gap-3 border-t border-black/5 p-6">
+                <div className="px-6">
+                  <div className="vsp-fade-line h-[1px] w-full opacity-80" />
+                </div>
+
+                <div
+                  className="mt-auto grid gap-3 rounded-b-3xl px-6 pb-6 pt-5"
+                  style={{
+                    background: "linear-gradient(180deg, rgba(255,255,255,0.06), rgba(112,10,10,0.18))",
+                  }}
+                >
                   <Link
-                    href={`/order?appliance=${encodeURIComponent(p.slug)}`}
-                    className="water-hover water-lift vsp-focus inline-flex items-center justify-center rounded-xl px-5 py-3 text-xs font-semibold tracking-widest text-white transition hover:opacity-90"
-                    style={{ backgroundColor: PRIMARY }}
+                    href={`/order?appliance=${encodeURIComponent(plan.slug)}`}
+                    prefetch={false}
+                    onClick={() =>
+                      trackEvent("select_appliance", {
+                        appliance: plan.slug,
+                        source: "pricing_card",
+                      })
+                    }
+                    onMouseMove={setHoverVars}
+                    className="water-hover vsp-sheen water-lift vsp-focus inline-flex h-12 w-full items-center justify-center rounded-xl border border-white/28 bg-white px-5 text-xs font-semibold tracking-widest text-[rgb(var(--vsp-red))]"
                   >
-                    SELECT & REQUEST
+                    SELECT AND REQUEST
                   </Link>
 
                   <a
                     href={`https://wa.me/27734921669?text=${encodeURIComponent(
-                      `Hi, I would like to rent a ${p.name}. Please send me the requirements and next steps.`
+                      `Hi, I would like to rent a ${plan.name}. Please send me the requirements and next steps.`
                     )}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="water-hover water-lift vsp-focus inline-flex items-center justify-center rounded-xl border border-black/10 bg-white px-5 py-3 text-xs font-semibold tracking-widest text-black transition hover:bg-black/5"
+                    onClick={() =>
+                      trackEvent("click_whatsapp", {
+                        source: "pricing_card",
+                        appliance: plan.slug,
+                      })
+                    }
+                    onMouseMove={setHoverVars}
+                    className="water-hover vsp-sheen vsp-focus inline-flex h-12 w-full items-center justify-center rounded-xl border border-white/30 bg-white/12 px-5 text-xs font-semibold tracking-widest text-white hover:bg-white/18"
                   >
                     WHATSAPP
                   </a>
 
-                  <p className="text-[11px] text-black/45">
+                  <p className="text-[11px] text-white/70">
                     Receive a unique reference number after requesting.
                   </p>
                 </div>
@@ -238,8 +255,7 @@ export default function PricingSection() {
           })}
         </motion.div>
 
-        {/* Footer note (clean) */}
-        <p className="mt-12 text-xs text-black/50">
+        <p className="mt-12 text-xs text-white/78">
           Delivery is free to res/apartment (T&amp;Cs apply). Excluding UJ Soweto Campus (fee applies).
         </p>
       </div>

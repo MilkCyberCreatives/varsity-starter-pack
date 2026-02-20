@@ -3,13 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --vsp-primary: 196 26 26; /* #c41a1a */
-  --bg: 255 255 255;
-  --surface: 255 255 255;
-
-  --text: 12 12 14;
-  --muted: 110 110 120;
-  --line: 230 230 235;
+  --vsp-red: 176 20 20;
+  --vsp-red-deep: 142 12 12;
+  --vsp-red-bright: 196 34 34;
+  --vsp-bg: 176 20 20;
+  --vsp-surface: 255 255 255;
+  --vsp-ink: 250 250 252;
+  --vsp-muted: 103 104 112;
+  --vsp-line: 228 229 235;
 }
 
 html,
@@ -17,43 +18,91 @@ body {
   height: 100%;
 }
 
-/* ✅ prevent horizontal scroll caused by absolute elements */
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background: rgb(var(--bg));
-  color: rgb(var(--text));
+  background:
+    radial-gradient(1280px circle at 50% -20%, rgba(255, 255, 255, 0.24), transparent 58%),
+    radial-gradient(980px circle at 8% 10%, rgba(255, 255, 255, 0.18), transparent 54%),
+    radial-gradient(980px circle at 92% 8%, rgba(255, 255, 255, 0.14), transparent 56%),
+    linear-gradient(
+      145deg,
+      rgb(var(--vsp-red-deep)) 0%,
+      rgb(var(--vsp-red)) 46%,
+      rgb(var(--vsp-red-deep)) 100%
+    );
+  background-size: auto, auto, auto, auto;
+  background-position: center top, center top, center top, 0 0;
+  color: rgb(var(--vsp-ink));
+  font-family: var(--font-body), "Segoe UI", sans-serif;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: clip;
-
-  /* ✅ FIX: keep pointer visible by default */
-  cursor: auto;
+  text-rendering: optimizeLegibility;
 }
 
 ::selection {
-  background: rgba(196, 26, 26, 0.18);
+  background: rgba(255, 255, 255, 0.26);
 }
 
-/* =========================================================
-   Premium "water" hover effect (white/black only + red brand)
-   ========================================================= */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading), var(--font-body), sans-serif;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+
+a,
+button,
+input,
+textarea,
+select {
+  transition:
+    color 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease,
+    transform 220ms ease,
+    opacity 180ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 .water-hover {
   position: relative;
   overflow: hidden;
+  isolation: isolate;
 }
 
 .water-hover::before {
   content: "";
   position: absolute;
-  inset: -40%;
+  inset: -35%;
   background:
-    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.20), transparent 45%),
-    radial-gradient(circle at 70% 60%, rgba(255, 255, 255, 0.14), transparent 50%),
-    radial-gradient(circle at 40% 80%, rgba(0, 0, 0, 0.08), transparent 55%);
-  transform: translate3d(-8%, -6%, 0) scale(1);
+    radial-gradient(circle at 28% 26%, rgba(255, 255, 255, 0.26), transparent 42%),
+    radial-gradient(circle at 72% 60%, rgba(255, 255, 255, 0.16), transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(255, 255, 255, 0.12), transparent 55%);
+  transform: translate3d(-6%, -5%, 0) scale(1);
   opacity: 0;
-  filter: blur(10px);
-  transition: opacity 280ms ease, transform 600ms ease;
+  filter: blur(9px);
+  transition: opacity 260ms ease, transform 540ms ease;
   pointer-events: none;
+  z-index: 0;
 }
 
 .water-hover:hover::before {
@@ -66,128 +115,45 @@ body {
   position: absolute;
   inset: 0;
   background: radial-gradient(
-    520px circle at var(--mx, 50%) var(--my, 50%),
-    rgba(255, 255, 255, 0.18),
+    460px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.22),
     transparent 60%
   );
   opacity: 0;
   transition: opacity 220ms ease;
   pointer-events: none;
+  z-index: 0;
 }
 
 .water-hover:hover::after {
   opacity: 1;
 }
 
-/* =========================================================
-   Lift effect (NO SHADOWS)
-   ========================================================= */
 .water-lift {
-  transition: transform 260ms ease, border-color 260ms ease, background-color 260ms ease;
+  transition:
+    transform 260ms ease,
+    border-color 260ms ease,
+    background-color 260ms ease;
 }
 
 .water-lift:hover {
-  transform: translateY(-6px);
+  transform: translateY(-4px);
 }
 
-/* Focus ring (NO SHADOW — uses ring look) */
 .vsp-focus:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(196, 26, 26, 0.22);
-  border-color: rgba(196, 26, 26, 0.35);
+  outline: 2px solid rgba(255, 255, 255, 0.78);
+  outline-offset: 2px;
+  border-color: rgba(255, 255, 255, 0.58);
 }
 
 .reveal {
   will-change: transform, opacity;
 }
 
-/* =========================================================
-   ✅ Premium Cursor (NO SHADOWS) — FIXED
-   Goal: cursor always visible. FX is optional and won’t “erase” cursor.
-   ========================================================= */
-
-/* Hide custom cursor on touch devices */
-@media (hover: none) and (pointer: coarse) {
-  .vsp-cursor-dot,
-  .vsp-cursor-ring {
-    display: none !important;
-  }
-}
-
-/* Desktop fine pointer */
-@media (hover: hover) and (pointer: fine) {
-  /* ✅ FIX: DO NOT hide system cursor globally */
-  body {
-    cursor: auto;
-  }
-
-  /* If you want to hide system cursor only when you add a class:
-     document.body.classList.add("vsp-hide-cursor")
-  */
-  body.vsp-hide-cursor {
-    cursor: none;
-  }
-
-  .vsp-cursor-dot,
-  .vsp-cursor-ring {
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 9999;
-    pointer-events: none;
-
-    /* ✅ FIX: ensure always visible and smooth */
-    opacity: 1;
-    transform: translate3d(-9999px, -9999px, 0) translate(-50%, -50%);
-    transition: opacity 120ms ease;
-  }
-
-  /* ✅ subtle but visible dot on any background (no shadow) */
-  .vsp-cursor-dot {
-    width: 9px;
-    height: 9px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(0, 0, 0, 0.22); /* helps visibility on white */
-  }
-
-  .vsp-cursor-ring {
-    width: 36px;
-    height: 36px;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.65);
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(8px);
-    transition:
-      width 160ms ease,
-      height 160ms ease,
-      border-color 160ms ease,
-      background 160ms ease,
-      transform 120ms ease;
-  }
-
-  /* interactive hover */
-  .vsp-cursor-ring[data-active="1"] {
-    width: 46px;
-    height: 46px;
-    border-color: rgba(255, 255, 255, 0.9);
-    background: rgba(255, 255, 255, 0.10);
-  }
-
-  /* click */
-  .vsp-cursor-ring[data-down="1"] {
-    transform: translate3d(var(--cx, -9999px), var(--cy, -9999px), 0)
-      translate(-50%, -50%) scale(0.92);
-  }
-}
-
-/* =========================================================
-   Premium border flow + glass sheen (NO SHADOWS)
-   (used by order cards + can be reused across site)
-   ========================================================= */
 .vsp-borderflow {
   position: relative;
   overflow: hidden;
+  isolation: isolate;
 }
 
 .vsp-borderflow::before {
@@ -196,16 +162,18 @@ body {
   inset: -2px;
   border-radius: inherit;
   background: conic-gradient(
-    from 180deg at 50% 50%,
-    rgba(196, 26, 26, 0.00),
-    rgba(196, 26, 26, 0.25),
-    rgba(255, 255, 255, 0.25),
-    rgba(196, 26, 26, 0.00)
+    from 170deg at 50% 50%,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.45),
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.26),
+    rgba(255, 255, 255, 0)
   );
   opacity: 0;
   transform: rotate(0deg);
   transition: opacity 220ms ease;
   pointer-events: none;
+  z-index: 0;
 }
 
 .vsp-borderflow::after {
@@ -213,8 +181,9 @@ body {
   position: absolute;
   inset: 1px;
   border-radius: inherit;
-  background: white;
+  background: rgba(255, 255, 255, 0.08);
   pointer-events: none;
+  z-index: 0;
 }
 
 .vsp-borderflow:hover::before,
@@ -232,6 +201,7 @@ body {
 .vsp-sheen {
   position: relative;
   overflow: hidden;
+  isolation: isolate;
 }
 
 .vsp-sheen::before {
@@ -240,15 +210,433 @@ body {
   inset: 0;
   background: radial-gradient(
     680px circle at var(--mx, 50%) var(--my, 50%),
-    rgba(255, 255, 255, 0.28),
-    transparent 60%
+    rgba(255, 255, 255, 0.3),
+    transparent 62%
   );
   opacity: 0;
   transition: opacity 220ms ease;
   pointer-events: none;
+  z-index: 0;
 }
 
 .vsp-sheen:hover::before,
 .vsp-sheen[data-selected="1"]::before {
   opacity: 1;
+}
+
+.vsp-glass {
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(10px);
+}
+
+.vsp-liquid-glass {
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background:
+    radial-gradient(120px circle at 24% 22%, rgba(255, 255, 255, 0.34), transparent 56%),
+    radial-gradient(150px circle at 78% 84%, rgba(255, 255, 255, 0.16), transparent 60%),
+    linear-gradient(
+      165deg,
+      rgba(255, 255, 255, 0.28),
+      rgba(255, 255, 255, 0.1) 45%,
+      rgba(112, 10, 10, 0.3) 100%
+    );
+  backdrop-filter: blur(18px) saturate(150%);
+}
+
+.vsp-glass-red {
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.vsp-glass-red-strong {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(12px);
+}
+
+.vsp-soft-bg {
+  background:
+    radial-gradient(1200px circle at 10% 0%, rgba(255, 255, 255, 0.13), transparent 55%),
+    radial-gradient(1100px circle at 90% 0%, rgba(255, 255, 255, 0.1), transparent 60%),
+    rgb(var(--vsp-bg));
+}
+
+.vsp-page-bg {
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(1400px circle at 12% -14%, rgba(255, 255, 255, 0.22), transparent 56%),
+    radial-gradient(1300px circle at 88% -18%, rgba(255, 255, 255, 0.14), transparent 60%),
+    linear-gradient(
+      148deg,
+      rgb(var(--vsp-red-deep)) 0%,
+      rgb(var(--vsp-red)) 54%,
+      rgb(var(--vsp-red-deep)) 100%
+    );
+  background-size: auto, auto, auto;
+  background-position: center top, center top, 0 0;
+}
+
+.vsp-red-sync {
+  background: transparent;
+}
+
+.vsp-liquid-panel {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background:
+    radial-gradient(520px circle at 16% 8%, rgba(255, 255, 255, 0.24), transparent 62%),
+    radial-gradient(480px circle at 88% 92%, rgba(255, 255, 255, 0.1), transparent 60%),
+    linear-gradient(
+      156deg,
+      rgba(255, 255, 255, 0.22),
+      rgba(255, 255, 255, 0.09) 48%,
+      rgba(128, 12, 12, 0.28) 100%
+    );
+  backdrop-filter: blur(16px) saturate(150%);
+}
+
+.vsp-liquid-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    118deg,
+    rgba(255, 255, 255, 0) 18%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0) 82%
+  );
+  transform: translateX(-136%);
+  transition: transform 760ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.vsp-liquid-panel:hover::before {
+  transform: translateX(132%);
+}
+
+.vsp-liquid-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.vsp-floating-shape {
+  position: absolute;
+  pointer-events: none;
+  border: 0;
+  background:
+    radial-gradient(circle at 26% 24%, rgba(255, 255, 255, 0.2), transparent 48%),
+    linear-gradient(
+      150deg,
+      rgba(255, 255, 255, 0.14),
+      rgba(255, 255, 255, 0.04) 58%,
+      rgba(124, 12, 12, 0.16)
+    );
+  opacity: 0.66;
+}
+
+.vsp-floating-shape--pill {
+  border-radius: 9999px;
+}
+
+.vsp-floating-shape--soft {
+  border-radius: 34px;
+}
+
+.vsp-floating-shape--ring {
+  border-radius: 9999px;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.16), transparent 68%);
+  opacity: 0.3;
+}
+
+.vsp-float-a {
+  animation: vspFloatA 15s ease-in-out infinite;
+}
+
+.vsp-float-b {
+  animation: vspFloatB 18s ease-in-out infinite;
+}
+
+.vsp-float-c {
+  animation: vspFloatC 21s ease-in-out infinite;
+}
+
+.vsp-float-d {
+  animation: vspFloatD 16s ease-in-out infinite;
+}
+
+.vsp-card,
+.vsp-card-strong,
+.vsp-panel,
+.vsp-panel-strong,
+.vsp-panel-soft {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    border-color 240ms ease,
+    background-color 240ms ease,
+    transform 260ms ease;
+}
+
+.vsp-card,
+.vsp-panel {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background:
+    linear-gradient(
+      154deg,
+      rgba(255, 255, 255, 0.2),
+      rgba(255, 255, 255, 0.08) 58%,
+      rgba(116, 12, 12, 0.24)
+    ),
+    radial-gradient(680px circle at 100% -26%, rgba(255, 255, 255, 0.22), transparent 58%),
+    radial-gradient(560px circle at -12% 125%, rgba(255, 255, 255, 0.14), transparent 60%);
+  backdrop-filter: blur(14px) saturate(145%);
+}
+
+.vsp-card-strong,
+.vsp-panel-strong {
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background:
+    linear-gradient(
+      156deg,
+      rgba(255, 255, 255, 0.24),
+      rgba(255, 255, 255, 0.1) 56%,
+      rgba(116, 10, 10, 0.3)
+    ),
+    radial-gradient(720px circle at 100% -22%, rgba(255, 255, 255, 0.26), transparent 58%),
+    radial-gradient(560px circle at -10% 120%, rgba(255, 255, 255, 0.16), transparent 60%);
+  backdrop-filter: blur(16px) saturate(150%);
+}
+
+.vsp-panel-soft {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px) saturate(140%);
+}
+
+.vsp-card::before,
+.vsp-card-strong::before,
+.vsp-panel::before,
+.vsp-panel-strong::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    118deg,
+    rgba(255, 255, 255, 0) 20%,
+    rgba(255, 255, 255, 0.24) 49%,
+    rgba(255, 255, 255, 0) 78%
+  );
+  transform: translateX(-140%);
+  transition: transform 760ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.vsp-card:hover::before,
+.vsp-card-strong:hover::before,
+.vsp-panel:hover::before,
+.vsp-panel-strong:hover::before {
+  transform: translateX(132%);
+}
+
+.vsp-card::after,
+.vsp-card-strong::after,
+.vsp-panel::after,
+.vsp-panel-strong::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+  pointer-events: none;
+  z-index: 0;
+}
+
+.vsp-card > *,
+.vsp-card-strong > *,
+.vsp-panel > *,
+.vsp-panel-strong > *,
+.vsp-panel-soft > * {
+  position: relative;
+  z-index: 1;
+}
+
+.vsp-fade-line {
+  border-radius: 9999px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.76) 26%,
+    rgba(255, 255, 255, 0.98) 50%,
+    rgba(255, 255, 255, 0.76) 74%,
+    rgba(255, 255, 255, 0)
+  );
+}
+
+.vsp-orbit {
+  position: relative;
+}
+
+.vsp-orbit::before,
+.vsp-orbit::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.vsp-orbit::before {
+  inset: -10px;
+  border: 1px solid rgba(126, 14, 14, 0.34);
+  border-radius: 34px;
+}
+
+.vsp-orbit::after {
+  inset: -22px;
+  border: 1px dashed rgba(126, 14, 14, 0.34);
+  border-radius: 42px;
+  animation: vspOrbitSpin 26s linear infinite;
+}
+
+.vsp-orbit > * {
+  position: relative;
+  z-index: 1;
+}
+
+.vsp-tech-grid {
+  background-image: none;
+}
+
+.vsp-seam {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.22),
+    rgba(255, 255, 255, 0)
+  );
+}
+
+.vsp-sync-fade-top {
+  position: relative;
+}
+
+.vsp-sync-fade-top::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 68px;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgb(var(--vsp-red-deep) / 0.42) 0%,
+    rgb(var(--vsp-red) / 0.2) 44%,
+    rgb(var(--vsp-red) / 0) 100%
+  );
+  z-index: 1;
+}
+
+.vsp-cursor-ring,
+.vsp-cursor-dot {
+  position: fixed;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  z-index: 110;
+  transform: translate3d(-100px, -100px, 0);
+  display: none;
+}
+
+.vsp-cursor-ring {
+  height: 26px;
+  width: 26px;
+  margin-left: -13px;
+  margin-top: -13px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.62);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.vsp-cursor-dot {
+  height: 8px;
+  width: 8px;
+  margin-left: -4px;
+  margin-top: -4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+body.vsp-cursor-active,
+body.vsp-cursor-active a,
+body.vsp-cursor-active button,
+body.vsp-cursor-active input,
+body.vsp-cursor-active textarea,
+body.vsp-cursor-active select,
+body.vsp-cursor-active [role="button"] {
+  cursor: none !important;
+}
+
+body.vsp-cursor-active .vsp-cursor-ring,
+body.vsp-cursor-active .vsp-cursor-dot {
+  display: block;
+}
+
+@media (pointer: coarse) {
+  body.vsp-cursor-active,
+  body.vsp-cursor-active * {
+    cursor: auto !important;
+  }
+}
+
+@keyframes vspOrbitSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes vspFloatA {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(18px, -20px, 0) rotate(8deg);
+  }
+}
+
+@keyframes vspFloatB {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(-20px, 14px, 0) rotate(-6deg);
+  }
+}
+
+@keyframes vspFloatC {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(14px, 20px, 0) rotate(6deg);
+  }
+}
+
+@keyframes vspFloatD {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(-14px, -18px, 0) rotate(-5deg);
+  }
 }
