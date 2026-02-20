@@ -2,16 +2,7 @@
 
 export default function GlobalFloatingItems() {
   return (
-    <div
-      aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-[3] overflow-hidden"
-      style={{
-        WebkitMaskImage:
-          "linear-gradient(to bottom, black 0%, black 84%, transparent 100%)",
-        maskImage:
-          "linear-gradient(to bottom, black 0%, black 84%, transparent 100%)",
-      }}
-    >
+    <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[3] overflow-hidden">
       <span
         className="vsp-floating-shape vsp-floating-shape--pill vsp-float-a absolute left-[-120px] top-[4%] h-[280px] w-[280px]"
         style={{ opacity: 0.34 }}
