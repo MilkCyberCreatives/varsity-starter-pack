@@ -17,7 +17,7 @@ export default function ScrollToTopButton() {
 
   useEffect(() => {
     const onScroll = () => {
-      setVisible(window.scrollY > 280);
+      setVisible(window.scrollY > 0);
     };
 
     const updateCookieState = () => {

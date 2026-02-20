@@ -71,6 +71,7 @@ function createReply(text: string) {
 
 export default function VirtualAssistantButton() {
   const [open, setOpen] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [input, setInput] = useState("");
   const [cookieSet, setCookieSet] = useState(true);
   const idCounter = useRef(1);
@@ -84,15 +85,22 @@ export default function VirtualAssistantButton() {
   const listRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    const onScroll = () => {
+      setVisible(window.scrollY > 0);
+    };
+
     const updateCookieState = () => {
       setCookieSet(hasCookieDecision());
     };
 
+    onScroll();
     updateCookieState();
+    window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("storage", updateCookieState);
     window.addEventListener("vsp-consent-change", updateCookieState);
 
     return () => {
+      window.removeEventListener("scroll", onScroll);
       window.removeEventListener("storage", updateCookieState);
       window.removeEventListener("vsp-consent-change", updateCookieState);
     };
@@ -129,6 +137,8 @@ export default function VirtualAssistantButton() {
     setInput("");
     trackEvent("open_virtual_assistant", { action: "ask_question" });
   };
+
+  if (!visible && !open) return null;
 
   return (
     <>
