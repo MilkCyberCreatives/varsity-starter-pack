@@ -62,10 +62,10 @@ export default function ScrollToTopButton() {
         window.scrollTo({ top: 0, behavior: "smooth" });
       }}
       className={[
-        "water-hover water-lift vsp-focus fixed left-auto right-6 z-[95] inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/28 bg-white/16 text-white backdrop-blur-md sm:right-8",
+        "water-hover water-lift vsp-focus fixed z-[140] inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/28 bg-white/16 text-white backdrop-blur-md",
         cookieSet ? "bottom-20 sm:bottom-24" : "bottom-32 sm:bottom-36",
       ].join(" ")}
-      style={{ left: "auto" }}
+      style={{ left: "auto", right: "24px" }}
     >
       <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5 fill-current">
         <path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12z" />
