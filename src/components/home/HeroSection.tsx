@@ -36,25 +36,6 @@ export default function HeroSection() {
           }
         />
 
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-          <span
-            className="vsp-floating-shape vsp-floating-shape--pill vsp-float-a absolute left-[-84px] top-[78px] h-[220px] w-[220px]"
-            style={{ opacity: 0.22 }}
-          />
-          <span
-            className="vsp-floating-shape vsp-floating-shape--pill vsp-float-b absolute right-[6%] top-[62px] hidden h-[136px] w-[136px] sm:block"
-            style={{ opacity: 0.18 }}
-          />
-          <span
-            className="vsp-floating-shape vsp-floating-shape--ring vsp-float-c absolute bottom-[8%] left-[44%] hidden h-[136px] w-[136px] lg:block"
-            style={{ opacity: 0.16 }}
-          />
-          <span
-            className="vsp-floating-shape vsp-floating-shape--pill vsp-float-d absolute bottom-[-44px] right-[-48px] h-[180px] w-[180px]"
-            style={{ opacity: 0.16 }}
-          />
-        </div>
-
         <div className="relative z-10 mx-auto max-w-7xl px-4 pb-14 pt-12 sm:pb-16 sm:pt-14">
           <motion.div
             initial={reduceMotion ? false : { opacity: 0, y: 14 }}
