@@ -3,74 +3,35 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useState } from "react";
+import { trackEvent } from "@/lib/analytics";
+import { siteConfig } from "@/lib/site";
 
-const PRIMARY = "#c41a1a";
+type NavItem = {
+  label: string;
+  href: string;
+};
 
-/** Premium cursor FX (site-wide because header is global) */
-function CursorFX() {
-  const dotRef = useRef<HTMLDivElement | null>(null);
-  const ringRef = useRef<HTMLDivElement | null>(null);
+const NAV_ITEMS: NavItem[] = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Rental Rates", href: "/pricing" },
+  { label: "Deliveries", href: "/deliveries" },
+  { label: "FAQ", href: "/faq" },
+  { label: "Contact", href: "/contact" },
+  { label: "Booking Steps", href: "/how-it-works" },
+];
 
-  useEffect(() => {
-    const dot = dotRef.current;
-    const ring = ringRef.current;
-    if (!dot || !ring) return;
+const FACEBOOK_URL =
+  process.env.NEXT_PUBLIC_FACEBOOK_URL?.trim() || siteConfig.facebookUrl;
 
-    let raf = 0;
-    let x = 0;
-    let y = 0;
-
-    const move = (e: MouseEvent) => {
-      x = e.clientX;
-      y = e.clientY;
-      if (raf) return;
-
-      raf = window.requestAnimationFrame(() => {
-        dot.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
-        ring.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
-        raf = 0;
-      });
-    };
-
-    const onOver = (e: Event) => {
-      const t = e.target as HTMLElement | null;
-      if (!t) return;
-      const interactive = t.closest(
-        "a, button, [role='button'], input, select, textarea"
-      );
-      ring.dataset.active = interactive ? "1" : "0";
-    };
-
-    const onDown = () => (ring.dataset.down = "1");
-    const onUp = () => (ring.dataset.down = "0");
-
-    window.addEventListener("mousemove", move, { passive: true });
-    window.addEventListener("pointerover", onOver, { passive: true });
-    window.addEventListener("pointerdown", onDown, { passive: true });
-    window.addEventListener("pointerup", onUp, { passive: true });
-
-    return () => {
-      window.removeEventListener("mousemove", move);
-      window.removeEventListener("pointerover", onOver);
-      window.removeEventListener("pointerdown", onDown);
-      window.removeEventListener("pointerup", onUp);
-      if (raf) window.cancelAnimationFrame(raf);
-    };
-  }, []);
-
-  return (
-    <>
-      <div ref={dotRef} className="vsp-cursor-dot" aria-hidden="true" />
-      <div
-        ref={ringRef}
-        className="vsp-cursor-ring"
-        data-active="0"
-        data-down="0"
-        aria-hidden="true"
-      />
-    </>
-  );
+function setHoverVars(e: React.MouseEvent<HTMLElement>) {
+  const el = e.currentTarget;
+  const rect = el.getBoundingClientRect();
+  const mx = ((e.clientX - rect.left) / rect.width) * 100;
+  const my = ((e.clientY - rect.top) / rect.height) * 100;
+  el.style.setProperty("--mx", `${mx}%`);
+  el.style.setProperty("--my", `${my}%`);
 }
 
 export default function MainHeader() {
@@ -78,24 +39,6 @@ export default function MainHeader() {
   const menuId = useId();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
-  const NAV = useMemo(
-    () => [
-      { label: "Home", href: "/" },
-      { label: "About", href: "/about" },
-      { label: "Rental Rates", href: "/pricing" },
-
-      // ✅ UPDATED: deliveries now goes to the new gallery page
-      { label: "Deliveries", href: "/deliveries" },
-
-      { label: "FAQ", href: "/faq" },
-      { label: "Contact", href: "/contact" },
-      { label: "Booking Steps", href: "/how-it-works" },
-    ],
-    []
-  );
-
-  useEffect(() => setOpen(false), [pathname]);
 
   useEffect(() => {
     if (!open) return;
@@ -107,181 +50,201 @@ export default function MainHeader() {
   }, [open]);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => setScrolled(window.scrollY > 0);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const setHoverVars = (e: React.MouseEvent<HTMLElement>) => {
-    const el = e.currentTarget as HTMLElement;
-    const r = el.getBoundingClientRect();
-    const mx = ((e.clientX - r.left) / r.width) * 100;
-    const my = ((e.clientY - r.top) / r.height) * 100;
-    el.style.setProperty("--mx", `${mx}%`);
-    el.style.setProperty("--my", `${my}%`);
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    return pathname?.startsWith(href);
   };
 
-  const isActive = (href: string) => {
-    const base = href.split("#")[0];
-    if (base === "/") return pathname === "/";
-    return pathname?.startsWith(base);
+  const onNavClick = (item: NavItem) => {
+    if (item.href === "/pricing") {
+      trackEvent("open_pricing", { source: "header_nav" });
+    }
   };
 
   return (
     <header
-      className="sticky top-0 z-50 w-full"
-      style={{ backgroundColor: PRIMARY }}
+      className="vsp-red-sync sticky top-0 z-50"
+      style={{
+        backgroundColor: scrolled ? "rgb(var(--vsp-red-deep))" : "rgba(120,10,10,0.06)",
+        backdropFilter: "blur(12px)",
+      }}
     >
-      <CursorFX />
-
       <div
-        className={[
-          "pointer-events-none absolute inset-0 transition-all duration-300",
-          scrolled ? "backdrop-blur-md bg-black/10" : "bg-black/0",
-        ].join(" ")}
         aria-hidden="true"
-      >
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-white/15" />
-      </div>
-
-      <div
-        className={[
-          "relative mx-auto max-w-6xl px-4",
-          scrolled ? "py-3" : "py-4",
-        ].join(" ")}
-      >
-        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-6">
-          {/* LEFT */}
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(760px circle at 16% 0%, rgba(255,255,255,0.26), transparent 56%), radial-gradient(760px circle at 84% 0%, rgba(255,255,255,0.14), transparent 60%)",
+        }}
+      />
+      <div className="relative mx-auto max-w-7xl px-4 py-2.5 sm:py-3.5">
+        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-4">
           <Link
             href="/"
-            aria-label="go to home"
-            className="water-hover vsp-focus rounded-2xl p-2"
             onMouseMove={setHoverVars}
+            className="water-hover vsp-focus rounded-2xl p-1 lg:justify-self-start"
+            aria-label="Go to home"
           >
-            <div className="relative h-16 w-[210px] sm:h-[72px] sm:w-[240px]">
+            <div className="relative h-[78px] w-[256px] sm:h-[92px] sm:w-[310px]">
               <Image
                 src="/varsity-logo.png"
                 alt="Varsity Starter Pack"
                 fill
                 priority
                 className="object-contain"
-                sizes="(max-width: 640px) 210px, 240px"
+                sizes="(max-width: 640px) 256px, 310px"
               />
             </div>
           </Link>
 
-          {/* CENTER */}
           <nav
-            className="hidden lg:flex items-center justify-center gap-4 xl:gap-6"
-            aria-label="main navigation"
+            aria-label="Main navigation"
+            className="hidden items-center justify-center lg:flex"
           >
-            {NAV.map((item) => {
-              const active = isActive(item.href);
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onMouseMove={setHoverVars}
-                  aria-current={active ? "page" : undefined}
-                  className={[
-                    "vsp-navlink water-hover vsp-focus whitespace-nowrap",
-                    "relative rounded-full px-4 py-2",
-                    "text-[14px] font-semibold tracking-wide",
-                    "transition-all duration-200",
-                    active ? "text-white" : "text-white/90 hover:text-white",
-                  ].join(" ")}
-                >
-                  <span className="relative z-10 whitespace-nowrap">
-                    {item.label}
-                  </span>
-                  <span
-                    aria-hidden="true"
-                    className={[
-                      "absolute inset-0 rounded-full transition-all duration-200",
-                      active
-                        ? "bg-white/12 ring-1 ring-white/20"
-                        : "bg-transparent",
-                    ].join(" ")}
-                  />
-                </Link>
-              );
-            })}
+            <div className="vsp-panel-soft rounded-full px-1.5 py-1">
+              <ul className="flex flex-nowrap items-center gap-0.5 xl:gap-1">
+                {NAV_ITEMS.map((item) => {
+                  const active = isActive(item.href);
+                  return (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        onClick={() => onNavClick(item)}
+                        onMouseMove={setHoverVars}
+                        aria-current={active ? "page" : undefined}
+                        className={[
+                          "water-hover vsp-focus relative inline-flex whitespace-nowrap rounded-full border px-2.5 py-2 text-[12px] font-semibold tracking-wide xl:px-3",
+                          active
+                            ? "border-white/40 bg-white/16 text-white"
+                            : "border-transparent text-white/92 hover:border-white/24 hover:bg-white/10",
+                        ].join(" ")}
+                      >
+                        <span className="relative z-10">{item.label}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           </nav>
 
-          {/* RIGHT */}
-          <div className="flex items-center justify-end gap-2">
+          <div className="flex items-center justify-end gap-2 lg:justify-self-end">
             <Link
               href="/order"
+              onClick={() => trackEvent("open_order", { source: "header_cta" })}
               onMouseMove={setHoverVars}
-              className={[
-                "water-hover water-lift vsp-focus",
-                "hidden sm:inline-flex items-center justify-center",
-                "rounded-full bg-white px-6 py-3",
-                "text-[13px] font-semibold tracking-wide text-black",
-                "transition hover:bg-white/95",
-              ].join(" ")}
+              className="water-hover water-lift vsp-focus hidden rounded-full border border-white/26 bg-white px-5 py-2.5 text-xs font-semibold tracking-widest text-[rgb(var(--vsp-red))] sm:inline-flex"
             >
-              Request Order
+              REQUEST ORDER
             </Link>
+            <a
+              href={FACEBOOK_URL}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Visit Facebook page"
+              onClick={() => trackEvent("click_facebook", { source: "header_cta" })}
+              onMouseMove={setHoverVars}
+              className="water-hover water-lift vsp-focus hidden h-10 w-10 items-center justify-center rounded-full border border-white/26 bg-white text-[rgb(var(--vsp-red))] sm:inline-flex"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                className="h-4 w-4"
+                fill="currentColor"
+              >
+                <path d="M14 8V6.7c0-.6.4-.7.7-.7h2V3h-2.9C11 3 10 5 10 7.2V8H8v3h2V21h4v-10h2.7l.3-3H14z" />
+              </svg>
+            </a>
 
             <button
               type="button"
-              className={[
-                "lg:hidden",
-                "water-hover vsp-focus",
-                "inline-flex h-11 w-11 items-center justify-center",
-                "rounded-full border border-white/25 bg-white/10 text-white",
-                "transition hover:bg-white/15",
-              ].join(" ")}
-              onMouseMove={setHoverVars}
               onClick={() => setOpen((v) => !v)}
-              aria-label="toggle menu"
+              onMouseMove={setHoverVars}
+              aria-label="Toggle menu"
               aria-expanded={open}
               aria-controls={menuId}
+              className="water-hover vsp-focus inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/26 bg-white/14 text-white hover:bg-white/20 lg:hidden"
             >
-              <span className="text-xl leading-none">{open ? "×" : "≡"}</span>
+              <span className="sr-only">Menu</span>
+              <div className="relative h-4 w-5">
+                <span
+                  className={[
+                    "absolute left-0 h-0.5 w-5 bg-white transition",
+                    open ? "top-2 rotate-45" : "top-0",
+                  ].join(" ")}
+                />
+                <span
+                  className={[
+                    "absolute left-0 top-2 h-0.5 w-5 bg-white transition",
+                    open ? "opacity-0" : "opacity-100",
+                  ].join(" ")}
+                />
+                <span
+                  className={[
+                    "absolute left-0 h-0.5 w-5 bg-white transition",
+                    open ? "top-2 -rotate-45" : "top-4",
+                  ].join(" ")}
+                />
+              </div>
             </button>
           </div>
         </div>
       </div>
 
-      {/* mobile menu untouched */}
       <div
         id={menuId}
         className={[
-          "lg:hidden overflow-hidden border-t border-white/15 bg-white/10 backdrop-blur-md",
-          "transition-[max-height,opacity] duration-300",
-          open ? "max-h-[640px] opacity-100" : "max-h-0 opacity-0",
+          "overflow-hidden border-t border-white/20 bg-white/12 backdrop-blur-md transition-[max-height,opacity] duration-300 lg:hidden",
+          open ? "max-h-[560px] opacity-100" : "max-h-0 opacity-0",
         ].join(" ")}
       >
-        <div className="mx-auto max-w-6xl px-4 py-4">
-          <nav className="grid gap-2" aria-label="mobile navigation">
-            {NAV.map((item) => {
+        <nav className="mx-auto max-w-6xl px-4 py-4" aria-label="Mobile navigation">
+          <ul className="grid gap-2">
+            {NAV_ITEMS.map((item) => {
               const active = isActive(item.href);
               return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  onMouseMove={setHoverVars}
-                  aria-current={active ? "page" : undefined}
-                  className={[
-                    "water-hover vsp-focus",
-                    "rounded-xl px-4 py-3",
-                    "text-[14px] font-semibold tracking-wide",
-                    "transition",
-                    active
-                      ? "bg-white/12 text-white ring-1 ring-white/15"
-                      : "text-white/90 hover:bg-white/10 hover:text-white",
-                  ].join(" ")}
-                >
-                  {item.label}
-                </Link>
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    onClick={() => {
+                      onNavClick(item);
+                      setOpen(false);
+                    }}
+                    onMouseMove={setHoverVars}
+                    aria-current={active ? "page" : undefined}
+                    className={[
+                      "water-hover vsp-focus inline-flex w-full rounded-xl border px-4 py-3 text-[13px] font-semibold tracking-wide",
+                      active
+                        ? "border-white/36 bg-white/16 text-white"
+                        : "border-white/12 text-white/92 hover:border-white/24 hover:bg-white/10",
+                    ].join(" ")}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
               );
             })}
-          </nav>
-        </div>
+            <li>
+              <Link
+                href="/order"
+                onClick={() => {
+                  trackEvent("open_order", { source: "mobile_menu" });
+                  setOpen(false);
+                }}
+                onMouseMove={setHoverVars}
+                className="water-hover vsp-focus inline-flex w-full justify-center rounded-xl border border-white/24 bg-white px-4 py-3 text-xs font-semibold tracking-widest text-[rgb(var(--vsp-red))]"
+              >
+                REQUEST ORDER
+              </Link>
+            </li>
+          </ul>
+        </nav>
       </div>
     </header>
   );
