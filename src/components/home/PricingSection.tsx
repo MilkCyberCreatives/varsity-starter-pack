@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, type Variants, easeOut } from "framer-motion";
 import { useMemo } from "react";
 import { PLANS } from "@/lib/plans";
@@ -63,6 +63,7 @@ function HeartIcon() {
 }
 
 export default function PricingSection() {
+  const router = useRouter();
   const planImages = useMemo(
     () => ({
       fridge: { src: "/images/pricing/fridge.jpg", alt: "Student fridge rental" },
@@ -85,6 +86,29 @@ export default function PricingSection() {
     if (s.includes("microwave") || n.includes("microwave")) return planImages.microwave;
     if (s.includes("fridge") || n.includes("fridge")) return planImages.fridge;
     return planImages.combo;
+  };
+
+  const openOrder = (slug: string) => {
+    trackEvent("select_appliance", {
+      appliance: slug,
+      source: "pricing_card",
+    });
+    router.push(`/order?appliance=${encodeURIComponent(slug)}`);
+  };
+
+  const openWhatsApp = (slug: string, name: string) => {
+    trackEvent("click_whatsapp", {
+      source: "pricing_card",
+      appliance: slug,
+    });
+
+    const url = `https://wa.me/27734921669?text=${encodeURIComponent(
+      `Hi, I would like to rent a ${name}. Please send me the requirements and next steps.`
+    )}`;
+
+    if (typeof window !== "undefined") {
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
   };
 
   return (
@@ -241,38 +265,23 @@ export default function PricingSection() {
                 </div>
 
                 <div className="mt-2 grid gap-1.5 px-4 pb-4">
-                  <Link
-                    href={`/order?appliance=${encodeURIComponent(plan.slug)}`}
-                    prefetch={false}
-                    onClick={() =>
-                      trackEvent("select_appliance", {
-                        appliance: plan.slug,
-                        source: "pricing_card",
-                      })
-                    }
+                  <button
+                    type="button"
+                    onClick={() => openOrder(plan.slug)}
                     onMouseMove={setHoverVars}
-                    className="water-hover vsp-focus inline-flex h-10 w-full items-center justify-center rounded-full border border-black/80 bg-black px-5 text-[11px] font-semibold tracking-[0.06em] text-white"
+                    className="water-hover vsp-focus relative z-10 inline-flex h-10 w-full items-center justify-center rounded-full border border-black/80 bg-black px-5 text-[11px] font-semibold tracking-[0.06em] text-white"
                   >
                     SELECT AND REQUEST
-                  </Link>
+                  </button>
 
-                  <a
-                    href={`https://wa.me/27734921669?text=${encodeURIComponent(
-                      `Hi, I would like to rent a ${plan.name}. Please send me the requirements and next steps.`
-                    )}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={() =>
-                      trackEvent("click_whatsapp", {
-                        source: "pricing_card",
-                        appliance: plan.slug,
-                      })
-                    }
+                  <button
+                    type="button"
+                    onClick={() => openWhatsApp(plan.slug, plan.name)}
                     onMouseMove={setHoverVars}
-                    className="water-hover vsp-focus inline-flex h-[34px] w-full items-center justify-center rounded-full border border-black/16 bg-white px-5 text-[10px] font-semibold tracking-widest text-black/80"
+                    className="water-hover vsp-focus relative z-10 inline-flex h-[34px] w-full items-center justify-center rounded-full border border-black/16 bg-white px-5 text-[10px] font-semibold tracking-widest text-black/80"
                   >
                     WHATSAPP
-                  </a>
+                  </button>
 
                   <p className="text-center text-[10px] text-black/55">
                     Receive a unique reference number after requesting.
