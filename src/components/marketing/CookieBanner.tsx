@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const CONSENT_KEY = "vsp_cookie_consent_v1";
 export type ConsentState = "accepted" | "declined" | null;
@@ -34,8 +34,24 @@ function setHoverVars(e: React.MouseEvent<HTMLElement>) {
 
 export default function CookieBanner() {
   const [consent, setConsent] = useState<ConsentState>(() => readConsent());
+  const [footerVisible, setFooterVisible] = useState(false);
 
-  if (consent) return null;
+  useEffect(() => {
+    if (typeof window === "undefined" || !("IntersectionObserver" in window)) return;
+    const footer = document.querySelector("footer");
+    if (!footer) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        setFooterVisible(entries[0]?.isIntersecting ?? false);
+      },
+      { threshold: 0.01 }
+    );
+    observer.observe(footer);
+    return () => observer.disconnect();
+  }, []);
+
+  if (consent || footerVisible) return null;
 
   return (
     <div className="fixed bottom-4 right-4 z-[80] w-[min(94vw,420px)] sm:bottom-6 sm:right-6">
