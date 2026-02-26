@@ -282,6 +282,47 @@ select {
   background-position: center top, center top, 0 0;
 }
 
+.vsp-page-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(900px circle at 20% 16%, rgba(255, 255, 255, 0.1), transparent 60%),
+    radial-gradient(820px circle at 78% 22%, rgba(255, 255, 255, 0.08), transparent 62%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.04) 0 1px,
+      transparent 1px 84px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.03) 0 1px,
+      transparent 1px 84px
+    );
+  opacity: 0.28;
+  animation: vspGridDrift 28s linear infinite;
+}
+
+.vsp-page-bg::after {
+  content: "";
+  position: absolute;
+  inset: -12% -8%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(560px circle at 14% 18%, rgba(255, 255, 255, 0.12), transparent 62%),
+    radial-gradient(620px circle at 86% 58%, rgba(255, 255, 255, 0.1), transparent 64%),
+    radial-gradient(480px circle at 46% 92%, rgba(255, 255, 255, 0.08), transparent 68%);
+  animation: vspGlowDrift 24s ease-in-out infinite;
+}
+
+.vsp-page-bg > * {
+  position: relative;
+  z-index: 1;
+}
+
 .vsp-red-sync {
   background: transparent;
 }
@@ -333,14 +374,15 @@ select {
   pointer-events: none;
   border: 0;
   background:
-    radial-gradient(circle at 26% 24%, rgba(255, 255, 255, 0.32), transparent 48%),
+    radial-gradient(circle at 26% 24%, rgba(255, 255, 255, 0.42), transparent 46%),
+    radial-gradient(circle at 72% 76%, rgba(255, 255, 255, 0.16), transparent 58%),
     linear-gradient(
       150deg,
-      rgba(255, 255, 255, 0.22),
-      rgba(255, 255, 255, 0.08) 58%,
-      rgba(124, 12, 12, 0.2)
+      rgba(255, 255, 255, 0.24),
+      rgba(255, 255, 255, 0.1) 56%,
+      rgba(124, 12, 12, 0.24)
     );
-  opacity: 0.86;
+  opacity: 0.92;
 }
 
 .vsp-floating-shape--pill {
@@ -353,8 +395,8 @@ select {
 
 .vsp-floating-shape--ring {
   border-radius: 9999px;
-  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.26), transparent 68%);
-  opacity: 0.54;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.34), transparent 68%);
+  opacity: 0.62;
 }
 
 .vsp-float-a {
@@ -533,6 +575,20 @@ select {
   z-index: 1;
 }
 
+.vsp-sync-fade-top::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 120px;
+  pointer-events: none;
+  background: radial-gradient(
+    58% 100px at 50% 0%,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0)
+  );
+  z-index: 1;
+}
+
 .vsp-cursor-ring,
 .vsp-cursor-dot {
   position: fixed;
@@ -628,5 +684,25 @@ body.vsp-cursor-active .vsp-cursor-dot {
   }
   50% {
     transform: translate3d(-14px, -18px, 0) rotate(-5deg);
+  }
+}
+
+@keyframes vspGlowDrift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(0, -16px, 0) scale(1.02);
+  }
+}
+
+@keyframes vspGridDrift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(12px, -10px, 0);
   }
 }
