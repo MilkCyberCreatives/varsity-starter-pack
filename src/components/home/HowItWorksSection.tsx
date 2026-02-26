@@ -36,12 +36,12 @@ const premiumEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 const wrap: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
+  show: { transition: { staggerChildren: 0.1, delayChildren: 0.08 } },
 };
 
 const fadeUp: Variants = {
-  hidden: { opacity: 1, y: 0 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.52, ease: premiumEase } },
+  hidden: { opacity: 0, y: 20, scale: 0.99 },
+  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.56, ease: premiumEase } },
 };
 
 function setHoverVars(e: React.MouseEvent<HTMLElement>) {
@@ -72,7 +72,7 @@ function StepRow({
       whileHover={
         reduceMotion
           ? undefined
-          : { y: -4, transition: { duration: 0.26, ease: premiumEase } }
+          : { y: -7, scale: 1.005, transition: { duration: 0.26, ease: premiumEase } }
       }
       onMouseMove={setHoverVars}
       className={[
@@ -171,7 +171,7 @@ export default function HowItWorksSection() {
 
         <motion.div
           variants={wrap}
-          initial="show"
+          initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.25 }}
           className="mt-10 grid gap-4 md:grid-cols-2"

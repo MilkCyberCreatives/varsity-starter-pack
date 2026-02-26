@@ -47,15 +47,16 @@ const TILES: Tile[] = [
 
 const container: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.08 } },
+  show: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
 };
 
 const item: Variants = {
-  hidden: { opacity: 1, y: 0 },
+  hidden: { opacity: 0, y: 20, scale: 0.985 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: easeOut },
+    scale: 1,
+    transition: { duration: 0.54, ease: easeOut },
   },
 };
 
@@ -76,7 +77,7 @@ export default function ProductGallerySection() {
       <div className="mx-auto max-w-6xl px-4 pb-16">
         <motion.div
           variants={container}
-          initial="show"
+          initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
           className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:auto-rows-[190px] md:grid-cols-4"
@@ -86,8 +87,8 @@ export default function ProductGallerySection() {
               key={tile.src}
               variants={item}
               className={tile.className}
-              whileHover={{ y: -4 }}
-              transition={{ duration: 0.36, ease: premiumEase }}
+              whileHover={{ y: -8, scale: 1.01 }}
+              transition={{ duration: 0.34, ease: premiumEase }}
             >
               <Link
                 href={tile.href}

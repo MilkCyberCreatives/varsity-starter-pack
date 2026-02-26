@@ -11,15 +11,16 @@ const premiumEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 const container: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.1 } },
+  show: { transition: { staggerChildren: 0.12, delayChildren: 0.06 } },
 };
 
 const card: Variants = {
-  hidden: { opacity: 1, y: 0 },
+  hidden: { opacity: 0, y: 22, scale: 0.98 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.55, ease: easeOut },
+    scale: 1,
+    transition: { duration: 0.58, ease: easeOut },
   },
 };
 
@@ -166,7 +167,7 @@ export default function PricingSection() {
 
         <motion.div
           variants={container}
-          initial="show"
+          initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
           className="mt-9 grid gap-5 lg:grid-cols-3"
@@ -182,8 +183,8 @@ export default function PricingSection() {
               <motion.article
                 key={plan.slug}
                 variants={card}
-                whileHover={{ y: -4 }}
-                transition={{ duration: 0.28, ease: premiumEase }}
+                whileHover={{ y: -8, scale: 1.01 }}
+                transition={{ duration: 0.32, ease: premiumEase }}
                 className="group vsp-sheen flex h-full flex-col overflow-hidden rounded-[34px] border border-white/50 bg-[#f1f1f1]"
                 style={{
                   background:
@@ -265,23 +266,25 @@ export default function PricingSection() {
                 </div>
 
                 <div className="mt-2 grid gap-1.5 px-4 pb-4">
-                  <button
+                  <motion.button
                     type="button"
                     onClick={() => openOrder(plan.slug)}
                     onMouseMove={setHoverVars}
+                    whileTap={{ scale: 0.98 }}
                     className="water-hover vsp-focus relative z-10 inline-flex h-10 w-full items-center justify-center rounded-full border border-black/80 bg-black px-5 text-[11px] font-semibold tracking-[0.06em] text-white"
                   >
                     SELECT AND REQUEST
-                  </button>
+                  </motion.button>
 
-                  <button
+                  <motion.button
                     type="button"
                     onClick={() => openWhatsApp(plan.slug, plan.name)}
                     onMouseMove={setHoverVars}
+                    whileTap={{ scale: 0.98 }}
                     className="water-hover vsp-focus relative z-10 inline-flex h-[34px] w-full items-center justify-center rounded-full border border-black/16 bg-white px-5 text-[10px] font-semibold tracking-widest text-black/80"
                   >
                     WHATSAPP
-                  </button>
+                  </motion.button>
 
                   <p className="text-center text-[10px] text-black/55">
                     Receive a unique reference number after requesting.

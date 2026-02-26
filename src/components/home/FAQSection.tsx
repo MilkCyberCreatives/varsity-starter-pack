@@ -28,12 +28,12 @@ const FAQS = [
 
 const container: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.08 } },
+  show: { transition: { staggerChildren: 0.1, delayChildren: 0.06 } },
 };
 
 const card: Variants = {
-  hidden: { opacity: 1, y: 0 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: premiumEase } },
+  hidden: { opacity: 0, y: 18, scale: 0.99 },
+  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.58, ease: premiumEase } },
 };
 
 function setHoverVars(e: React.MouseEvent<HTMLElement>) {
@@ -129,7 +129,7 @@ export default function FAQSection() {
 
         <motion.div
           variants={container}
-          initial="show"
+          initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.22 }}
           className="mt-10 grid gap-5 md:grid-cols-2"
@@ -145,7 +145,8 @@ export default function FAQSection() {
                   reduceMotion
                     ? undefined
                     : {
-                        y: -4,
+                        y: -6,
+                        scale: 1.006,
                         transition: { duration: 0.25, ease: premiumEase },
                       }
                 }

@@ -162,7 +162,13 @@ export default function DeliveriesMasonry() {
       />
 
       <div className="relative mx-auto max-w-6xl px-4 py-14">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+          className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"
+        >
           <div>
             <p className="text-xs font-semibold tracking-widest text-white/76">DELIVERIES</p>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
@@ -192,7 +198,7 @@ export default function DeliveriesMasonry() {
               RESHUFFLE
             </button>
           </div>
-        </div>
+        </motion.div>
 
         <div className="mt-10 columns-2 gap-4 sm:columns-3 lg:columns-4">
           {items.map((image, index) => (
@@ -201,10 +207,12 @@ export default function DeliveriesMasonry() {
               type="button"
               onClick={() => openAt(index)}
               onMouseMove={setHoverVars}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
-              className="water-hover vsp-sheen water-lift vsp-focus vsp-panel mb-4 w-full break-inside-avoid rounded-3xl text-left"
+              initial={{ opacity: 0, y: 22, scale: 0.985 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.15 }}
+              whileHover={{ y: -6, scale: 1.01 }}
+              transition={{ duration: 0.44, ease: [0.22, 1, 0.36, 1] }}
+              className="group water-hover vsp-sheen water-lift vsp-focus vsp-panel mb-4 w-full break-inside-avoid rounded-3xl text-left"
               aria-label="Open image preview"
             >
               <div className="relative w-full" style={{ height: 220 + (index % 5) * 36 }}>
@@ -212,7 +220,7 @@ export default function DeliveriesMasonry() {
                   src={image.src}
                   alt={image.alt}
                   fill
-                  className="object-cover"
+                  className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                   sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                   priority={index < 4}
                 />

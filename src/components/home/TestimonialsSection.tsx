@@ -29,15 +29,16 @@ const testimonials = [
 
 const container = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.1 } },
+  show: { transition: { staggerChildren: 0.12, delayChildren: 0.06 } },
 };
 
 const item = {
-  hidden: { opacity: 1, y: 0 },
+  hidden: { opacity: 0, y: 20, scale: 0.985 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.55, ease: premiumEase },
+    scale: 1,
+    transition: { duration: 0.58, ease: premiumEase },
   },
 };
 
@@ -91,7 +92,7 @@ export default function TestimonialsSection() {
 
         <motion.div
           variants={container}
-          initial="show"
+          initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.24 }}
           className="mt-12 grid gap-6 md:grid-cols-3"
@@ -100,8 +101,8 @@ export default function TestimonialsSection() {
             <motion.article
               key={testimonial.name}
               variants={item}
-              whileHover={{ y: -4 }}
-              transition={{ duration: 0.35, ease: premiumEase }}
+              whileHover={{ y: -8, scale: 1.01 }}
+              transition={{ duration: 0.34, ease: premiumEase }}
               onMouseMove={setHoverVars}
               className="water-hover vsp-panel rounded-3xl p-7"
             >
