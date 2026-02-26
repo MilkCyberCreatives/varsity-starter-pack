@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { createPortal } from "react-dom";
 import { PLANS } from "@/lib/plans";
 import { siteConfig } from "@/lib/site";
 import { trackEvent } from "@/lib/analytics";
@@ -153,9 +154,9 @@ export default function VirtualAssistantButton() {
     trackEvent("open_virtual_assistant", { action: "ask_question" });
   };
 
-  if (!visible) return null;
+  if (!visible || typeof document === "undefined") return null;
 
-  return (
+  return createPortal(
     <>
       {open ? (
         <aside
@@ -268,6 +269,7 @@ export default function VirtualAssistantButton() {
         </svg>
         ASSIST
       </button>
-    </>
+    </>,
+    document.body
   );
 }

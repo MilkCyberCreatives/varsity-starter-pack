@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { trackEvent } from "@/lib/analytics";
 
 const CONSENT_KEY = "vsp_cookie_consent_v1";
@@ -51,11 +52,11 @@ export default function ScrollToTopButton() {
     };
   }, []);
 
-  if (!visible) return null;
+  if (!visible || typeof document === "undefined") return null;
   const rightInset = "max(24px, env(safe-area-inset-right))";
   const bottomInset = cookieSet ? "16px" : "112px";
 
-  return (
+  return createPortal(
     <button
       type="button"
       aria-label="Scroll to top"
@@ -77,6 +78,7 @@ export default function ScrollToTopButton() {
       <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5 fill-current">
         <path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12z" />
       </svg>
-    </button>
+    </button>,
+    document.body
   );
 }
