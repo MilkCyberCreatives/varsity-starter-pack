@@ -12,7 +12,6 @@
   supportEmail: "info@varsitystarterpack.co.za",
   whatsappNumber: "27734921669",
   phonePrimary: "+27 73 492 1669",
-  phoneSecondary: "+27 71 270 8068",
   address: {
     addressLocality: "Johannesburg",
     addressRegion: "Gauteng",

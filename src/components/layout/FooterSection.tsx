@@ -92,10 +92,6 @@ export default function FooterSection() {
                 <a href="tel:0734921669" className="hover:text-white">
                   073 492 1669
                 </a>{" "}
-                /{" "}
-                <a href="tel:0712708068" className="hover:text-white">
-                  071 270 8068
-                </a>
               </p>
               <p>
                 <span className="font-semibold text-white">email:</span>{" "}
