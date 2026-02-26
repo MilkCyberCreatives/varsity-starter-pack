@@ -40,25 +40,6 @@ export default function ContactPage() {
 
         <div className="mt-8 grid gap-6 md:grid-cols-2">
           <div className="vsp-card rounded-3xl p-6">
-            <p className="text-xs font-semibold tracking-widest text-white/76">WHATSAPP</p>
-
-            <p className="mt-3 text-sm text-white/84">
-              fastest way to reach us for orders and confirmations.
-            </p>
-
-            <TrackedExternalLink
-              href={`https://wa.me/${siteConfig.whatsappNumber}`}
-              target="_blank"
-              rel="noreferrer"
-              eventName="click_whatsapp"
-              payload={{ source: "contact_page" }}
-              className="water-hover water-lift vsp-focus mt-5 inline-flex items-center justify-center rounded-xl border border-transparent bg-[rgb(var(--vsp-red))] px-6 py-3 text-xs font-semibold tracking-widest text-white"
-            >
-              CHAT ON WHATSAPP
-            </TrackedExternalLink>
-          </div>
-
-          <div className="vsp-card rounded-3xl p-6">
             <p className="text-xs font-semibold tracking-widest text-white/76">EMAIL</p>
 
             <p className="mt-3 text-sm text-white/84">for general enquiries and support.</p>
