@@ -19,7 +19,7 @@ export default function GlobalFloatingItems() {
     <div
       aria-hidden="true"
       className={[
-        "pointer-events-none absolute inset-x-0 top-0 z-[3] h-[1200px] overflow-hidden transition-opacity duration-500 md:h-[1400px]",
+        "pointer-events-none fixed inset-0 z-[3] h-screen overflow-hidden transition-opacity duration-500",
         visible ? "opacity-100" : "opacity-0",
       ].join(" ")}
     >
