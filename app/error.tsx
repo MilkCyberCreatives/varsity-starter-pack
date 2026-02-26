@@ -22,7 +22,7 @@ export default function GlobalError({
       <section className="mx-auto max-w-6xl px-4 py-16">
         <p className="text-xs font-semibold tracking-widest text-white/76">ERROR</p>
         <h1 className="mt-3 text-4xl font-medium tracking-tight text-white">
-          something went wrong
+          Something Went Wrong
         </h1>
         <p className="mt-4 max-w-2xl text-base text-white/84">
           please try again. if it keeps happening, use WhatsApp and we will help.

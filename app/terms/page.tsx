@@ -16,15 +16,15 @@ export default function TermsPage() {
     <main className="flex min-h-screen flex-col vsp-page-bg">
       <MainHeader />
       <BreadcrumbHero
-        title="terms"
-        subtitle="rental terms and conditions."
+        title="Terms"
+        subtitle="Rental Terms And Conditions."
         crumbs={[{ label: "HOME", href: "/" }, { label: "TERMS" }]}
       />
 
       <section className="mx-auto max-w-4xl px-4 py-16">
         <div className="vsp-card rounded-3xl p-6 text-sm leading-relaxed text-white/84 sm:p-8">
           <h1 className="text-3xl font-semibold tracking-tight text-white">
-            terms and conditions
+            Terms And Conditions
           </h1>
           <p className="mt-4">
             Rentals are for students and require verification documents before

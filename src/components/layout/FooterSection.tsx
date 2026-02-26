@@ -84,17 +84,17 @@ export default function FooterSection() {
 
             <div className="mt-4 space-y-2.5 text-sm text-white/84">
               <p>
-                <span className="font-semibold text-white">location:</span> Midrand,
+                <span className="font-semibold text-white">Location:</span> Midrand,
                 Gauteng, South Africa
               </p>
               <p>
-                <span className="font-semibold text-white">whatsapp:</span>{" "}
+                <span className="font-semibold text-white">WhatsApp:</span>{" "}
                 <a href="tel:0734921669" className="hover:text-white">
                   073 492 1669
                 </a>{" "}
               </p>
               <p>
-                <span className="font-semibold text-white">email:</span>{" "}
+                <span className="font-semibold text-white">Email:</span>{" "}
                 <a
                   href={`mailto:${siteConfig.supportEmail}`}
                   className="hover:text-white"

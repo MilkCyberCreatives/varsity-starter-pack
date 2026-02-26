@@ -64,8 +64,8 @@ export default function FAQPage() {
       <JsonLd data={faqSchema} />
       <MainHeader />
       <BreadcrumbHero
-        title="faq"
-        subtitle="quick answers to the most common questions."
+        title="FAQ"
+        subtitle="Quick Answers To The Most Common Questions."
         crumbs={[{ label: "HOME", href: "/" }, { label: "FAQ" }]}
       />
 

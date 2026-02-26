@@ -61,8 +61,8 @@ export default function PricingPage() {
       <JsonLd data={serviceSchema} />
       <MainHeader />
       <BreadcrumbHero
-        title="pricing"
-        subtitle="clear rates, refundable deposits, student-only rentals."
+        title="Pricing"
+        subtitle="Clear Rates, Refundable Deposits, Student-Only Rentals."
         crumbs={[{ label: "HOME", href: "/" }, { label: "PRICING" }]}
       />
 

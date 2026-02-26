@@ -16,15 +16,15 @@ export default function PrivacyPage() {
     <main className="flex min-h-screen flex-col vsp-page-bg">
       <MainHeader />
       <BreadcrumbHero
-        title="privacy"
-        subtitle="how we collect and use your information."
+        title="Privacy"
+        subtitle="How We Collect And Use Your Information."
         crumbs={[{ label: "HOME", href: "/" }, { label: "PRIVACY" }]}
       />
 
       <section className="mx-auto max-w-4xl px-4 py-16">
         <div className="vsp-card rounded-3xl p-6 text-sm leading-relaxed text-white/84 sm:p-8">
           <h1 className="text-3xl font-semibold tracking-tight text-white">
-          privacy policy
+          Privacy Policy
           </h1>
           <p className="mt-4">
             We collect personal details you submit in the order form to process

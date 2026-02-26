@@ -22,14 +22,14 @@ export default function TestimonialsPage() {
       <MainHeader />
 
       <BreadcrumbHero
-        title="testimonials"
-        subtitle="what students say about the experience."
+        title="Testimonials"
+        subtitle="What Students Say About The Experience."
         crumbs={[{ label: "HOME", href: "/" }, { label: "TESTIMONIALS" }]}
       />
 
       <section className="mx-auto max-w-6xl px-4 py-16">
         <p className="text-xs font-semibold tracking-widest text-white/76">TESTIMONIALS</p>
-        <h1 className="mt-3 text-4xl font-medium tracking-tight text-white">what students say</h1>
+        <h1 className="mt-3 text-4xl font-medium tracking-tight text-white">What Students Say</h1>
         <p className="mt-4 max-w-2xl text-base text-white/84">
           student feedback and review highlights from verified delivery clients.
         </p>

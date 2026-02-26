@@ -21,8 +21,8 @@ export default function AboutPage() {
     <main className="flex min-h-screen flex-col vsp-page-bg">
       <MainHeader />
       <BreadcrumbHero
-        title="about"
-        subtitle="student-only appliance rentals designed for res life."
+        title="About"
+        subtitle="Student-Only Appliance Rentals Designed For Res Life."
         crumbs={[{ label: "HOME", href: "/" }, { label: "ABOUT" }]}
       />
 
@@ -30,7 +30,7 @@ export default function AboutPage() {
         <p className="text-xs font-semibold tracking-widest text-white/76">ABOUT</p>
 
         <h1 className="mt-3 text-4xl font-medium tracking-tight text-white">
-          varsity starter pack
+          Varsity Starter Pack
         </h1>
 
         <p className="mt-4 max-w-3xl text-base text-white/84">

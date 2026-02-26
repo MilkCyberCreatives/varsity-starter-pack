@@ -24,15 +24,15 @@ export default function ContactPage() {
     <main className="flex min-h-screen flex-col vsp-page-bg">
       <MainHeader />
       <BreadcrumbHero
-        title="contact"
-        subtitle="whatsapp is the fastest way to confirm availability."
+        title="Contact"
+        subtitle="WhatsApp Is The Fastest Way To Confirm Availability."
         crumbs={[{ label: "HOME", href: "/" }, { label: "CONTACT" }]}
       />
 
       <section className="vsp-sync-fade-top mx-auto max-w-6xl px-4 py-16">
         <p className="text-xs font-semibold tracking-widest text-white/76">CONTACT</p>
 
-        <h1 className="mt-3 text-4xl font-medium tracking-tight text-white">get in touch</h1>
+        <h1 className="mt-3 text-4xl font-medium tracking-tight text-white">Get In Touch</h1>
 
         <p className="mt-4 max-w-2xl text-base text-white/84">
           have questions about rentals, deposits, or delivery? reach out and we will

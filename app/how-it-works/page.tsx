@@ -22,8 +22,8 @@ export default function HowItWorksPage() {
     <main className="flex min-h-screen flex-col vsp-page-bg">
       <MainHeader />
       <BreadcrumbHero
-        title="how it works"
-        subtitle="simple steps, zero stress."
+        title="How It Works"
+        subtitle="Simple Steps, Zero Stress."
         crumbs={[{ label: "HOME", href: "/" }, { label: "HOW IT WORKS" }]}
       />
 
