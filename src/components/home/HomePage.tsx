@@ -9,17 +9,15 @@ import TestimonialsSection from "@/components/home/TestimonialsSection";
 
 export default function HomePage() {
   return (
-    <main className="relative flex min-h-screen flex-col vsp-page-bg">
-      <div className="relative z-10 flex min-h-screen flex-col">
-        <MainHeader />
-        <HeroSection />
-        <PricingSection />
-        <ProductGallerySection />
-        <HowItWorksSection />
-        <FAQSection />
-        <TestimonialsSection />
-        <FooterSection />
-      </div>
+    <main className="relative z-10 flex flex-col vsp-page-bg">
+      <MainHeader />
+      <HeroSection />
+      <PricingSection />
+      <ProductGallerySection />
+      <HowItWorksSection />
+      <FAQSection />
+      <TestimonialsSection />
+      <FooterSection />
     </main>
   );
 }
