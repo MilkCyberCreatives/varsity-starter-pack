@@ -84,8 +84,8 @@ export default function FooterSection() {
 
             <div className="mt-4 space-y-2.5 text-sm text-white/84">
               <p>
-                <span className="font-semibold text-white">location:</span> Gauteng,
-                South Africa
+                <span className="font-semibold text-white">location:</span> Midrand,
+                Gauteng, South Africa
               </p>
               <p>
                 <span className="font-semibold text-white">whatsapp:</span>{" "}
