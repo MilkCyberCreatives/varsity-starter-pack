@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 export default function GlobalFloatingItems() {
   const [visible, setVisible] = useState(false);
+  const [footerVisible, setFooterVisible] = useState(false);
 
   useEffect(() => {
     const onScroll = () => {
@@ -15,12 +16,27 @@ export default function GlobalFloatingItems() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined" || !("IntersectionObserver" in window)) return;
+    const footer = document.querySelector("footer");
+    if (!footer) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        setFooterVisible(entries[0]?.isIntersecting ?? false);
+      },
+      { threshold: 0.01 }
+    );
+    observer.observe(footer);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div
       aria-hidden="true"
       className={[
         "pointer-events-none fixed inset-0 z-[3] h-screen overflow-hidden transition-opacity duration-500",
-        visible ? "opacity-100" : "opacity-0",
+        visible && !footerVisible ? "opacity-100" : "opacity-0",
       ].join(" ")}
     >
       <span
