@@ -1,12 +1,8 @@
-export type DeliveryImage = {
+﻿export type DeliveryImage = {
   src: string;
   alt: string;
 };
 
-/**
- * Add as many as you want.
- * Put the files in: /public/images/deliveries/
- */
 export const DELIVERY_IMAGES: DeliveryImage[] = [
   { src: "/images/deliveries/delivery-01.jpg", alt: "Delivery at student residence" },
   { src: "/images/deliveries/delivery-02.jpg", alt: "Fridge delivery at apartment" },
@@ -20,6 +16,14 @@ export const DELIVERY_IMAGES: DeliveryImage[] = [
   { src: "/images/deliveries/delivery-10.jpg", alt: "Delivery confirmation" },
   { src: "/images/deliveries/delivery-11.jpg", alt: "Appliance delivery completed" },
   { src: "/images/deliveries/delivery-12.jpg", alt: "Delivery at campus accommodation" },
-
-  // add more here...
+  { src: "/images/deliveries/delivery-13.jpg", alt: "Student rental handover image" },
+  { src: "/images/deliveries/delivery-14.jpg", alt: "Res appliance setup" },
+  { src: "/images/deliveries/delivery-15.jpg", alt: "Apartment appliance drop-off" },
+  { src: "/images/deliveries/delivery-16.jpg", alt: "Student appliance placement" },
+  { src: "/images/deliveries/delivery-17.jpg", alt: "Delivery support team" },
+  { src: "/images/deliveries/delivery-18.jpg", alt: "Rental appliance delivery photo" },
+  { src: "/images/deliveries/delivery-19.jpg", alt: "Student residence delivery" },
+  { src: "/images/deliveries/delivery-20.jpg", alt: "Gauteng delivery update" },
+  { src: "/images/deliveries/delivery-21.jpg", alt: "Campus appliance handover" },
 ];
+

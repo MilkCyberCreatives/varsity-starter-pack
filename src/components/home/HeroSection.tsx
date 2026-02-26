@@ -36,30 +36,30 @@ export default function HeroSection() {
           }
         />
 
-        <div className="relative z-10 mx-auto max-w-7xl px-4 pb-14 pt-12 sm:pb-16 sm:pt-14">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 pb-16 pt-14 sm:pb-18 sm:pt-16">
           <motion.div
             initial={reduceMotion ? false : { opacity: 0, y: 14 }}
             whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="grid gap-8 lg:grid-cols-[1.06fr_0.94fr] lg:items-center lg:gap-10"
+            className="grid gap-8 lg:grid-cols-[1.06fr_0.94fr] lg:items-center lg:gap-12"
           >
-            <div className="py-3 sm:py-5 lg:py-6">
+            <div className="py-3 sm:py-5 lg:py-7">
               <div className="max-w-2xl lg:max-w-3xl">
-                <h1 className="max-w-[14ch] text-balance text-4xl font-semibold leading-[0.94] tracking-tight text-white sm:text-5xl lg:text-[70px]">
+                <h1 className="max-w-[13ch] text-balance text-4xl font-semibold leading-[0.93] tracking-[-0.03em] text-white sm:text-5xl lg:text-[68px]">
                   FRIDGE AND MICROWAVE HIRE FOR STUDENTS
                 </h1>
 
-                <p className="mt-4 max-w-xl text-sm text-white/88 sm:text-base">
+                <p className="mt-5 max-w-[32rem] text-sm leading-relaxed text-white/88 sm:text-base">
                   Student appliance rentals with maintenance included and delivery to your res or apartment.
                 </p>
 
-                <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   <Link
                     href="/order"
                     onClick={() => trackEvent("open_order", { source: "hero_cta" })}
                     onMouseMove={setHoverVars}
-                    className="water-hover water-lift vsp-focus inline-flex items-center justify-center rounded-xl border border-white/26 bg-white px-7 py-3 text-xs font-semibold tracking-widest text-[rgb(var(--vsp-red))]"
+                    className="water-hover water-lift vsp-focus inline-flex items-center justify-center rounded-full border border-white/28 bg-white px-7 py-3 text-xs font-semibold tracking-widest text-[rgb(var(--vsp-red))]"
                   >
                     REQUEST ORDER
                   </Link>
@@ -70,7 +70,7 @@ export default function HeroSection() {
                     rel="noreferrer"
                     onClick={() => trackEvent("click_whatsapp", { source: "hero" })}
                     onMouseMove={setHoverVars}
-                    className="water-hover vsp-focus inline-flex items-center justify-center rounded-xl border border-white/30 bg-white/14 px-7 py-3 text-xs font-semibold tracking-widest text-white hover:bg-white/20"
+                    className="water-hover vsp-focus inline-flex items-center justify-center rounded-full border border-white/30 bg-white/14 px-7 py-3 text-xs font-semibold tracking-widest text-white hover:bg-white/20"
                   >
                     WHATSAPP
                   </a>

@@ -17,7 +17,7 @@ export default function FooterSection() {
   const year = new Date().getUTCFullYear();
 
   return (
-    <footer className="vsp-red-sync relative mt-auto mb-0 overflow-hidden pb-0">
+    <footer className="relative mt-auto mb-0 overflow-hidden bg-[linear-gradient(180deg,rgba(142,12,12,0.94),rgba(142,12,12,0.98))] pb-0">
       <div className="relative mx-auto max-w-6xl px-4 pb-0 pt-10 sm:pt-12">
         <div className="grid gap-10 border-b border-white/20 pb-10 md:grid-cols-12">
           <div className="md:col-span-5">
@@ -129,7 +129,7 @@ export default function FooterSection() {
           </div>
         </div>
 
-        <div className="grid items-center gap-2 py-3 text-xs leading-none text-white/74 md:grid-cols-3">
+        <div className="grid items-center gap-2 py-4 text-xs leading-none text-white/74 md:grid-cols-3">
           <p className="md:justify-self-start">(c) {year} Varsity Starter Pack. All rights reserved.</p>
           <a
             href="https://milkcybercreatives.co.za/"

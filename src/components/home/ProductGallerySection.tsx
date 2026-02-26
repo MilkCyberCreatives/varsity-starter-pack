@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion, type Variants, easeOut } from "framer-motion";
+import { trackEvent } from "@/lib/analytics";
 
 type Tile = {
   src: string;
@@ -50,61 +51,76 @@ const container: Variants = {
 };
 
 const item: Variants = {
-  hidden: { opacity: 0, y: 14 },
+  hidden: { opacity: 1, y: 0 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.55, ease: easeOut },
+    transition: { duration: 0.5, ease: easeOut },
   },
 };
 
-// Premium easing curve
 const premiumEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
+function setHoverVars(e: React.MouseEvent<HTMLElement>) {
+  const el = e.currentTarget;
+  const rect = el.getBoundingClientRect();
+  const mx = ((e.clientX - rect.left) / rect.width) * 100;
+  const my = ((e.clientY - rect.top) / rect.height) * 100;
+  el.style.setProperty("--mx", `${mx}%`);
+  el.style.setProperty("--my", `${my}%`);
+}
 
 export default function ProductGallerySection() {
   return (
-    <section className="bg-white">
+    <section className="vsp-sync-fade-top relative overflow-hidden bg-transparent">
       <div className="mx-auto max-w-6xl px-4 pb-16">
         <motion.div
           variants={container}
-          initial="hidden"
+          initial="show"
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
-          className="
-            grid gap-4
-            md:grid-cols-4 md:auto-rows-[190px]
-          "
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:auto-rows-[190px] md:grid-cols-4"
         >
-          {TILES.map((t) => (
+          {TILES.map((tile) => (
             <motion.div
-              key={t.src}
+              key={tile.src}
               variants={item}
-              className={t.className}
-              whileHover={{ y: -6 }}
-              transition={{ duration: 0.45, ease: premiumEase }}
+              className={tile.className}
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.36, ease: premiumEase }}
             >
               <Link
-                href={t.href}
-                className="group relative block h-full w-full overflow-hidden rounded-3xl bg-black/5"
+                href={tile.href}
+                prefetch={false}
+                onClick={() =>
+                  trackEvent("select_appliance", {
+                    source: "gallery",
+                    href: tile.href,
+                  })
+                }
+                onMouseMove={setHoverVars}
+                className="water-hover vsp-focus vsp-panel group relative block h-[220px] w-full rounded-3xl sm:h-[240px] md:h-full"
                 aria-label="open order page"
               >
-                {/* image */}
                 <Image
-                  src={t.src}
-                  alt={t.alt}
+                  src={tile.src}
+                  alt={tile.alt}
                   fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-[1.06]"
+                  className="object-cover transition-transform duration-500 group-hover:scale-[1.05]"
                   sizes="(max-width: 768px) 100vw, 25vw"
                 />
 
-                {/* premium overlay (soft) */}
-                <div className="pointer-events-none absolute inset-0 bg-black/0 transition duration-500 group-hover:bg-black/12" />
+                <div
+                  className="pointer-events-none absolute inset-0"
+                  style={{
+                    background:
+                      "linear-gradient(to bottom, rgba(255,255,255,0.03), rgba(255,255,255,0.18))",
+                  }}
+                />
 
-                {/* edge highlight (feels premium) */}
-                <div className="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-black/0 transition duration-500 group-hover:ring-black/10" />
+                <div className="pointer-events-none absolute inset-0 rounded-3xl border border-white/0 transition duration-500 group-hover:border-white/26" />
 
-                {/* subtle corner sheen */}
-                <div className="pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full bg-white/0 blur-2xl transition duration-500 group-hover:bg-white/12" />
+                <div className="pointer-events-none absolute -left-20 -top-20 h-52 w-52 rounded-full bg-white/0 blur-2xl transition duration-500 group-hover:bg-white/16" />
               </Link>
             </motion.div>
           ))}

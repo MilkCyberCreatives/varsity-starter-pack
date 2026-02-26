@@ -1,33 +1,11 @@
-import dynamic from "next/dynamic";
 import MainHeader from "@/components/layout/MainHeader";
 import HeroSection from "@/components/home/HeroSection";
 import PricingSection from "@/components/home/PricingSection";
 import FooterSection from "@/components/layout/FooterSection";
-
-const ProductGallerySection = dynamic(
-  () => import("@/components/home/ProductGallerySection"),
-  {
-    loading: () => <section className="mx-auto max-w-6xl px-4 py-16" aria-hidden="true" />,
-  }
-);
-
-const HowItWorksSection = dynamic(
-  () => import("@/components/home/HowItWorksSection"),
-  {
-    loading: () => <section className="mx-auto max-w-6xl px-4 py-16" aria-hidden="true" />,
-  }
-);
-
-const FAQSection = dynamic(() => import("@/components/home/FAQSection"), {
-  loading: () => <section className="mx-auto max-w-6xl px-4 py-16" aria-hidden="true" />,
-});
-
-const TestimonialsSection = dynamic(
-  () => import("@/components/home/TestimonialsSection"),
-  {
-    loading: () => <section className="mx-auto max-w-6xl px-4 py-16" aria-hidden="true" />,
-  }
-);
+import ProductGallerySection from "@/components/home/ProductGallerySection";
+import HowItWorksSection from "@/components/home/HowItWorksSection";
+import FAQSection from "@/components/home/FAQSection";
+import TestimonialsSection from "@/components/home/TestimonialsSection";
 
 export default function HomePage() {
   return (

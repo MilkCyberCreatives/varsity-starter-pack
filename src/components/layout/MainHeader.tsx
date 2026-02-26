@@ -69,10 +69,10 @@ export default function MainHeader() {
 
   return (
     <header
-      className="vsp-red-sync sticky top-0 z-50"
+      className="vsp-red-sync sticky top-0 z-50 border-b border-white/12"
       style={{
-        backgroundColor: scrolled ? "rgb(var(--vsp-red-deep))" : "rgba(120,10,10,0.06)",
-        backdropFilter: "blur(12px)",
+        backgroundColor: scrolled ? "rgba(142,12,12,0.96)" : "rgba(142,12,12,0.82)",
+        backdropFilter: "blur(14px)",
       }}
     >
       <div
@@ -107,7 +107,7 @@ export default function MainHeader() {
             aria-label="Main navigation"
             className="hidden items-center justify-center lg:flex"
           >
-            <div className="vsp-panel-soft rounded-full px-1.5 py-1">
+            <div className="vsp-panel-soft rounded-full border border-white/20 px-2 py-1.5">
               <ul className="flex flex-nowrap items-center gap-0.5 xl:gap-1">
                 {NAV_ITEMS.map((item) => {
                   const active = isActive(item.href);
@@ -119,7 +119,7 @@ export default function MainHeader() {
                         onMouseMove={setHoverVars}
                         aria-current={active ? "page" : undefined}
                         className={[
-                          "water-hover vsp-focus relative inline-flex whitespace-nowrap rounded-full border px-2.5 py-2 text-[12px] font-semibold tracking-wide xl:px-3",
+                          "water-hover vsp-focus relative inline-flex whitespace-nowrap rounded-full border px-3 py-2 text-[12.5px] font-semibold tracking-wide xl:px-3.5",
                           active
                             ? "border-white/40 bg-white/16 text-white"
                             : "border-transparent text-white/92 hover:border-white/24 hover:bg-white/10",
@@ -139,7 +139,7 @@ export default function MainHeader() {
               href="/order"
               onClick={() => trackEvent("open_order", { source: "header_cta" })}
               onMouseMove={setHoverVars}
-              className="water-hover water-lift vsp-focus hidden rounded-full border border-white/26 bg-white px-5 py-2.5 text-xs font-semibold tracking-widest text-[rgb(var(--vsp-red))] sm:inline-flex"
+              className="water-hover water-lift vsp-focus hidden rounded-full border border-white/28 bg-white px-5 py-2.5 text-xs font-semibold tracking-widest text-[rgb(var(--vsp-red))] sm:inline-flex"
             >
               REQUEST ORDER
             </Link>
@@ -150,7 +150,7 @@ export default function MainHeader() {
               aria-label="Visit Facebook page"
               onClick={() => trackEvent("click_facebook", { source: "header_cta" })}
               onMouseMove={setHoverVars}
-              className="water-hover water-lift vsp-focus hidden h-10 w-10 items-center justify-center rounded-full border border-white/26 bg-white text-[rgb(var(--vsp-red))] sm:inline-flex"
+              className="water-hover water-lift vsp-focus hidden h-9 w-9 items-center justify-center rounded-full border border-white/28 bg-white text-[rgb(var(--vsp-red))] sm:inline-flex"
             >
               <svg
                 viewBox="0 0 24 24"

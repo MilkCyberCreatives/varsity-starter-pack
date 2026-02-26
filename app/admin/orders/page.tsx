@@ -17,6 +17,18 @@ type SearchParams = {
   to?: string; // YYYY-MM-DD
 };
 
+type OrderRow = {
+  id: string;
+  reference: string;
+  appliance: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  months: number;
+  emailed: boolean;
+  createdAt: Date;
+};
+
 async function toggleEmailed(formData: FormData) {
   "use server";
   const id = String(formData.get("id") ?? "");
@@ -140,6 +152,7 @@ export default async function AdminOrdersPage({
   const fromDate = parseDateStart(from);
   const toDate = parseDateEnd(to);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: any = {};
 
   if (q) {
@@ -174,7 +187,10 @@ export default async function AdminOrdersPage({
   const emailedPct = total ? Math.round((emailedCount / total) * 100) : 0;
 
   const applianceMap = new Map(
-    byAppliance.map((x) => [x.appliance, x._count.appliance])
+    byAppliance.map((x: { appliance: string; _count: { appliance: number } }) => [
+      x.appliance,
+      x._count.appliance,
+    ])
   );
 
   return (
@@ -321,7 +337,7 @@ export default async function AdminOrdersPage({
               </thead>
 
               <tbody>
-                {orders.map((o) => (
+                {orders.map((o: OrderRow) => (
                   <tr key={o.id} className="border-t border-black/5">
                     <td className="px-4 py-3 text-black/70">
                       {new Date(o.createdAt).toLocaleString()}

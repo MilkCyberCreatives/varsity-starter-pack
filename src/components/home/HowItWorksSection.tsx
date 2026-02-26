@@ -2,9 +2,7 @@
 
 import Link from "next/link";
 import { motion, type Variants, useReducedMotion } from "framer-motion";
-
-const PRIMARY = "#c41a1a";
-const SECONDARY = "#1374b8";
+import { trackEvent } from "@/lib/analytics";
 
 const STEPS = [
   {
@@ -34,18 +32,26 @@ const STEPS = [
   },
 ];
 
-// Premium easing
 const premiumEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 const wrap: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.09, delayChildren: 0.05 } },
+  show: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
 };
 
 const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 14 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: premiumEase } },
+  hidden: { opacity: 1, y: 0 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.52, ease: premiumEase } },
 };
+
+function setHoverVars(e: React.MouseEvent<HTMLElement>) {
+  const el = e.currentTarget;
+  const rect = el.getBoundingClientRect();
+  const mx = ((e.clientX - rect.left) / rect.width) * 100;
+  const my = ((e.clientY - rect.top) / rect.height) * 100;
+  el.style.setProperty("--mx", `${mx}%`);
+  el.style.setProperty("--my", `${my}%`);
+}
 
 function StepRow({
   n,
@@ -66,82 +72,35 @@ function StepRow({
       whileHover={
         reduceMotion
           ? undefined
-          : {
-              y: -6,
-              transition: { duration: 0.28, ease: premiumEase },
-            }
+          : { y: -4, transition: { duration: 0.26, ease: premiumEase } }
       }
+      onMouseMove={setHoverVars}
       className={[
-        "group relative rounded-3xl border bg-white",
-        "border-black/10",
-        "px-5 py-5 sm:px-6 sm:py-6",
-        "water-hover water-lift vsp-focus", // ✅ your requested effects
+        "group water-hover water-lift vsp-focus vsp-panel relative rounded-3xl px-5 py-5 sm:px-6 sm:py-6",
         isLast ? "md:col-span-2" : "",
       ].join(" ")}
-      style={{
-        // keep it crisp, no shadows
-        boxShadow: "none",
-      }}
     >
-      {/* Border highlight on hover (no shadow) */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 rounded-3xl opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-        style={{
-          border: "1px solid rgba(196,26,26,0.25)",
-        }}
-      />
-
       <div className="relative flex items-start gap-4">
-        {/* Number pill with subtle float animation */}
         <motion.div
-          animate={
-            reduceMotion
-              ? undefined
-              : {
-                  y: [0, -2, 0],
-                }
-          }
+          animate={reduceMotion ? undefined : { y: [0, -2, 0] }}
           transition={
             reduceMotion
               ? undefined
-              : { duration: 3.8, repeat: Infinity, ease: "easeInOut" }
+              : { duration: 3.6, repeat: Infinity, ease: "easeInOut" }
           }
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-sm font-semibold"
-          style={{ backgroundColor: "rgba(196,26,26,0.10)", color: PRIMARY }}
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-white/28 bg-white/16 text-sm font-semibold text-white"
         >
           {n}
         </motion.div>
 
-        {/* Content */}
         <div className="min-w-0 flex-1">
-          <h3 className="text-[15px] font-semibold tracking-tight text-black">
-            {title}
-          </h3>
-          <p className="mt-1 text-sm leading-relaxed text-black/60">{desc}</p>
-
-          {/* Animated divider line (clean, subtle) */}
-          <motion.div
-            className="mt-4 h-px w-full bg-black/5"
-            initial={false}
-            whileHover={
-              reduceMotion
-                ? undefined
-                : {
-                    backgroundColor: "rgba(196,26,26,0.22)",
-                    transition: { duration: 0.25, ease: premiumEase },
-                  }
-            }
-          />
+          <h3 className="text-[15px] font-semibold tracking-tight text-white">{title}</h3>
+          <p className="mt-1 text-sm leading-relaxed text-white/84">{desc}</p>
+          <div className="vsp-fade-line mt-4 h-[2px] w-full" />
         </div>
 
-        {/* Marker */}
-        <div className="hidden sm:flex items-center justify-center">
-          <span
-            className="h-2.5 w-2.5 rounded-full"
-            style={{ backgroundColor: SECONDARY }}
-            aria-hidden="true"
-          />
+        <div className="hidden items-center justify-center sm:flex">
+          <span className="h-2.5 w-2.5 rounded-full bg-white/65" aria-hidden="true" />
         </div>
       </div>
     </motion.div>
@@ -152,54 +111,46 @@ export default function HowItWorksSection() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <section className="relative w-full bg-white py-20" aria-label="booking steps">
-      {/* Premium background (subtle animated wash) */}
+    <section className="vsp-sync-fade-top relative w-full overflow-hidden bg-transparent py-20" aria-label="booking steps">
       <motion.div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
         initial={false}
-        animate={
+        animate={reduceMotion ? undefined : { opacity: [0.9, 1, 0.9] }}
+        transition={
           reduceMotion
             ? undefined
-            : {
-                opacity: [0.9, 1, 0.9],
-              }
-        }
-        transition={
-          reduceMotion ? undefined : { duration: 8, repeat: Infinity, ease: "easeInOut" }
+            : { duration: 8, repeat: Infinity, ease: "easeInOut" }
         }
         style={{
           background:
-            "radial-gradient(900px circle at 15% 0%, rgba(196,26,26,0.08), transparent 55%), radial-gradient(900px circle at 85% 10%, rgba(19,116,184,0.06), transparent 55%)",
+            "radial-gradient(900px circle at 15% 0%, rgba(255,255,255,0.12), transparent 55%), radial-gradient(900px circle at 85% 10%, rgba(255,255,255,0.12), transparent 55%)",
         }}
       />
 
       <div className="relative mx-auto max-w-6xl px-4">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.35 }}
+          viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.55, ease: premiumEase }}
-          className="flex flex-col gap-5 sm:flex-row triggering-widest sm:items-end sm:justify-between"
+          className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between"
         >
           <div>
-            <p className="text-xs font-semibold tracking-widest" style={{ color: SECONDARY }}>
+            <p className="text-xs font-semibold tracking-widest text-white/78">
               BOOKING STEPS
             </p>
 
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-black sm:text-4xl">
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
               Simple Steps, Zero Stress
             </h2>
 
-            <p className="mt-3 max-w-2xl text-sm text-black/65">
+            <p className="mt-3 max-w-2xl text-sm text-white/84">
               Follow these steps to secure your appliance hire quickly and smoothly.
             </p>
 
-            {/* Accent line animation */}
             <motion.div
-              className="mt-5 h-[3px] rounded-full"
-              style={{ backgroundColor: PRIMARY }}
+              className="vsp-fade-line mt-5 h-[3px] rounded-full"
               initial={{ width: 0, opacity: 0 }}
               whileInView={{ width: 64, opacity: 1 }}
               viewport={{ once: true }}
@@ -207,20 +158,20 @@ export default function HowItWorksSection() {
             />
           </div>
 
-          {/* CTA with hover effects */}
           <Link
             href="/order"
-            className="water-hover water-lift vsp-focus inline-flex items-center justify-center rounded-xl px-6 py-3 text-xs font-semibold tracking-widest text-white transition hover:opacity-90"
-            style={{ backgroundColor: PRIMARY }}
+            prefetch={false}
+            onClick={() => trackEvent("open_order", { source: "how_it_works" })}
+            onMouseMove={setHoverVars}
+            className="water-hover water-lift vsp-focus inline-flex items-center justify-center rounded-xl border border-white/26 bg-white px-6 py-3 text-xs font-semibold tracking-widest text-[rgb(var(--vsp-red))]"
           >
             REQUEST ORDER
           </Link>
         </motion.div>
 
-        {/* Steps */}
         <motion.div
           variants={wrap}
-          initial="hidden"
+          initial="show"
           whileInView="show"
           viewport={{ once: true, amount: 0.25 }}
           className="mt-10 grid gap-4 md:grid-cols-2"
@@ -232,15 +183,14 @@ export default function HowItWorksSection() {
           <StepRow {...STEPS[4]} isLast />
         </motion.div>
 
-        {/* Footer note */}
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.55, ease: premiumEase }}
-          className="mt-10 text-xs text-black/55"
+          className="mt-10 text-xs text-white/80"
         >
-          Minimum rental is 5 months • Delivery is free to res/apartment (T&amp;Cs apply) • Excluding UJ Soweto Campus (fee applies)
+          Minimum rental is 5 months, delivery is free to res/apartment (T&amp;Cs apply), excluding UJ Soweto Campus (fee applies)
         </motion.p>
       </div>
     </section>

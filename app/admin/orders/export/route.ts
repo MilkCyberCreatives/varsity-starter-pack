@@ -29,7 +29,7 @@ export async function GET() {
     "notes",
   ].join(",");
 
-  const rows = orders.map((o) =>
+  const rows = orders.map((o: (typeof orders)[number]) =>
     [
       csvEscape(new Date(o.createdAt).toISOString()),
       csvEscape(o.reference),

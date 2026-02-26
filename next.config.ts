@@ -4,10 +4,20 @@ import path from "path";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  compress: true,
 
   // Fix: Next picked Desktop as workspace root because of an extra lockfile.
   // This forces tracing to use THIS project folder.
   outputFileTracingRoot: path.join(__dirname),
+  experimental: {
+    optimizePackageImports: ["framer-motion"],
+  },
+  images: {
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 60 * 60 * 24,
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 24, 32, 48, 64, 96, 128, 256, 384],
+  },
 
   async headers() {
     return [
@@ -44,7 +54,10 @@ const nextConfig: NextConfig = {
       {
         source: "/:path*.(svg|png|jpg|jpeg|webp|gif|ico)",
         headers: [
-          { key: "Cache-Control", value: "public, max-age=604800, immutable" },
+          {
+            key: "Cache-Control",
+            value: "public, max-age=604800, stale-while-revalidate=86400",
+          },
         ],
       },
       {

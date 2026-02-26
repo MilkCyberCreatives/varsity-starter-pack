@@ -15,7 +15,7 @@ const container: Variants = {
 };
 
 const card: Variants = {
-  hidden: { opacity: 0, y: 16 },
+  hidden: { opacity: 1, y: 0 },
   show: {
     opacity: 1,
     y: 0,
@@ -142,10 +142,10 @@ export default function PricingSection() {
 
         <motion.div
           variants={container}
-          initial="hidden"
+          initial="show"
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
-          className="mt-9 grid gap-4 lg:grid-cols-3"
+          className="mt-9 grid gap-5 lg:grid-cols-3"
         >
           {PLANS.map((plan, planIndex) => {
             const image = pickImage(plan.slug, plan.name);
@@ -160,14 +160,14 @@ export default function PricingSection() {
                 variants={card}
                 whileHover={{ y: -4 }}
                 transition={{ duration: 0.28, ease: premiumEase }}
-                className="group vsp-sheen flex h-full flex-col overflow-hidden rounded-[36px] border border-white/50 bg-[#f1f1f1]"
+                className="group vsp-sheen flex h-full flex-col overflow-hidden rounded-[34px] border border-white/50 bg-[#f1f1f1]"
                 style={{
                   background:
                     "linear-gradient(180deg, rgba(245,245,245,0.98), rgba(236,236,236,0.96))",
                 }}
               >
-                <div className="p-2.5">
-                  <div className="relative overflow-hidden rounded-[26px] border border-black/10 bg-[#e4e4e4] p-2.5">
+                <div className="p-3">
+                  <div className="relative overflow-hidden rounded-[24px] border border-black/10 bg-[#e4e4e4] p-3">
                     <div className="flex items-center justify-between gap-3">
                       <span className="rounded-full border border-black/12 bg-[#f4f4f4] px-2.5 py-0.5 text-[11px] font-medium tracking-wide text-black/70">
                         {tag}
@@ -180,7 +180,7 @@ export default function PricingSection() {
                       </span>
                     </div>
 
-                    <div className="relative mt-2.5 h-40 w-full overflow-hidden rounded-[20px] bg-white/20 sm:h-44">
+                    <div className="relative mt-2.5 h-[168px] w-full overflow-hidden rounded-[20px] bg-white/20 sm:h-[184px]">
                       <Image
                         src={image.src}
                         alt={image.alt}
@@ -191,7 +191,7 @@ export default function PricingSection() {
                       />
                     </div>
 
-                    <div className="mt-3.5 flex items-center justify-center gap-1.5">
+                    <div className="mt-3.5 flex items-center justify-center gap-2">
                       {Array.from({ length: 3 }).map((_, dotIndex) => {
                         const active = dotIndex === planIndex % 3;
                         return (
@@ -210,26 +210,26 @@ export default function PricingSection() {
                   </div>
                 </div>
 
-                <div className="flex flex-1 flex-col px-4 pb-2.5 text-black">
+                <div className="flex flex-1 flex-col px-4 pb-3 text-black">
                   <p className="text-[14px] font-medium text-[rgb(var(--vsp-red))]">Appliance</p>
 
-                  <h3 className="mt-1 text-[clamp(1.6rem,2.4vw,2.2rem)] font-semibold leading-[1] tracking-tight">
+                  <h3 className="mt-1 text-[clamp(1.75rem,2.6vw,2.4rem)] font-semibold leading-[0.98] tracking-tight">
                     {plan.name}
                   </h3>
 
-                  <p className="mt-2.5 text-[clamp(1.75rem,2.7vw,2.35rem)] font-semibold leading-none tracking-tight">
+                  <p className="mt-2.5 text-[clamp(1.95rem,3vw,2.7rem)] font-semibold leading-none tracking-tight">
                     {plan.monthly}
                   </p>
-                  <p className="mt-1 text-[15px] text-black/72">{plan.deposit}</p>
+                  <p className="mt-1 text-[15px] leading-snug text-black/72">{plan.deposit}</p>
 
                   {plan.note ? (
                     <div className="mt-3 rounded-xl border border-black/10 bg-white/72 px-3 py-2">
-                      <p className="text-[13px] text-black/72">{plan.note}</p>
+                      <p className="text-[13px] leading-relaxed text-black/72">{plan.note}</p>
                     </div>
                   ) : null}
 
                   {bullets.length ? (
-                    <ul className="mt-3 space-y-1 text-[13px] text-black/74">
+                    <ul className="mt-3 space-y-1.5 text-[13px] text-black/74">
                       {bullets.map((bullet) => (
                         <li key={bullet} className="flex items-start gap-2">
                           <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[rgb(var(--vsp-red))]" />
@@ -251,7 +251,7 @@ export default function PricingSection() {
                       })
                     }
                     onMouseMove={setHoverVars}
-                    className="water-hover vsp-focus inline-flex h-11 w-full items-center justify-center rounded-full border border-black/80 bg-black px-5 text-xs font-semibold tracking-wide text-white"
+                    className="water-hover vsp-focus inline-flex h-10 w-full items-center justify-center rounded-full border border-black/80 bg-black px-5 text-[11px] font-semibold tracking-[0.06em] text-white"
                   >
                     SELECT AND REQUEST
                   </Link>
@@ -269,7 +269,7 @@ export default function PricingSection() {
                       })
                     }
                     onMouseMove={setHoverVars}
-                    className="water-hover vsp-focus inline-flex h-9 w-full items-center justify-center rounded-full border border-black/16 bg-white px-5 text-[11px] font-semibold tracking-widest text-black/80"
+                    className="water-hover vsp-focus inline-flex h-[34px] w-full items-center justify-center rounded-full border border-black/16 bg-white px-5 text-[10px] font-semibold tracking-widest text-black/80"
                   >
                     WHATSAPP
                   </a>

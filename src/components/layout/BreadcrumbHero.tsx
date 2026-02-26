@@ -7,7 +7,7 @@ type Props = {
   title: string;
   subtitle?: string;
   crumbs: Crumb[];
-  imageSrc?: string; // same image for all pages
+  imageSrc?: string;
 };
 
 export default function BreadcrumbHero({
@@ -17,9 +17,8 @@ export default function BreadcrumbHero({
   imageSrc = "/breadcrumb/breadcrumb.jpg",
 }: Props) {
   return (
-    <section className="relative w-full overflow-hidden bg-white">
-      {/* Slim premium banner */}
-      <div className="relative h-[150px] w-full sm:h-[170px]">
+    <section className="relative w-full overflow-hidden bg-transparent">
+      <div className="relative h-[168px] w-full sm:h-[188px]">
         <Image
           src={imageSrc}
           alt="page banner"
@@ -29,24 +28,19 @@ export default function BreadcrumbHero({
           sizes="100vw"
         />
 
-        {/* crisp overlay */}
-        <div className="absolute inset-0 bg-white/70" />
+        <div className="absolute inset-0 bg-[rgb(var(--vsp-red-deep))]/62" />
 
-        {/* subtle brand wash */}
         <div
           aria-hidden="true"
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(900px circle at 15% 20%, rgba(196,26,26,0.10), transparent 55%), radial-gradient(900px circle at 85% 20%, rgba(19,116,184,0.10), transparent 55%)",
+              "radial-gradient(900px circle at 15% 20%, rgba(255,255,255,0.16), transparent 58%), radial-gradient(900px circle at 85% 20%, rgba(255,255,255,0.12), transparent 58%)",
           }}
         />
-
-        {/* content */}
         <div className="absolute inset-0">
           <div className="mx-auto flex h-full max-w-6xl flex-col justify-center px-4">
-            {/* breadcrumbs */}
-            <nav className="flex flex-wrap items-center gap-2 text-[11px] font-semibold tracking-widest text-black/50">
+            <nav className="flex flex-wrap items-center gap-2 text-[11px] font-semibold tracking-widest text-white/72">
               {crumbs.map((c, idx) => {
                 const isLast = idx === crumbs.length - 1;
 
@@ -55,38 +49,44 @@ export default function BreadcrumbHero({
                     {c.href && !isLast ? (
                       <Link
                         href={c.href}
-                        className="transition hover:text-black"
+                        className="transition hover:text-white"
                       >
                         {c.label}
                       </Link>
                     ) : (
-                      <span className={isLast ? "text-black/70" : ""}>
+                      <span className={isLast ? "text-white/92" : ""}>
                         {c.label}
                       </span>
                     )}
 
-                    {!isLast && <span className="text-black/30">/</span>}
+                    {!isLast && <span className="text-white/45">/</span>}
                   </span>
                 );
               })}
             </nav>
 
-            {/* title */}
-            <h1 className="mt-3 text-3xl font-medium tracking-tight text-black sm:text-4xl">
+            <h1 className="mt-3 text-3xl font-medium tracking-tight text-white sm:text-4xl">
               {title}
             </h1>
 
             {subtitle ? (
-              <p className="mt-2 max-w-2xl text-sm text-black/65">
+              <p className="mt-2 max-w-2xl text-sm text-white/86">
                 {subtitle}
               </p>
             ) : null}
           </div>
         </div>
+
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-10"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(120,10,10,0), rgba(120,10,10,0.12) 60%, rgba(176,20,20,0) 100%)",
+          }}
+        />
       </div>
 
-      {/* thin separator line (premium) */}
-      <div className="h-px w-full bg-black/10" />
     </section>
   );
 }

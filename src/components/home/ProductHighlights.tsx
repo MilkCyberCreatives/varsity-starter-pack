@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion, type Variants, easeOut } from "framer-motion";
 
-const PRIMARY = "#c41a1a";
+const PRIMARY = "#b01414";
 const SECONDARY = "#1374b8";
 
 type Product = {
