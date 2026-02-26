@@ -266,6 +266,7 @@ select {
 .vsp-page-bg {
   display: flex;
   flex-direction: column;
+  min-height: 100dvh;
   position: relative;
   z-index: 10;
   background:
