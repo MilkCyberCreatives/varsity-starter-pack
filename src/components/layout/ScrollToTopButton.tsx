@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { createPortal } from "react-dom";
 import { trackEvent } from "@/lib/analytics";
 
@@ -17,42 +18,74 @@ function getScrollTop() {
   return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
 }
 
+function isHeroInView() {
+  if (typeof window === "undefined" || typeof document === "undefined") return false;
+  const hero = document.querySelector<HTMLElement>("[data-vsp-hero='1']");
+  if (!hero) return false;
+  const rect = hero.getBoundingClientRect();
+  return rect.bottom > 0 && rect.top < window.innerHeight;
+}
+
 export default function ScrollToTopButton() {
   const [visible, setVisible] = useState(false);
+  const [heroVisible, setHeroVisible] = useState(false);
   const [cookieSet, setCookieSet] = useState(true);
+  const pathname = usePathname();
 
   useEffect(() => {
     const onScroll = () => {
       setVisible(getScrollTop() > 0);
+      setHeroVisible(isHeroInView());
     };
 
     const onScrollIntent = () => {
       setVisible(true);
+      setHeroVisible(isHeroInView());
     };
 
     const updateCookieState = () => {
       setCookieSet(hasCookieDecision());
     };
 
+    const onResize = () => {
+      setHeroVisible(isHeroInView());
+    };
+
     onScroll();
     updateCookieState();
+
+    let observer: IntersectionObserver | null = null;
+    const hero = document.querySelector<HTMLElement>("[data-vsp-hero='1']");
+    if (hero && typeof window !== "undefined" && "IntersectionObserver" in window) {
+      observer = new IntersectionObserver(
+        (entries) => {
+          const nextVisible = entries[0]?.isIntersecting ?? false;
+          setHeroVisible(nextVisible);
+        },
+        { threshold: 0.01 }
+      );
+      observer.observe(hero);
+    }
 
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("wheel", onScrollIntent, { passive: true });
     window.addEventListener("touchmove", onScrollIntent, { passive: true });
+    window.addEventListener("resize", onResize, { passive: true });
     window.addEventListener("storage", updateCookieState);
     window.addEventListener("vsp-consent-change", updateCookieState);
 
     return () => {
+      observer?.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("wheel", onScrollIntent);
       window.removeEventListener("touchmove", onScrollIntent);
+      window.removeEventListener("resize", onResize);
       window.removeEventListener("storage", updateCookieState);
       window.removeEventListener("vsp-consent-change", updateCookieState);
     };
-  }, []);
+  }, [pathname]);
 
-  if (!visible || typeof document === "undefined") return null;
+  if (!visible || heroVisible || typeof document === "undefined") return null;
   const rightInset = "max(24px, env(safe-area-inset-right))";
   const bottomInset = cookieSet ? "16px" : "112px";
 

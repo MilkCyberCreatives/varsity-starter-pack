@@ -17,7 +17,7 @@ export default function BreadcrumbHero({
   imageSrc = "/breadcrumb/breadcrumb.jpg",
 }: Props) {
   return (
-    <section className="relative w-full overflow-hidden bg-transparent">
+    <section className="relative w-full overflow-hidden bg-transparent" data-vsp-hero="1">
       <div className="relative h-[168px] w-full sm:h-[188px]">
         <Image
           src={imageSrc}

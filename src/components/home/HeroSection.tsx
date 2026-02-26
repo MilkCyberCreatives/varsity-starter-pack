@@ -20,7 +20,11 @@ export default function HeroSection() {
   const bgOffset = useTransform(scrollY, [0, 500], [0, -14]);
 
   return (
-    <section className="relative overflow-hidden" aria-label="varsity starter pack hero">
+    <section
+      className="relative overflow-hidden"
+      aria-label="varsity starter pack hero"
+      data-vsp-hero="1"
+    >
       <div className="vsp-red-sync relative overflow-hidden">
         <motion.div
           aria-hidden="true"

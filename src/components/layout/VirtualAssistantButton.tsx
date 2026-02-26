@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { createPortal } from "react-dom";
 import { PLANS } from "@/lib/plans";
 import { siteConfig } from "@/lib/site";
@@ -24,6 +25,14 @@ function hasCookieDecision() {
 function getScrollTop() {
   if (typeof window === "undefined") return 0;
   return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+}
+
+function isHeroInView() {
+  if (typeof window === "undefined" || typeof document === "undefined") return false;
+  const hero = document.querySelector<HTMLElement>("[data-vsp-hero='1']");
+  if (!hero) return false;
+  const rect = hero.getBoundingClientRect();
+  return rect.bottom > 0 && rect.top < window.innerHeight;
 }
 
 function parseCurrency(value: string) {
@@ -78,9 +87,11 @@ function createReply(text: string) {
 export default function VirtualAssistantButton() {
   const [open, setOpen] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [heroVisible, setHeroVisible] = useState(false);
   const [input, setInput] = useState("");
   const [cookieSet, setCookieSet] = useState(true);
   const idCounter = useRef(1);
+  const pathname = usePathname();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
@@ -93,34 +104,63 @@ export default function VirtualAssistantButton() {
   useEffect(() => {
     const onScroll = () => {
       const nextVisible = getScrollTop() > 0;
+      const nextHeroVisible = isHeroInView();
       setVisible(nextVisible);
-      if (!nextVisible) setOpen(false);
+      setHeroVisible(nextHeroVisible);
+      if (!nextVisible || nextHeroVisible) setOpen(false);
     };
 
     const onScrollIntent = () => {
+      const nextHeroVisible = isHeroInView();
       setVisible(true);
+      setHeroVisible(nextHeroVisible);
+      if (nextHeroVisible) setOpen(false);
     };
 
     const updateCookieState = () => {
       setCookieSet(hasCookieDecision());
     };
 
+    const onResize = () => {
+      const nextHeroVisible = isHeroInView();
+      setHeroVisible(nextHeroVisible);
+      if (nextHeroVisible) setOpen(false);
+    };
+
     onScroll();
     updateCookieState();
+
+    let observer: IntersectionObserver | null = null;
+    const hero = document.querySelector<HTMLElement>("[data-vsp-hero='1']");
+    if (hero && typeof window !== "undefined" && "IntersectionObserver" in window) {
+      observer = new IntersectionObserver(
+        (entries) => {
+          const nextHeroVisible = entries[0]?.isIntersecting ?? false;
+          setHeroVisible(nextHeroVisible);
+          if (nextHeroVisible) setOpen(false);
+        },
+        { threshold: 0.01 }
+      );
+      observer.observe(hero);
+    }
+
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("wheel", onScrollIntent, { passive: true });
     window.addEventListener("touchmove", onScrollIntent, { passive: true });
+    window.addEventListener("resize", onResize, { passive: true });
     window.addEventListener("storage", updateCookieState);
     window.addEventListener("vsp-consent-change", updateCookieState);
 
     return () => {
+      observer?.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("wheel", onScrollIntent);
       window.removeEventListener("touchmove", onScrollIntent);
+      window.removeEventListener("resize", onResize);
       window.removeEventListener("storage", updateCookieState);
       window.removeEventListener("vsp-consent-change", updateCookieState);
     };
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     if (!open || !listRef.current) return;
@@ -154,7 +194,7 @@ export default function VirtualAssistantButton() {
     trackEvent("open_virtual_assistant", { action: "ask_question" });
   };
 
-  if (!visible || typeof document === "undefined") return null;
+  if (!visible || heroVisible || typeof document === "undefined") return null;
 
   return createPortal(
     <>
