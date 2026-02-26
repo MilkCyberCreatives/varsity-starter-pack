@@ -2,18 +2,45 @@ import type { Metadata } from "next";
 import MainHeader from "@/components/layout/MainHeader";
 import FooterSection from "@/components/layout/FooterSection";
 import BreadcrumbHero from "@/components/layout/BreadcrumbHero";
+import JsonLd from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo";
+import { siteUrl } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Terms and Conditions",
   description:
     "Review Varsity Starter Pack rental terms, minimum duration, deposits, and delivery conditions.",
   path: "/terms",
+  keywords: [
+    "student appliance rental terms",
+    "student fridge rental terms",
+    "appliance hire for students",
+  ],
 });
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: siteUrl("/"),
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Terms",
+      item: siteUrl("/terms"),
+    },
+  ],
+};
 
 export default function TermsPage() {
   return (
     <main className="flex min-h-screen flex-col vsp-page-bg">
+      <JsonLd data={breadcrumbSchema} />
       <MainHeader />
       <BreadcrumbHero
         title="Terms"

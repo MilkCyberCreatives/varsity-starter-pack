@@ -7,6 +7,8 @@ declare global {
     gtag?: (...args: unknown[]) => void;
     fbq?: (...args: unknown[]) => void;
     ttq?: { track?: (event: string, payload?: AnalyticsPayload) => void };
+    uetq?: unknown[];
+    lintrk?: (event?: string, payload?: Record<string, unknown>) => void;
   }
 }
 
@@ -28,6 +30,8 @@ export function trackEvent(event: string, payload: AnalyticsPayload = {}) {
   if (window.gtag) window.gtag("event", event, payload);
   if (window.fbq) window.fbq("trackCustom", event, payload);
   if (window.ttq?.track) window.ttq.track(event, payload);
+  if (window.uetq) window.uetq.push("event", event, payload);
+  if (window.lintrk) window.lintrk(event, payload);
 }
 
 export function trackOrderConversion(reference: string) {

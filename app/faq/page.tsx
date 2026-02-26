@@ -5,6 +5,7 @@ import FAQSection from "@/components/home/FAQSection";
 import BreadcrumbHero from "@/components/layout/BreadcrumbHero";
 import JsonLd from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo";
+import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Student Appliance Rental FAQ",
@@ -16,6 +17,8 @@ export const metadata: Metadata = buildPageMetadata({
     "microwave rental for students",
     "second hand fridge vs rent",
     "rent to own appliances",
+    "student moving in checklist",
+    "appliance hire for students",
   ],
 });
 
@@ -58,10 +61,30 @@ const faqSchema = {
   ],
 };
 
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: `${siteConfig.siteUrl}/`,
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "FAQ",
+      item: `${siteConfig.siteUrl}/faq`,
+    },
+  ],
+};
+
 export default function FAQPage() {
   return (
     <main className="flex min-h-screen flex-col vsp-page-bg">
       <JsonLd data={faqSchema} />
+      <JsonLd data={breadcrumbSchema} />
       <MainHeader />
       <BreadcrumbHero
         title="FAQ"

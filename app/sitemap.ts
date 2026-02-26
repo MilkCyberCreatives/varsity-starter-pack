@@ -46,5 +46,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.3,
     },
     { url: siteUrl("/terms"), lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    {
+      url: siteUrl("/llms.txt"),
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.2,
+    },
   ];
 }

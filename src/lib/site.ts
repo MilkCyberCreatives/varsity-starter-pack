@@ -13,7 +13,7 @@
   whatsappNumber: "27734921669",
   phonePrimary: "+27 73 492 1669",
   address: {
-    addressLocality: "Johannesburg",
+    addressLocality: "Midrand",
     addressRegion: "Gauteng",
     addressCountry: "ZA",
   },

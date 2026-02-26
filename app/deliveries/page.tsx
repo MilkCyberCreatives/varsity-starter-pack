@@ -3,7 +3,9 @@ import MainHeader from "@/components/layout/MainHeader";
 import FooterSection from "@/components/layout/FooterSection";
 import BreadcrumbHero from "@/components/layout/BreadcrumbHero";
 import DeliveriesMasonry from "@/components/deliveries/DeliveriesMasonry";
+import JsonLd from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo";
+import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Student Delivery Gallery",
@@ -15,12 +17,34 @@ export const metadata: Metadata = buildPageMetadata({
     "campus appliance rental",
     "student moving in checklist",
     "res room appliances",
+    "student appliance rentals Johannesburg",
+    "student appliance rentals Gauteng",
   ],
 });
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: `${siteConfig.siteUrl}/`,
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Deliveries",
+      item: `${siteConfig.siteUrl}/deliveries`,
+    },
+  ],
+};
 
 export default function DeliveriesPage() {
   return (
     <main className="flex min-h-screen flex-col vsp-page-bg">
+      <JsonLd data={breadcrumbSchema} />
       <MainHeader />
 
       <BreadcrumbHero

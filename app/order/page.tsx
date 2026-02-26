@@ -20,6 +20,9 @@ export const metadata: Metadata = buildPageMetadata({
     "student essentials",
     "res room appliances",
     "student moving in checklist",
+    "student fridge rental",
+    "microwave rental for students",
+    "rent to own appliances",
   ],
 });
 
@@ -43,6 +46,25 @@ const orderServiceSchema = {
   },
 };
 
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: siteUrl("/"),
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Order",
+      item: siteUrl("/order"),
+    },
+  ],
+};
+
 export default async function OrderPage({
   searchParams,
 }: {
@@ -61,6 +83,7 @@ export default async function OrderPage({
   return (
     <main className="flex min-h-screen flex-col vsp-page-bg">
       <JsonLd data={orderServiceSchema} />
+      <JsonLd data={breadcrumbSchema} />
       <MainHeader />
 
       <BreadcrumbHero

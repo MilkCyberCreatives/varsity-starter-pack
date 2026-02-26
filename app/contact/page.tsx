@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import MainHeader from "@/components/layout/MainHeader";
 import FooterSection from "@/components/layout/FooterSection";
 import BreadcrumbHero from "@/components/layout/BreadcrumbHero";
+import JsonLd from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
 import TrackedExternalLink from "@/components/marketing/TrackedExternalLink";
@@ -16,12 +17,35 @@ export const metadata: Metadata = buildPageMetadata({
     "student appliance rentals Johannesburg",
     "campus appliance rental",
     "appliance hire for students",
+    "student appliance rentals Gauteng",
+    "student fridge rental",
+    "microwave rental for students",
   ],
 });
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: `${siteConfig.siteUrl}/`,
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Contact",
+      item: `${siteConfig.siteUrl}/contact`,
+    },
+  ],
+};
 
 export default function ContactPage() {
   return (
     <main className="flex min-h-screen flex-col vsp-page-bg">
+      <JsonLd data={breadcrumbSchema} />
       <MainHeader />
       <BreadcrumbHero
         title="Contact"

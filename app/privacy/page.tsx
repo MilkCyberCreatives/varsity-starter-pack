@@ -2,18 +2,45 @@ import type { Metadata } from "next";
 import MainHeader from "@/components/layout/MainHeader";
 import FooterSection from "@/components/layout/FooterSection";
 import BreadcrumbHero from "@/components/layout/BreadcrumbHero";
+import JsonLd from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo";
+import { siteUrl } from "@/lib/site";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Privacy Policy",
   description:
     "Read how Varsity Starter Pack handles student data for order requests and service communication.",
   path: "/privacy",
+  keywords: [
+    "student appliance rentals Gauteng",
+    "appliance hire for students",
+    "student rental privacy policy",
+  ],
 });
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: siteUrl("/"),
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Privacy",
+      item: siteUrl("/privacy"),
+    },
+  ],
+};
 
 export default function PrivacyPage() {
   return (
     <main className="flex min-h-screen flex-col vsp-page-bg">
+      <JsonLd data={breadcrumbSchema} />
       <MainHeader />
       <BreadcrumbHero
         title="Privacy"

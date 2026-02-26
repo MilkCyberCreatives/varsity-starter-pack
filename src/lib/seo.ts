@@ -1,4 +1,5 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
+import { GLOBAL_SEO_KEYWORDS, mergeKeywords } from "@/lib/keywords";
 import { siteConfig, siteUrl } from "@/lib/site";
 
 type PageMetadataInput = {
@@ -27,8 +28,13 @@ export function buildPageMetadata({
   return {
     title,
     description,
-    keywords,
-    alternates: { canonical },
+    keywords: mergeKeywords(GLOBAL_SEO_KEYWORDS, keywords),
+    alternates: {
+      canonical,
+      languages: {
+        "en-ZA": canonical,
+      },
+    },
     openGraph: {
       type: "website",
       url: absoluteUrl,
@@ -54,7 +60,13 @@ export function buildPageMetadata({
     robots: {
       index: !noIndex,
       follow: !noIndex,
+      googleBot: {
+        index: !noIndex,
+        follow: !noIndex,
+        "max-snippet": -1,
+        "max-image-preview": "large",
+        "max-video-preview": -1,
+      },
     },
   };
 }
-

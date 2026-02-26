@@ -3,6 +3,7 @@ import { Manrope, Sora } from "next/font/google";
 import "./globals.css";
 import ClientProviders from "@/components/layout/ClientProviders";
 import GlobalFloatingItems from "@/components/layout/GlobalFloatingItems";
+import { GLOBAL_SEO_KEYWORDS } from "@/lib/keywords";
 import { siteConfig } from "@/lib/site";
 
 const bodyFont = Manrope({
@@ -26,22 +27,28 @@ const bingVerification =
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.siteUrl),
+  manifest: "/manifest.webmanifest",
+  applicationName: siteConfig.name,
+  category: "student appliance rentals",
+  creator: "Varsity Starter Pack",
+  publisher: "Varsity Starter Pack",
+  authors: [{ name: "Varsity Starter Pack" }],
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   title: {
     default: "Varsity Starter Pack | Student Appliance Rentals",
     template: "%s | Varsity Starter Pack",
   },
   description: siteConfig.description,
-  keywords: [
-    "student fridge rental",
-    "microwave rental for students",
-    "appliance hire for students",
-    "res fridge hire",
-    "campus appliance rental",
-    "student appliance rentals Johannesburg",
-    "student appliance rentals Gauteng",
-  ],
+  keywords: GLOBAL_SEO_KEYWORDS,
   alternates: {
     canonical: "/",
+    languages: {
+      "en-ZA": "/",
+    },
   },
   openGraph: {
     type: "website",
@@ -68,6 +75,18 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+    },
+  },
+  other: {
+    "geo.region": "ZA-GP",
+    "geo.placename": "Midrand",
+    ICBM: "-25.9992, 28.1263",
   },
   verification: {
     google: googleVerification,
