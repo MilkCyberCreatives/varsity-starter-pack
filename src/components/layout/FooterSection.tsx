@@ -17,7 +17,7 @@ export default function FooterSection() {
   const year = new Date().getUTCFullYear();
 
   return (
-    <footer className="relative z-20 mt-auto mb-0 overflow-hidden bg-[rgb(var(--vsp-red-deep))] pb-0 before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-20 before:bg-[linear-gradient(180deg,rgba(176,20,20,0.28),rgba(176,20,20,0))] after:pointer-events-none after:absolute after:inset-x-0 after:top-full after:h-24 after:bg-[rgb(var(--vsp-red-deep))]">
+    <footer className="relative z-20 mt-auto mb-0 overflow-hidden bg-[rgb(var(--vsp-red-deep))] pb-0 before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-20 before:bg-[linear-gradient(180deg,rgba(176,20,20,0.28),rgba(176,20,20,0))]">
       <div className="relative mx-auto max-w-6xl px-4 pb-0 pt-10 sm:pt-12">
         <div className="grid gap-10 border-b border-white/20 pb-10 md:grid-cols-12">
           <div className="md:col-span-5">
