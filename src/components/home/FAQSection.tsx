@@ -136,6 +136,8 @@ export default function FAQSection() {
         >
           {FAQS.map((f, i) => {
             const isOpen = openIndex === i;
+            const buttonId = `home-faq-button-${i}`;
+            const panelId = `home-faq-panel-${i}`;
 
             return (
               <motion.div
@@ -157,7 +159,10 @@ export default function FAQSection() {
                 ].join(" ")}
               >
                 <button
+                  id={buttonId}
                   type="button"
+                  aria-expanded={isOpen}
+                  aria-controls={panelId}
                   onClick={() => setOpenIndex(isOpen ? null : i)}
                   className="flex w-full items-center justify-between gap-5 px-6 py-5 text-left"
                 >
@@ -187,6 +192,9 @@ export default function FAQSection() {
                 <AnimatePresence initial={false}>
                   {isOpen && (
                     <motion.div
+                      id={panelId}
+                      role="region"
+                      aria-labelledby={buttonId}
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
