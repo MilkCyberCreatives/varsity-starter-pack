@@ -53,9 +53,9 @@ export default function AboutPage() {
       <section className="vsp-sync-fade-top mx-auto max-w-6xl px-4 py-16">
         <p className="text-xs font-semibold tracking-widest text-white/76">ABOUT</p>
 
-        <h1 className="mt-3 text-4xl font-medium tracking-tight text-white">
+        <h2 className="mt-3 text-4xl font-medium tracking-tight text-white">
           Varsity Starter Pack
-        </h1>
+        </h2>
 
         <p className="mt-4 max-w-3xl text-base text-white/84">
           varsity starter pack provides student-only appliance rentals designed for
@@ -94,5 +94,3 @@ export default function AboutPage() {
     </main>
   );
 }
-
-
