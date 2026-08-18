@@ -15,10 +15,10 @@ export const metadata: Metadata = buildPageMetadata({
   keywords: [
     "student fridge rental",
     "microwave rental for students",
-    "second hand fridge vs rent",
-    "rent to own appliances",
-    "student moving in checklist",
     "appliance hire for students",
+    "campus appliance rental",
+    "student appliance rentals Johannesburg",
+    "student appliance rentals Gauteng",
   ],
 });
 
@@ -97,5 +97,3 @@ export default function FAQPage() {
     </main>
   );
 }
-
-
