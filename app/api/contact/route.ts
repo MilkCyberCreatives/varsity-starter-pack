@@ -175,7 +175,7 @@ export async function POST(req: Request) {
       </div>
     `;
 
-    await resend.emails.send({
+    const { error: adminEmailError } = await resend.emails.send({
       from: FROM_EMAIL,
       to: adminRecipient,
       replyTo: email,
@@ -183,12 +183,20 @@ export async function POST(req: Request) {
       html: adminHtml,
     });
 
-    await resend.emails.send({
+    if (adminEmailError) {
+      throw new Error("Contact admin email was not accepted by the email provider.");
+    }
+
+    const { error: customerEmailError } = await resend.emails.send({
       from: FROM_EMAIL,
       to: email,
       subject: `Varsity Starter Pack Contact - ${reference}`,
       html: customerHtml,
     });
+
+    if (customerEmailError) {
+      console.error("CONTACT CONFIRMATION EMAIL ERROR");
+    }
 
     return NextResponse.json({ ok: true, reference });
   } catch (error) {
