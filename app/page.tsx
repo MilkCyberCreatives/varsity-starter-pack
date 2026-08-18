@@ -17,10 +17,6 @@ export const metadata: Metadata = buildPageMetadata({
     "campus appliance rental",
     "res room appliances",
     "affordable student living appliances",
-    "cheap fridge",
-    "second hand fridge vs rent",
-    "rent to own appliances",
-    "student moving in checklist",
   ],
 });
 
@@ -29,11 +25,6 @@ const websiteSchema = {
   "@type": "WebSite",
   name: siteConfig.name,
   url: siteConfig.siteUrl,
-  potentialAction: {
-    "@type": "SearchAction",
-    target: `${siteConfig.siteUrl}/pricing?appliance={search_term_string}`,
-    "query-input": "required name=search_term_string",
-  },
 };
 
 const organizationSchema = {
