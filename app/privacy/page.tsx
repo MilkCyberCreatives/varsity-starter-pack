@@ -50,9 +50,9 @@ export default function PrivacyPage() {
 
       <section className="mx-auto max-w-4xl px-4 py-16">
         <div className="vsp-card rounded-3xl p-6 text-sm leading-relaxed text-white/84 sm:p-8">
-          <h1 className="text-3xl font-semibold tracking-tight text-white">
-          Privacy Policy
-          </h1>
+          <h2 className="text-3xl font-semibold tracking-tight text-white">
+            Privacy Policy
+          </h2>
           <p className="mt-4">
             We collect personal details you submit in the order form to process
             rentals, verify student status, communicate next steps, and arrange
@@ -77,4 +77,3 @@ export default function PrivacyPage() {
     </main>
   );
 }
-

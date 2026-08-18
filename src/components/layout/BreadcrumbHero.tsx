@@ -21,7 +21,7 @@ export default function BreadcrumbHero({
       <div className="relative h-[168px] w-full sm:h-[188px]">
         <Image
           src={imageSrc}
-          alt="page banner"
+          alt=""
           fill
           priority={false}
           className="object-cover"
@@ -40,21 +40,24 @@ export default function BreadcrumbHero({
         />
         <div className="absolute inset-0">
           <div className="mx-auto flex h-full max-w-6xl flex-col justify-center px-4">
-            <nav className="flex flex-wrap items-center gap-2 text-[11px] font-semibold tracking-widest text-white/72">
+            <nav
+              aria-label="Breadcrumb"
+              className="flex flex-wrap items-center gap-2 text-[11px] font-semibold tracking-widest text-white/72"
+            >
               {crumbs.map((c, idx) => {
                 const isLast = idx === crumbs.length - 1;
 
                 return (
                   <span key={`${c.label}-${idx}`} className="flex items-center gap-2">
                     {c.href && !isLast ? (
-                      <Link
-                        href={c.href}
-                        className="transition hover:text-white"
-                      >
+                      <Link href={c.href} className="transition hover:text-white">
                         {c.label}
                       </Link>
                     ) : (
-                      <span className={isLast ? "text-white/92" : ""}>
+                      <span
+                        className={isLast ? "text-white/92" : ""}
+                        aria-current={isLast ? "page" : undefined}
+                      >
                         {c.label}
                       </span>
                     )}
@@ -70,9 +73,7 @@ export default function BreadcrumbHero({
             </h1>
 
             {subtitle ? (
-              <p className="mt-2 max-w-2xl text-sm text-white/86">
-                {subtitle}
-              </p>
+              <p className="mt-2 max-w-2xl text-sm text-white/86">{subtitle}</p>
             ) : null}
           </div>
         </div>
@@ -86,7 +87,6 @@ export default function BreadcrumbHero({
           }}
         />
       </div>
-
     </section>
   );
 }

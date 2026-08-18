@@ -127,6 +127,8 @@ export default function ContactForm() {
         <input
           type="text"
           required
+          aria-label="Full Name"
+          autoComplete="name"
           placeholder="Full Name"
           value={form.fullName}
           onChange={(e) => update("fullName", e.target.value)}
@@ -137,6 +139,8 @@ export default function ContactForm() {
           <input
             type="email"
             required
+            aria-label="Email"
+            autoComplete="email"
             placeholder="Email"
             value={form.email}
             onChange={(e) => update("email", e.target.value)}
@@ -145,6 +149,8 @@ export default function ContactForm() {
           <input
             type="tel"
             required
+            aria-label="Phone"
+            autoComplete="tel"
             placeholder="Phone"
             value={form.phone}
             onChange={(e) => update("phone", e.target.value)}
@@ -155,6 +161,7 @@ export default function ContactForm() {
         <input
           type="text"
           required
+          aria-label="Subject"
           placeholder="Subject"
           value={form.subject}
           onChange={(e) => update("subject", e.target.value)}
@@ -164,6 +171,7 @@ export default function ContactForm() {
         <textarea
           required
           rows={5}
+          aria-label="Message"
           placeholder="Message"
           value={form.message}
           onChange={(e) => update("message", e.target.value)}
@@ -171,13 +179,20 @@ export default function ContactForm() {
         />
 
         {error ? (
-          <p className="rounded-xl border border-[#ffb5b5]/60 bg-[#6b0b0b]/45 px-4 py-3 text-sm text-[#ffe0e0]">
+          <p
+            role="alert"
+            className="rounded-xl border border-[#ffb5b5]/60 bg-[#6b0b0b]/45 px-4 py-3 text-sm text-[#ffe0e0]"
+          >
             {error}
           </p>
         ) : null}
 
         {success ? (
-          <p className="rounded-xl border border-white/34 bg-white/16 px-4 py-3 text-sm text-white">
+          <p
+            role="status"
+            aria-live="polite"
+            className="rounded-xl border border-white/34 bg-white/16 px-4 py-3 text-sm text-white"
+          >
             {success}
           </p>
         ) : null}

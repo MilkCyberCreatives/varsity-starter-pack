@@ -50,9 +50,9 @@ export default function TermsPage() {
 
       <section className="mx-auto max-w-4xl px-4 py-16">
         <div className="vsp-card rounded-3xl p-6 text-sm leading-relaxed text-white/84 sm:p-8">
-          <h1 className="text-3xl font-semibold tracking-tight text-white">
+          <h2 className="text-3xl font-semibold tracking-tight text-white">
             Terms And Conditions
-          </h1>
+          </h2>
           <p className="mt-4">
             Rentals are for students and require verification documents before
             approval.
@@ -79,4 +79,3 @@ export default function TermsPage() {
     </main>
   );
 }
-

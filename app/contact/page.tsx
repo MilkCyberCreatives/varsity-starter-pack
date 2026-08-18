@@ -56,7 +56,7 @@ export default function ContactPage() {
       <section className="vsp-sync-fade-top mx-auto max-w-6xl px-4 py-16">
         <p className="text-xs font-semibold tracking-widest text-white/76">CONTACT</p>
 
-        <h1 className="mt-3 text-4xl font-medium tracking-tight text-white">Get In Touch</h1>
+        <h2 className="mt-3 text-4xl font-medium tracking-tight text-white">Get In Touch</h2>
 
         <p className="mt-4 max-w-2xl text-base text-white/84">
           have questions about rentals, deposits, or delivery? reach out and we will
@@ -105,5 +105,3 @@ export default function ContactPage() {
     </main>
   );
 }
-
-

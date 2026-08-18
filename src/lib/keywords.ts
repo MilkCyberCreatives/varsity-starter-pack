@@ -9,17 +9,6 @@ export const DIRECT_INTENT_KEYWORDS = [
   "student appliance rentals Midrand",
 ];
 
-export const INDIRECT_COMPETITIVE_KEYWORDS = [
-  "cheap fridge",
-  "second hand fridge vs rent",
-  "rent to own appliances",
-  "student essentials",
-  "res room appliances",
-  "student moving in checklist",
-  "affordable student living appliances",
-  "appliance rental South Africa",
-];
-
 export const ENTITY_KEYWORDS = [
   "Varsity Starter Pack",
   "student appliance rental company",
@@ -33,7 +22,6 @@ export const ENTITY_KEYWORDS = [
 
 export const GLOBAL_SEO_KEYWORDS = [
   ...DIRECT_INTENT_KEYWORDS,
-  ...INDIRECT_COMPETITIVE_KEYWORDS,
   ...ENTITY_KEYWORDS,
 ];
 

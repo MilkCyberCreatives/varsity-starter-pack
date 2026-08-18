@@ -15,7 +15,6 @@ export const metadata: Metadata = buildPageMetadata({
     "student appliance rentals Johannesburg",
     "res fridge hire",
     "affordable student living appliances",
-    "student moving in checklist",
     "campus appliance rental",
   ],
 });
@@ -53,7 +52,7 @@ export default function TestimonialsPage() {
 
       <section className="mx-auto max-w-6xl px-4 py-16">
         <p className="text-xs font-semibold tracking-widest text-white/76">TESTIMONIALS</p>
-        <h1 className="mt-3 text-4xl font-medium tracking-tight text-white">What Students Say</h1>
+        <h2 className="mt-3 text-4xl font-medium tracking-tight text-white">What Students Say</h2>
         <p className="mt-4 max-w-2xl text-base text-white/84">
           student feedback and review highlights from verified delivery clients.
         </p>
@@ -68,5 +67,3 @@ export default function TestimonialsPage() {
     </main>
   );
 }
-
-

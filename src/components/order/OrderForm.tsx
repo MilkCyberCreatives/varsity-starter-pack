@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 const PRIMARY = "#b01414";
 const ORDER_DRAFT_KEY = "vsp.order.draft.v1";
 const ORDER_PROFILE_KEY = "vsp.order.profile.v1";
-const MAX_UPLOAD_BYTES = 2.5 * 1024 * 1024;
+const MAX_UPLOAD_BYTES = 1.5 * 1024 * 1024;
 
 type Props = {
   selectedSlugs: ApplianceSlug[];
@@ -253,12 +253,12 @@ export default function OrderForm({ selectedSlugs, initialMonths }: Props) {
     if (!phone.trim()) return "Please enter your phone number.";
     if (!university.trim()) return "Please enter your university.";
     if (!residence.trim()) return "Please enter your residence / apartment.";
-    if (!Number.isFinite(months) || months < 5) return "Minimum rental period is 5 months.";
+    if (!Number.isInteger(months) || months < 5) return "Minimum rental period is 5 months.";
     if (!deliveryDate) return "Please select a delivery date.";
     if (!studentCard) return "Please upload your student card.";
     if (!idCopy) return "Please upload your ID copy.";
     if (studentCard.size > MAX_UPLOAD_BYTES || idCopy.size > MAX_UPLOAD_BYTES) {
-      return "Uploads must be under 2.5MB each (use a photo/compressed PDF).";
+      return "Uploads must be under 1.5MB each (use a photo/compressed PDF).";
     }
     return null;
   }
@@ -553,6 +553,7 @@ export default function OrderForm({ selectedSlugs, initialMonths }: Props) {
                 <button
                   key={p.slug}
                   type="button"
+                  aria-pressed={active}
                   onClick={() => toggleAppliance(p.slug)}
                   data-selected={active ? "1" : "0"}
                   className={[
@@ -598,6 +599,7 @@ export default function OrderForm({ selectedSlugs, initialMonths }: Props) {
             <input
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
+              autoComplete="name"
               className="w-full rounded-xl border border-white/34 bg-white/95 px-4 py-3 text-sm text-black outline-none"
               required
             />
@@ -608,6 +610,7 @@ export default function OrderForm({ selectedSlugs, initialMonths }: Props) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               type="email"
+              autoComplete="email"
               className="w-full rounded-xl border border-white/34 bg-white/95 px-4 py-3 text-sm text-black outline-none"
               required
             />
@@ -617,6 +620,8 @@ export default function OrderForm({ selectedSlugs, initialMonths }: Props) {
             <input
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
+              type="tel"
+              autoComplete="tel"
               className="w-full rounded-xl border border-white/34 bg-white/95 px-4 py-3 text-sm text-black outline-none"
               required
             />
@@ -629,6 +634,7 @@ export default function OrderForm({ selectedSlugs, initialMonths }: Props) {
               type="number"
               min={5}
               max={36}
+              step={1}
               className="w-full rounded-xl border border-white/34 bg-white/95 px-4 py-3 text-sm text-black outline-none"
               required
             />
@@ -638,6 +644,7 @@ export default function OrderForm({ selectedSlugs, initialMonths }: Props) {
             <input
               value={university}
               onChange={(e) => setUniversity(e.target.value)}
+              autoComplete="organization"
               className="w-full rounded-xl border border-white/34 bg-white/95 px-4 py-3 text-sm text-black outline-none"
               required
             />
@@ -647,6 +654,7 @@ export default function OrderForm({ selectedSlugs, initialMonths }: Props) {
             <input
               value={residence}
               onChange={(e) => setResidence(e.target.value)}
+              autoComplete="street-address"
               className="w-full rounded-xl border border-white/34 bg-white/95 px-4 py-3 text-sm text-black outline-none"
               required
             />
@@ -680,7 +688,7 @@ export default function OrderForm({ selectedSlugs, initialMonths }: Props) {
                 required
               />
             </Field>
-            <p className="mt-2 text-[12px] text-white/72">PNG/JPG/PDF | Max 2.5MB</p>
+            <p className="mt-2 text-[12px] text-white/72">PNG/JPG/PDF | Max 1.5MB</p>
           </div>
 
           <div>
@@ -694,7 +702,7 @@ export default function OrderForm({ selectedSlugs, initialMonths }: Props) {
                 required
               />
             </Field>
-            <p className="mt-2 text-[12px] text-white/72">PNG/JPG/PDF | Max 2.5MB</p>
+            <p className="mt-2 text-[12px] text-white/72">PNG/JPG/PDF | Max 1.5MB</p>
           </div>
         </div>
 
@@ -721,19 +729,28 @@ export default function OrderForm({ selectedSlugs, initialMonths }: Props) {
         />
 
         {loadedDraftMessage && (
-          <div className="mt-4 rounded-2xl border border-white/24 bg-white/12 px-4 py-3 text-sm text-white/86">
+          <div
+            role="status"
+            aria-live="polite"
+            className="mt-4 rounded-2xl border border-white/24 bg-white/12 px-4 py-3 text-sm text-white/86"
+          >
             {loadedDraftMessage}
           </div>
         )}
 
         {error && (
-          <div className="mt-4 rounded-2xl border border-white/24 bg-white/12 px-4 py-3 text-sm text-white/86">
+          <div
+            role="alert"
+            className="mt-4 rounded-2xl border border-white/24 bg-white/12 px-4 py-3 text-sm text-white/86"
+          >
             {error}
           </div>
         )}
 
         {result && (
           <motion.div
+            role="status"
+            aria-live="polite"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, ease: "easeOut" }}
@@ -836,10 +853,12 @@ function Row({ label, value, strong }: { label: string; value: string; strong?: 
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div>
-      <p className="text-xs font-semibold tracking-widest text-white/72">{label.toUpperCase()}</p>
-      <div className="mt-2">{children}</div>
-    </div>
+    <label className="block">
+      <span className="block text-xs font-semibold tracking-widest text-white/72">
+        {label.toUpperCase()}
+      </span>
+      <span className="mt-2 block">{children}</span>
+    </label>
   );
 }
 
@@ -857,13 +876,14 @@ function SmartRow<T extends string>({
   return (
     <div>
       <p className="text-[11px] font-semibold tracking-widest text-white/70">{label.toUpperCase()}</p>
-      <div className="mt-2 flex flex-wrap gap-2">
+      <div className="mt-2 flex flex-wrap gap-2" role="group" aria-label={label}>
         {options.map((option) => {
           const active = value === option.value;
           return (
             <button
               key={option.value}
               type="button"
+              aria-pressed={active}
               onClick={() => onChange(option.value)}
               className="water-hover vsp-focus rounded-xl border px-3 py-2 text-[11px] font-semibold tracking-widest transition"
               style={{
