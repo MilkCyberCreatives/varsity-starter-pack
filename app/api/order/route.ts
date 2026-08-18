@@ -1,4 +1,4 @@
-﻿import crypto from "crypto";
+import crypto from "crypto";
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { prisma } from "@/lib/prisma";
@@ -44,6 +44,7 @@ type Payload = {
 };
 
 const RATE = { windowMs: 60_000, max: 5 };
+const MAX_UPLOAD_BYTES = Math.floor(1.5 * 1024 * 1024);
 const rateMap = new Map<string, { count: number; resetAt: number }>();
 
 function getClientIp(req: Request) {
@@ -158,12 +159,11 @@ function sanitizeUpload(upload: Upload | null | undefined, fieldName: string) {
     return { ok: false as const, error: `${fieldName} upload is required.` };
   }
 
-  const maxBytes = Math.floor(2.5 * 1024 * 1024);
   const approxBytes = Math.ceil((upload.base64.length * 3) / 4);
-  if (approxBytes > maxBytes) {
+  if (approxBytes > MAX_UPLOAD_BYTES) {
     return {
       ok: false as const,
-      error: `${fieldName} upload must be under 2.5MB.`,
+      error: `${fieldName} upload must be under 1.5MB.`,
     };
   }
 
@@ -266,9 +266,9 @@ export async function POST(req: Request) {
         { status: 400 }
       );
 
-    if (!Number.isFinite(months) || months < 5 || months > 36) {
+    if (!Number.isInteger(months) || months < 5 || months > 36) {
       return NextResponse.json(
-        { ok: false, error: "Rental months must be between 5 and 36." },
+        { ok: false, error: "Rental months must be a whole number between 5 and 36." },
         { status: 400 }
       );
     }
@@ -423,14 +423,16 @@ export async function POST(req: Request) {
           </div>
         `;
 
-        await resend.emails.send({
+        const { error: customerEmailError } = await resend.emails.send({
           from: FROM_EMAIL,
           to: email,
           subject: `Varsity Starter Pack Order Request - ${reference}`,
           html: customerHtml,
         });
 
-        emailed = true;
+        if (customerEmailError) {
+          throw new Error("Order confirmation email was not accepted by the email provider.");
+        }
 
         if (ADMIN_EMAIL) {
           const adminHtml = `
@@ -477,7 +479,7 @@ export async function POST(req: Request) {
             </div>
           `;
 
-          await resend.emails.send({
+          const { error: adminEmailError } = await resend.emails.send({
             from: FROM_EMAIL,
             to: ADMIN_EMAIL,
             subject: `NEW Order Request - ${reference}`,
@@ -496,13 +498,19 @@ export async function POST(req: Request) {
               },
             ],
           });
+
+          if (adminEmailError) {
+            throw new Error("Order admin email was not accepted by the email provider.");
+          }
         }
 
+        emailed = true;
         await prisma.order.update({
           where: { reference },
           data: { emailed: true },
         });
-      } catch {
+      } catch (error) {
+        console.error("ORDER EMAIL ERROR:", error);
         emailed = false;
       }
     }
@@ -530,4 +538,3 @@ export async function POST(req: Request) {
     );
   }
 }
-
