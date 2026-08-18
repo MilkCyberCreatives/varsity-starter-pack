@@ -2,6 +2,7 @@ import MainHeader from "@/components/layout/MainHeader";
 import FooterSection from "@/components/layout/FooterSection";
 import BreadcrumbHero from "@/components/layout/BreadcrumbHero";
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { Resend } from "resend";
@@ -11,10 +12,10 @@ export const runtime = "nodejs";
 
 type SearchParams = {
   q?: string;
-  appliance?: string; // bar-fridge | microwave | top-freezer
-  emailed?: string; // yes | no
-  from?: string; // YYYY-MM-DD
-  to?: string; // YYYY-MM-DD
+  appliance?: string;
+  emailed?: string;
+  from?: string;
+  to?: string;
 };
 
 type OrderRow = {
@@ -83,28 +84,36 @@ async function resendEmail(formData: FormData) {
   `;
 
   try {
-    await resend.emails.send({
+    const { error: customerEmailError } = await resend.emails.send({
       from: FROM_EMAIL,
       to: order.email,
       subject,
       html,
     });
 
+    if (customerEmailError) {
+      throw new Error("Resent customer email was not accepted by the email provider.");
+    }
+
     if (ADMIN_EMAIL) {
-      await resend.emails.send({
+      const { error: adminEmailError } = await resend.emails.send({
         from: FROM_EMAIL,
         to: ADMIN_EMAIL,
         subject: `RESEND • ${order.reference}`,
         html: `<p>Resent email to ${escapeHtml(order.email)} for reference <strong>${order.reference}</strong>.</p>`,
       });
+
+      if (adminEmailError) {
+        console.error("ADMIN RESEND NOTIFICATION EMAIL ERROR");
+      }
     }
 
     await prisma.order.update({
       where: { id },
       data: { emailed: true },
     });
-  } catch {
-    // swallow
+  } catch (error) {
+    console.error("ADMIN ORDER RESEND ERROR:", error);
   }
 
   revalidatePath("/admin/orders");
@@ -138,7 +147,6 @@ function parseDateEnd(value?: string) {
 export default async function AdminOrdersPage({
   searchParams,
 }: {
-  // ✅ Next 16 generated types expect Promise here
   searchParams?: Promise<SearchParams>;
 }) {
   const sp = (await searchParams) ?? {};
@@ -152,8 +160,7 @@ export default async function AdminOrdersPage({
   const fromDate = parseDateStart(from);
   const toDate = parseDateEnd(to);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const where: any = {};
+  const where: Prisma.OrderWhereInput = {};
 
   if (q) {
     where.OR = [
