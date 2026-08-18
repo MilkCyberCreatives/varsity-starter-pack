@@ -72,17 +72,6 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     images: ["/hero/hero.jpg"],
   },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-snippet": -1,
-      "max-image-preview": "large",
-      "max-video-preview": -1,
-    },
-  },
   other: {
     "geo.region": "ZA-GP",
     "geo.placename": "Midrand",

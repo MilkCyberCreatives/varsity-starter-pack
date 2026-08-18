@@ -1,6 +1,20 @@
+import type { Metadata } from "next";
 import MainHeader from "@/components/layout/MainHeader";
 import FooterSection from "@/components/layout/FooterSection";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Page Not Found",
+  description: "The requested page does not exist.",
+  alternates: {
+    canonical: null,
+    languages: {},
+  },
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default function NotFound() {
   return (
@@ -32,5 +46,3 @@ export default function NotFound() {
     </main>
   );
 }
-
-
