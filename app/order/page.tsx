@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import MainHeader from "@/components/layout/MainHeader";
 import FooterSection from "@/components/layout/FooterSection";
 import BreadcrumbHero from "@/components/layout/BreadcrumbHero";
@@ -19,10 +19,8 @@ export const metadata: Metadata = buildPageMetadata({
     "student appliance rentals Johannesburg",
     "student essentials",
     "res room appliances",
-    "student moving in checklist",
     "student fridge rental",
     "microwave rental for students",
-    "rent to own appliances",
   ],
 });
 
@@ -95,9 +93,9 @@ export default async function OrderPage({
       <section className="mx-auto max-w-6xl px-4 py-16">
         <p className="text-xs font-semibold tracking-widest text-white/76">ORDER REQUEST</p>
 
-        <h1 className="mt-3 text-4xl font-medium tracking-tight text-white">
+        <h2 className="mt-3 text-4xl font-medium tracking-tight text-white">
           Request An Order
-        </h1>
+        </h2>
 
         <p className="mt-4 max-w-2xl text-base text-white/84">
           Selected appliances:{" "}
@@ -117,5 +115,3 @@ export default async function OrderPage({
     </main>
   );
 }
-
-
