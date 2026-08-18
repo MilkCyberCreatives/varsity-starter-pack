@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import MainHeader from "@/components/layout/MainHeader";
 import FooterSection from "@/components/layout/FooterSection";
 import PricingSection from "@/components/home/PricingSection";
@@ -18,9 +18,6 @@ export const metadata: Metadata = buildPageMetadata({
     "microwave rental for students",
     "res fridge hire",
     "campus appliance rental",
-    "cheap fridge",
-    "second hand fridge vs rent",
-    "rent to own appliances",
     "appliance hire for students",
     "student appliance rentals Gauteng",
   ],
@@ -32,37 +29,55 @@ const serviceSchema = {
   name: "Varsity appliance rental services",
   itemListElement: [
     {
-      "@type": "Service",
+      "@type": "ListItem",
       position: 1,
-      name: "Bar Fridge Rental",
-      areaServed: "Gauteng",
-      provider: {
-        "@type": "Organization",
-        name: siteConfig.name,
+      item: {
+        "@type": "Service",
+        name: "Bar Fridge Rental",
+        areaServed: "Gauteng",
+        provider: { "@id": `${siteConfig.siteUrl}#organization` },
+        image: siteUrl("/images/pricing/fridge.jpg"),
+        offers: {
+          "@type": "Offer",
+          priceCurrency: "ZAR",
+          price: "250",
+          url: siteUrl("/order?appliance=bar-fridge"),
+        },
       },
-      url: siteUrl("/order?appliance=bar-fridge"),
     },
     {
-      "@type": "Service",
+      "@type": "ListItem",
       position: 2,
-      name: "Microwave Rental",
-      areaServed: "Gauteng",
-      provider: {
-        "@type": "Organization",
-        name: siteConfig.name,
+      item: {
+        "@type": "Service",
+        name: "Microwave Rental",
+        areaServed: "Gauteng",
+        provider: { "@id": `${siteConfig.siteUrl}#organization` },
+        image: siteUrl("/images/pricing/microwave.jpg"),
+        offers: {
+          "@type": "Offer",
+          priceCurrency: "ZAR",
+          price: "160",
+          url: siteUrl("/order?appliance=microwave"),
+        },
       },
-      url: siteUrl("/order?appliance=microwave"),
     },
     {
-      "@type": "Service",
+      "@type": "ListItem",
       position: 3,
-      name: "Top Freezer Rental",
-      areaServed: "Gauteng",
-      provider: {
-        "@type": "Organization",
-        name: siteConfig.name,
+      item: {
+        "@type": "Service",
+        name: "Top Freezer Rental",
+        areaServed: "Gauteng",
+        provider: { "@id": `${siteConfig.siteUrl}#organization` },
+        image: siteUrl("/images/pricing/combo.jpg"),
+        offers: {
+          "@type": "Offer",
+          priceCurrency: "ZAR",
+          price: "360",
+          url: siteUrl("/order?appliance=top-freezer"),
+        },
       },
-      url: siteUrl("/order?appliance=top-freezer"),
     },
   ],
 };
@@ -86,59 +101,10 @@ const breadcrumbSchema = {
   ],
 };
 
-const productsSchema = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Product",
-      name: "Bar Fridge Rental",
-      brand: siteConfig.name,
-      image: siteUrl("/images/pricing/fridge.jpg"),
-      category: "Student Appliance Rental",
-      offers: {
-        "@type": "Offer",
-        priceCurrency: "ZAR",
-        price: "250",
-        availability: "https://schema.org/InStock",
-        url: siteUrl("/order?appliance=bar-fridge"),
-      },
-    },
-    {
-      "@type": "Product",
-      name: "Microwave Rental",
-      brand: siteConfig.name,
-      image: siteUrl("/images/pricing/microwave.jpg"),
-      category: "Student Appliance Rental",
-      offers: {
-        "@type": "Offer",
-        priceCurrency: "ZAR",
-        price: "160",
-        availability: "https://schema.org/InStock",
-        url: siteUrl("/order?appliance=microwave"),
-      },
-    },
-    {
-      "@type": "Product",
-      name: "Top Freezer Rental",
-      brand: siteConfig.name,
-      image: siteUrl("/images/pricing/combo.jpg"),
-      category: "Student Appliance Rental",
-      offers: {
-        "@type": "Offer",
-        priceCurrency: "ZAR",
-        price: "360",
-        availability: "https://schema.org/InStock",
-        url: siteUrl("/order?appliance=top-freezer"),
-      },
-    },
-  ],
-};
-
 export default function PricingPage() {
   return (
     <main className="flex min-h-screen flex-col vsp-page-bg">
       <JsonLd data={serviceSchema} />
-      <JsonLd data={productsSchema} />
       <JsonLd data={breadcrumbSchema} />
       <MainHeader />
       <BreadcrumbHero
@@ -152,5 +118,3 @@ export default function PricingPage() {
     </main>
   );
 }
-
-
